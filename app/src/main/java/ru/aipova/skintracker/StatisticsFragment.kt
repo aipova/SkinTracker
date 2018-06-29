@@ -1,7 +1,7 @@
 package ru.aipova.skintracker
 
+import android.content.Context
 import android.os.Bundle
-import android.support.design.widget.Snackbar
 import android.support.v4.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
@@ -9,6 +9,22 @@ import android.view.ViewGroup
 import kotlinx.android.synthetic.main.statistics_fragment.*
 
 class StatisticsFragment : Fragment() {
+    private var callbacks: Callbacks? = null
+
+    interface Callbacks {
+        fun onCreateNewTrack()
+    }
+
+    override fun onAttach(context: Context?) {
+        super.onAttach(context)
+//        TODO check type and throw appropriate exception
+        callbacks = activity as Callbacks
+    }
+
+    override fun onDetach() {
+        super.onDetach()
+        callbacks = null
+    }
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -22,8 +38,7 @@ class StatisticsFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         add_evaluations.setOnClickListener { actionView ->
-            Snackbar.make(actionView, "Add today's skin track", Snackbar.LENGTH_LONG)
-                .setAction("Action", null).show()
+            callbacks?.onCreateNewTrack()
         }
     }
 
