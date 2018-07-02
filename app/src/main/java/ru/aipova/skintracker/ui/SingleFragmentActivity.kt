@@ -1,8 +1,9 @@
-package ru.aipova.skintracker
+package ru.aipova.skintracker.ui
 
 import android.os.Bundle
 import android.support.v4.app.Fragment
 import android.support.v7.app.AppCompatActivity
+import ru.aipova.skintracker.R
 
 abstract class SingleFragmentActivity : AppCompatActivity() {
 

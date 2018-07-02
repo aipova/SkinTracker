@@ -3,6 +3,7 @@
           package="ru.aipova.skintracker">
 
     <application
+        android:name=".SkinTrackerApp"
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
@@ -10,7 +11,7 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
         <activity
-            android:name=".StatisticsActivity"
+            android:name=".ui.statistics.StatisticsActivity"
             android:label="@string/app_name">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN"/>
@@ -18,7 +19,7 @@
                 <category android:name="android.intent.category.LAUNCHER"/>
             </intent-filter>
         </activity>
-        <activity android:name=".TrackActivity" android:parentActivityName=".StatisticsActivity"/>
+        <activity android:name=".ui.track.TrackActivity" android:parentActivityName=".ui.statistics.StatisticsActivity"/>
     </application>
 
 </manifest>

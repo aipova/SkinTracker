@@ -1,4 +1,4 @@
-package ru.aipova.skintracker
+package ru.aipova.skintracker.ui.statistics
 
 import android.content.Context
 import android.os.Bundle
@@ -7,6 +7,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import kotlinx.android.synthetic.main.statistics_fragment.*
+import ru.aipova.skintracker.R
 
 class StatisticsFragment : Fragment() {
     private var callbacks: Callbacks? = null
