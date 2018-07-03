@@ -4,4 +4,6 @@
     <string name="action_save">Save</string>
     <string name="track_title">New Skin Track</string>
     <string name="skin_quality">Skin Quality</string>
+    <string name="track_type_name">Track Type Name</string>
+    <string name="new_track_type_title">New Track Type</string>
 </resources>

@@ -3,9 +3,7 @@ package ru.aipova.skintracker.ui.statistics
 import android.content.Context
 import android.os.Bundle
 import android.support.v4.app.Fragment
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
+import android.view.*
 import kotlinx.android.synthetic.main.statistics_fragment.*
 import ru.aipova.skintracker.R
 
@@ -14,6 +12,7 @@ class StatisticsFragment : Fragment() {
 
     interface Callbacks {
         fun onCreateNewTrack()
+        fun onShowTrackTypes()
     }
 
     override fun onAttach(context: Context?) {
@@ -27,6 +26,26 @@ class StatisticsFragment : Fragment() {
         callbacks = null
     }
 
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        setHasOptionsMenu(true)
+    }
+
+    override fun onCreateOptionsMenu(menu: Menu?, inflater: MenuInflater?) {
+        super.onCreateOptionsMenu(menu, inflater)
+        inflater?.inflate(R.menu.menu_statistics, menu)
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem) =
+        when (item.itemId) {
+            R.id.action_settings -> {
+                callbacks?.onShowTrackTypes()
+                true
+            }
+            else -> super.onOptionsItemSelected(item)
+        }
+
+
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -38,9 +57,7 @@ class StatisticsFragment : Fragment() {
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        add_evaluations.setOnClickListener { actionView ->
-            callbacks?.onCreateNewTrack()
-        }
+        add_track.setOnClickListener { callbacks?.onCreateNewTrack() }
     }
 
     companion object {

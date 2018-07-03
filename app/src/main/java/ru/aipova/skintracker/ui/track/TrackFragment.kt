@@ -101,8 +101,9 @@ class TrackFragment : Fragment() {
         for (i in 0..layout.childCount) {
             val child = layout.getChildAt(i)
             val todayTracks = mutableListOf<Track>()
-            val existingTracks = realm.where<Track>().equalTo(TrackFields.DATE, today()).findAll()
+
             realm.executeTransaction { realm ->
+                val existingTracks = realm.where<Track>().equalTo(TrackFields.DATE, today()).findAll()
                 if (child is SeekBar) {
                     val track = Track().apply {
                         trackType = trackTypes[child.id]
