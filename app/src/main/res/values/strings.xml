@@ -6,4 +6,5 @@
     <string name="skin_quality">Skin Quality</string>
     <string name="track_type_name">Track Type Name</string>
     <string name="new_track_type_title">New Track Type</string>
+    <string name="enter_name">You need to enter name</string>
 </resources>

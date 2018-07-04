@@ -16,10 +16,10 @@ import ru.aipova.skintracker.model.TrackType
 import ru.aipova.skintracker.model.TrackTypeFields
 
 class TrackTypeFragment : Fragment(), TrackTypeDialog.Callbacks {
-    override fun onCreateNewTrackType(newTrackTypeName: String) {
-        realm.executeTransaction {
+    override fun onCreateNewTrackType(trackTypeName: String) {
+        realm.executeTransactionAsync {
             it.insert(TrackType().apply {
-                name = newTrackTypeName
+                name = trackTypeName
             })
         }
     }
