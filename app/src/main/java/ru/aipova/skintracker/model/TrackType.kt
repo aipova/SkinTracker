@@ -2,9 +2,10 @@ package ru.aipova.skintracker.model
 
 import io.realm.RealmObject
 import io.realm.annotations.PrimaryKey
+import java.io.Serializable
 import java.util.*
 
-open class TrackType : RealmObject() {
+open class TrackType : RealmObject(), Serializable {
 
     @PrimaryKey
     var uuid: String = UUID.randomUUID().toString()

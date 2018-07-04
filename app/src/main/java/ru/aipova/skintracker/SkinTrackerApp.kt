@@ -15,6 +15,7 @@ class SkinTrackerApp : Application() {
         Realm.init(this)
         Realm.setDefaultConfiguration(RealmConfiguration.Builder().deleteRealmIfMigrationNeeded().build())
 
+//        TODO set realm initial data
         getSkinQualityTrackType()
     }
 

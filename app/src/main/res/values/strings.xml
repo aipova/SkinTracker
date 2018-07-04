@@ -6,5 +6,7 @@
     <string name="track_type_name_skin_quality">Skin Quality</string>
     <string name="track_type_name">Track Type Name</string>
     <string name="title_new_track_type">New Track Type</string>
+    <string name="title_edit_track_type">Edit Track Type</string>
     <string name="error_track_type_empty_name">You need to enter name</string>
+    <string name="message_remove_track_type">Are you sure you want to remove Track Type?</string>
 </resources>
