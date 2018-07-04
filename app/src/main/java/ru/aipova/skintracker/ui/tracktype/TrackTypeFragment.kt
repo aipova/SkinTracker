@@ -2,11 +2,11 @@ package ru.aipova.skintracker.ui.tracktype
 
 import android.os.Bundle
 import android.support.v4.app.Fragment
+import android.support.v7.widget.LinearLayoutManager
+import android.support.v7.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.LinearLayout
-import android.widget.TextView
 import io.realm.Realm
 import io.realm.RealmResults
 import io.realm.kotlin.where
@@ -22,19 +22,16 @@ class TrackTypeFragment : Fragment(), TrackTypeDialog.Callbacks {
                 name = newTrackTypeName
             })
         }
-//        TODO use recycler view with realm adapter
     }
 
-    private lateinit var trackTypes: RealmResults<TrackType>
     private lateinit var realm: Realm
-    private lateinit var layout: LinearLayout
+    private lateinit var recyclerView: RecyclerView
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setHasOptionsMenu(true)
         retainInstance = true
         realm = Realm.getDefaultInstance()
-        trackTypes = realm.where<TrackType>().equalTo(TrackTypeFields.REMOVABLE, true).findAll()
     }
 
     override fun onDestroy() {
@@ -48,15 +45,14 @@ class TrackTypeFragment : Fragment(), TrackTypeDialog.Callbacks {
         savedInstanceState: Bundle?
     ): View? {
         val view = inflater.inflate(R.layout.tracktype_fragment, container, false)
-        layout = view.findViewById(R.id.tracktype_layout)
-
-
-        for ((index, trackType) in trackTypes.withIndex()) {
-            val tv = TextView(activity)
-            tv.text = trackType.name
-            layout.addView(tv)
-        }
+        recyclerView = view.findViewById(R.id.tracktype_recycler)
+        recyclerView.layoutManager = LinearLayoutManager(activity)
+        recyclerView.adapter = TrackTypeAdapter(allTrackTypesAsync())
         return view
+    }
+
+    private fun allTrackTypesAsync(): RealmResults<TrackType> {
+        return realm.where<TrackType>().equalTo(TrackTypeFields.REMOVABLE, true).findAllAsync()
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
