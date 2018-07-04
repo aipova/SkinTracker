@@ -57,7 +57,7 @@ class StatisticsFragment : Fragment() {
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        add_track.setOnClickListener { callbacks?.onCreateNewTrack() }
+        track_add_fab.setOnClickListener { callbacks?.onCreateNewTrack() }
     }
 
     companion object {

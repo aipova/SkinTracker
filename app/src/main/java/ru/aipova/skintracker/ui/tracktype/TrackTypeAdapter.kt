@@ -13,7 +13,7 @@ import ru.aipova.skintracker.model.TrackType
 class TrackTypeAdapter(trackTypes: RealmResults<TrackType>) :
     RealmRecyclerViewAdapter<TrackType, TrackTypeAdapter.TrackTypeViewHolder>(trackTypes, true) {
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): TrackTypeViewHolder {
-        val view = LayoutInflater.from(parent.context).inflate(R.layout.tracktype_item, parent, false)
+        val view = LayoutInflater.from(parent.context).inflate(R.layout.track_type_item, parent, false)
         return TrackTypeViewHolder(view)
 
     }
@@ -24,7 +24,7 @@ class TrackTypeAdapter(trackTypes: RealmResults<TrackType>) :
     }
 
     inner class TrackTypeViewHolder(view: View) : RecyclerView.ViewHolder(view) {
-        private val nameTextView: TextView = view.findViewById(R.id.trackTypeName)
+        private val nameTextView: TextView = view.findViewById(R.id.track_type_name_txt)
 
         fun setName(name: String) {
             nameTextView.text = name

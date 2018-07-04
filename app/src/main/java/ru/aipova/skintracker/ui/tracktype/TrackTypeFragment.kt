@@ -10,7 +10,7 @@ import android.view.ViewGroup
 import io.realm.Realm
 import io.realm.RealmResults
 import io.realm.kotlin.where
-import kotlinx.android.synthetic.main.tracktype_fragment.*
+import kotlinx.android.synthetic.main.track_type_fragment.*
 import ru.aipova.skintracker.R
 import ru.aipova.skintracker.model.TrackType
 import ru.aipova.skintracker.model.TrackTypeFields
@@ -44,8 +44,8 @@ class TrackTypeFragment : Fragment(), TrackTypeDialog.Callbacks {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        val view = inflater.inflate(R.layout.tracktype_fragment, container, false)
-        recyclerView = view.findViewById(R.id.tracktype_recycler)
+        val view = inflater.inflate(R.layout.track_type_fragment, container, false)
+        recyclerView = view.findViewById(R.id.track_type_recycler)
         recyclerView.layoutManager = LinearLayoutManager(activity)
         recyclerView.adapter = TrackTypeAdapter(allTrackTypesAsync())
         return view
@@ -56,7 +56,7 @@ class TrackTypeFragment : Fragment(), TrackTypeDialog.Callbacks {
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        add_tracktype.setOnClickListener {
+        track_type_add_fab.setOnClickListener {
             TrackTypeDialog().show(childFragmentManager, TRACK_TYPE_DIALOG)
         }
     }

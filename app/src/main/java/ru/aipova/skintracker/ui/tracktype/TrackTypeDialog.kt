@@ -20,12 +20,12 @@ class TrackTypeDialog : DialogFragment() {
     }
 
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
-        val view = LayoutInflater.from(context).inflate(R.layout.tracktype_dialog, null)
-        trackTypeNameEditText = view.findViewById(R.id.trackTypeName)
-        trackTypeNameLayout = view.findViewById(R.id.trackTypeNameLayout)
+        val view = LayoutInflater.from(context).inflate(R.layout.track_type_dialog, null)
+        trackTypeNameEditText = view.findViewById(R.id.track_type_name_edit_txt)
+        trackTypeNameLayout = view.findViewById(R.id.track_type_name_txt_layout)
         dialog = AlertDialog.Builder(activity as Context)
             .setView(view)
-            .setTitle(R.string.new_track_type_title)
+            .setTitle(R.string.title_new_track_type)
             .setPositiveButton(android.R.string.ok, null)
             .setNegativeButton(android.R.string.cancel, null)
             .create()
@@ -37,7 +37,7 @@ class TrackTypeDialog : DialogFragment() {
         dialog.getButton(AlertDialog.BUTTON_POSITIVE).setOnClickListener {
             val trackTypeName = trackTypeNameEditText.text.toString()
             if (trackTypeName.isBlank()) {
-                trackTypeNameLayout.error = getString(R.string.enter_name)
+                trackTypeNameLayout.error = getString(R.string.error_track_type_empty_name)
             } else {
                 parentFragment.let {
                     if (it is Callbacks) {

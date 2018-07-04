@@ -83,7 +83,7 @@ class TrackFragment : Fragment() {
         (activity as AppCompatActivity).supportActionBar?.run {
             setDisplayHomeAsUpEnabled(true)
             setHomeAsUpIndicator(R.drawable.ic_close)
-            title = getString(R.string.track_title)
+            title = getString(R.string.title_new_track)
         }
     }
 
