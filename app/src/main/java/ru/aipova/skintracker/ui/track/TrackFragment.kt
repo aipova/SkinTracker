@@ -8,8 +8,8 @@ import android.widget.LinearLayout
 import android.widget.SeekBar
 import android.widget.TextView
 import android.widget.Toast
+import io.realm.OrderedRealmCollectionSnapshot
 import io.realm.Realm
-import io.realm.RealmResults
 import io.realm.kotlin.where
 import ru.aipova.skintracker.R
 import ru.aipova.skintracker.model.Track
@@ -19,7 +19,7 @@ import java.util.*
 
 class TrackFragment : Fragment() {
 
-    private lateinit var trackTypes: RealmResults<TrackType>
+    private lateinit var trackTypes: OrderedRealmCollectionSnapshot<TrackType>
     private lateinit var realm: Realm
     private lateinit var layout: LinearLayout
 
@@ -28,7 +28,7 @@ class TrackFragment : Fragment() {
         setHasOptionsMenu(true)
         retainInstance = true
         realm = Realm.getDefaultInstance()
-        trackTypes = realm.where<TrackType>().findAll()
+        trackTypes = realm.where<TrackType>().findAll().createSnapshot()
     }
 
     override fun onDestroy() {

@@ -19,22 +19,25 @@ import ru.aipova.skintracker.model.TrackTypeFields
 
 class TrackTypeFragment : Fragment(), TrackTypeCreateDialog.Callbacks, TrackTypeEditDialog.Callbacks {
     override fun onCreateNewTrackType(trackTypeName: String) {
-        realm.executeTransaction {
-            it.insert(TrackType().apply {
+        realm.executeTransactionAsync { bgRealm ->
+            bgRealm.insert(TrackType().apply {
                 name = trackTypeName
             })
         }
     }
 
     override fun onEditTrackType(trackType: TrackType, trackTypeName: String) {
-        realm.executeTransaction {
-            trackType.name = trackTypeName
+        val trackTypeUid = trackType.uuid
+        realm.executeTransactionAsync { bgRealm ->
+            val trackTypeManaged = bgRealm.where<TrackType>().equalTo(TrackTypeFields.UUID, trackTypeUid).findFirst()
+            trackTypeManaged?.name = trackTypeName
         }
     }
 
-    fun onRemoveTrackType(trackType: TrackType) {
-        realm.executeTransaction {
-            trackType.deleteFromRealm()
+    fun onRemoveTrackType(trackTypeUid: String) {
+        realm.executeTransactionAsync { bgRealm ->
+            val trackType = bgRealm.where<TrackType>().equalTo(TrackTypeFields.UUID, trackTypeUid).findFirst()
+            trackType?.deleteFromRealm()
         }
     }
 
@@ -50,6 +53,7 @@ class TrackTypeFragment : Fragment(), TrackTypeCreateDialog.Callbacks, TrackType
 
     override fun onDestroy() {
         super.onDestroy()
+        recyclerView.adapter = null
         realm.close()
     }
 
@@ -61,6 +65,7 @@ class TrackTypeFragment : Fragment(), TrackTypeCreateDialog.Callbacks, TrackType
         val view = inflater.inflate(R.layout.track_type_fragment, container, false)
         recyclerView = view.findViewById(R.id.track_type_recycler)
         recyclerView.layoutManager = LinearLayoutManager(activity)
+        recyclerView.setHasFixedSize(true)
         recyclerView.adapter = TrackTypeAdapter(allTrackTypesAsync(), trackTypeCallbacks)
         return view
     }
@@ -71,9 +76,9 @@ class TrackTypeFragment : Fragment(), TrackTypeCreateDialog.Callbacks, TrackType
         }
 
         override fun onTrackTypeRemove(trackType: TrackType) {
-//            TODO add param to string
-            val dialog = AlertDialog.Builder(activity as Context).setMessage(R.string.message_remove_track_type)
-                .setPositiveButton(android.R.string.ok, { dialog, which -> onRemoveTrackType(trackType) })
+            val dialog = AlertDialog.Builder(activity as Context)
+                .setMessage(getString(R.string.message_remove_track_type, trackType.name))
+                .setPositiveButton(android.R.string.ok, { dialog, which -> onRemoveTrackType(trackType.uuid) })
                 .setNegativeButton(android.R.string.cancel, null)
                 .create()
             dialog.show()
