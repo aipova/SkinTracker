@@ -51,13 +51,11 @@ class StatisticsFragment : Fragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        val view = inflater.inflate(R.layout.statistics_fragment, container, false)
-
-        return view
+        return inflater.inflate(R.layout.statistics_fragment, container, false)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        track_add_fab.setOnClickListener { callbacks?.onCreateNewTrack() }
+        trackAddFab.setOnClickListener { callbacks?.onCreateNewTrack() }
     }
 
     companion object {

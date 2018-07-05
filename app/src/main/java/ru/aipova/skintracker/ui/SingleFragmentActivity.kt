@@ -14,8 +14,8 @@ abstract class SingleFragmentActivity : AppCompatActivity() {
         setContentView(R.layout.single_fragment_activity)
 
         val fm = supportFragmentManager
-        if (fm.findFragmentById(R.id.fragment_container) == null) {
-            fm.beginTransaction().add(R.id.fragment_container, createFragment()).commit()
+        if (fm.findFragmentById(R.id.fragmentContainer) == null) {
+            fm.beginTransaction().add(R.id.fragmentContainer, createFragment()).commit()
         }
     }
 }

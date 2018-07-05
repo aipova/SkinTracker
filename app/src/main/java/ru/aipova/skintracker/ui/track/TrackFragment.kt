@@ -42,7 +42,7 @@ class TrackFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View? {
         val view = inflater.inflate(R.layout.track_fragment, container, false)
-        layout = view.findViewById(R.id.track_layout)
+        layout = view.findViewById(R.id.trackLayout)
         val savedSeekBarValues =
             if (savedInstanceState != null) savedInstanceState.getSerializable(SEEK_BAR_VALUES) as HashMap<Int, Int>
             else hashMapOf()

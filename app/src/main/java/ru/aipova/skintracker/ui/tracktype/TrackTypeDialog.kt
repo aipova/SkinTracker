@@ -17,9 +17,9 @@ abstract class TrackTypeDialog : DialogFragment() {
 
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
         val view = LayoutInflater.from(context).inflate(R.layout.track_type_dialog, null)
-        trackTypeNameEditText = view.findViewById(R.id.track_type_name_edit_txt)
+        trackTypeNameEditText = view.findViewById(R.id.trackTypeNameEditTxt)
         trackTypeNameEditText.setText(getNameText())
-        trackTypeNameLayout = view.findViewById(R.id.track_type_name_txt_layout)
+        trackTypeNameLayout = view.findViewById(R.id.trackTypeNameTxtLayout)
         dialog = AlertDialog.Builder(activity as Context)
             .setView(view)
             .setTitle(getTitle())

@@ -4,10 +4,10 @@ import android.support.v7.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.ImageButton
-import android.widget.TextView
 import io.realm.RealmRecyclerViewAdapter
 import io.realm.RealmResults
+import kotlinx.android.extensions.LayoutContainer
+import kotlinx.android.synthetic.main.track_type_item.*
 import ru.aipova.skintracker.R
 import ru.aipova.skintracker.model.TrackType
 
@@ -17,7 +17,6 @@ class TrackTypeAdapter(trackTypes: RealmResults<TrackType>, private val callback
     interface Callbacks {
         fun onTrackTypeEdit(trackType: TrackType)
         fun onTrackTypeRemove(trackType: TrackType)
-
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): TrackTypeViewHolder {
@@ -31,21 +30,17 @@ class TrackTypeAdapter(trackTypes: RealmResults<TrackType>, private val callback
         item?.let { holder.bind(item) }
     }
 
-    inner class TrackTypeViewHolder(view: View, private val callbacks: Callbacks) : RecyclerView.ViewHolder(view) {
-
-        private val nameTextView: TextView = view.findViewById(R.id.track_type_name_txt)
-        private val editButton: ImageButton = view.findViewById(R.id.track_type_edit_btn)
-        private val removeButton: ImageButton = view.findViewById(R.id.track_type_remove_btn)
+    inner class TrackTypeViewHolder(override val containerView: View?, private val callbacks: Callbacks)
+        : RecyclerView.ViewHolder(containerView), LayoutContainer {
         private var trackType: TrackType? = null
-
         init {
-            editButton.setOnClickListener { trackType?.let { callbacks.onTrackTypeEdit(it) } }
-            removeButton.setOnClickListener { trackType?.let { callbacks.onTrackTypeRemove(it) } }
+            trackTypeEditBtn.setOnClickListener { trackType?.let { callbacks.onTrackTypeEdit(it) } }
+            trackTypeRemoveBtn.setOnClickListener { trackType?.let { callbacks.onTrackTypeRemove(it) } }
         }
 
         fun bind(trackType: TrackType) {
             this.trackType = trackType
-            nameTextView.text = trackType.name
+            trackTypeNameTxt.text = trackType.name
         }
 
     }

@@ -5,7 +5,6 @@ import android.os.Bundle
 import android.support.v4.app.Fragment
 import android.support.v7.app.AlertDialog
 import android.support.v7.widget.LinearLayoutManager
-import android.support.v7.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -18,6 +17,9 @@ import ru.aipova.skintracker.model.TrackType
 import ru.aipova.skintracker.model.TrackTypeFields
 
 class TrackTypeFragment : Fragment(), TrackTypeCreateDialog.Callbacks, TrackTypeEditDialog.Callbacks {
+
+    private lateinit var realm: Realm
+
     override fun onCreateNewTrackType(trackTypeName: String) {
         realm.executeTransactionAsync { bgRealm ->
             bgRealm.insert(TrackType().apply {
@@ -35,14 +37,12 @@ class TrackTypeFragment : Fragment(), TrackTypeCreateDialog.Callbacks, TrackType
     }
 
     fun onRemoveTrackType(trackTypeUid: String) {
+//         TODO remove all tracks or mark removed?
         realm.executeTransactionAsync { bgRealm ->
             val trackType = bgRealm.where<TrackType>().equalTo(TrackTypeFields.UUID, trackTypeUid).findFirst()
             trackType?.deleteFromRealm()
         }
     }
-
-    private lateinit var realm: Realm
-    private lateinit var recyclerView: RecyclerView
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -53,7 +53,7 @@ class TrackTypeFragment : Fragment(), TrackTypeCreateDialog.Callbacks, TrackType
 
     override fun onDestroy() {
         super.onDestroy()
-        recyclerView.adapter = null
+        trackTypeRecycler.adapter = null
         realm.close()
     }
 
@@ -62,13 +62,21 @@ class TrackTypeFragment : Fragment(), TrackTypeCreateDialog.Callbacks, TrackType
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        val view = inflater.inflate(R.layout.track_type_fragment, container, false)
-        recyclerView = view.findViewById(R.id.track_type_recycler)
-        recyclerView.layoutManager = LinearLayoutManager(activity)
-        recyclerView.setHasFixedSize(true)
-        recyclerView.adapter = TrackTypeAdapter(allTrackTypesAsync(), trackTypeCallbacks)
-        return view
+        return inflater.inflate(R.layout.track_type_fragment, container, false)
     }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        trackTypeAddFab.setOnClickListener {
+            TrackTypeCreateDialog.newInstance().show(childFragmentManager, TRACK_TYPE_CREATE_DIALOG)
+        }
+
+        trackTypeRecycler.apply {
+            layoutManager = LinearLayoutManager(activity)
+            setHasFixedSize(true)
+            adapter = TrackTypeAdapter(allTrackTypesAsync(), trackTypeCallbacks)
+        }
+    }
+
 
     private val trackTypeCallbacks = object : TrackTypeAdapter.Callbacks {
         override fun onTrackTypeEdit(trackType: TrackType) {
@@ -88,12 +96,6 @@ class TrackTypeFragment : Fragment(), TrackTypeCreateDialog.Callbacks, TrackType
 
     private fun allTrackTypesAsync(): RealmResults<TrackType> {
         return realm.where<TrackType>().equalTo(TrackTypeFields.REMOVABLE, true).findAllAsync()
-    }
-
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        track_type_add_fab.setOnClickListener {
-            TrackTypeCreateDialog.newInstance().show(childFragmentManager, TRACK_TYPE_CREATE_DIALOG)
-        }
     }
 
     companion object {
