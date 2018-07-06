@@ -8,17 +8,17 @@ import ru.aipova.skintracker.model.TrackType.Companion.SKIN_QUALITY_TRACK_NAME
 import ru.aipova.skintracker.model.TrackType.Companion.SKIN_QUALITY_TRACK_TYPE_UID
 
 class SkinTrackerApp : Application() {
-
     override fun onCreate() {
         super.onCreate()
 
         Realm.init(this)
         Realm.setDefaultConfiguration(RealmConfiguration.Builder().deleteRealmIfMigrationNeeded().build())
 
+        RealmManager.realm = Realm.getDefaultInstance()
+
 //        TODO set realm initial data
         getSkinQualityTrackType()
     }
-
     private fun getSkinQualityTrackType() {
         Realm.getDefaultInstance().use { r ->
             r.executeTransaction { realm ->

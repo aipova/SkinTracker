@@ -38,7 +38,7 @@ abstract class TrackTypeDialog : DialogFragment() {
         dialog.getButton(AlertDialog.BUTTON_POSITIVE).setOnClickListener {
             val trackTypeName = trackTypeNameEditText.text.toString()
             if (trackTypeName.isBlank()) {
-                trackTypeNameLayout.error = getString(R.string.error_track_type_empty_name)
+                trackTypeNameLayout.error = getString(R.string.err_track_type_empty_name)
             } else {
                 onOkButtonClick(trackTypeNameEditText.text.toString())
                 dialog.dismiss()

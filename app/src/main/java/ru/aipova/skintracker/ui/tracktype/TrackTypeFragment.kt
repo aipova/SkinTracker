@@ -8,53 +8,33 @@ import android.support.v7.widget.LinearLayoutManager
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import io.realm.Realm
+import android.widget.Toast
 import io.realm.RealmResults
-import io.realm.kotlin.where
 import kotlinx.android.synthetic.main.track_type_fragment.*
 import ru.aipova.skintracker.R
 import ru.aipova.skintracker.model.TrackType
-import ru.aipova.skintracker.model.TrackTypeFields
 
-class TrackTypeFragment : Fragment(), TrackTypeCreateDialog.Callbacks, TrackTypeEditDialog.Callbacks {
+class TrackTypeFragment : Fragment(), TrackTypeContract.View, TrackTypeCreateDialog.Callbacks, TrackTypeEditDialog.Callbacks {
+    override lateinit var presenter: TrackTypeContract.Presenter
 
-    private lateinit var realm: Realm
+    override var isActive: Boolean = false
+        get() = isAdded
 
     override fun onCreateNewTrackType(trackTypeName: String) {
-        realm.executeTransactionAsync { bgRealm ->
-            bgRealm.insert(TrackType().apply {
-                name = trackTypeName
-            })
-        }
+        presenter.createNewTrackType(trackTypeName)
     }
 
     override fun onEditTrackType(trackType: TrackType, trackTypeName: String) {
-        val trackTypeUid = trackType.uuid
-        realm.executeTransactionAsync { bgRealm ->
-            val trackTypeManaged = bgRealm.where<TrackType>().equalTo(TrackTypeFields.UUID, trackTypeUid).findFirst()
-            trackTypeManaged?.name = trackTypeName
-        }
+        presenter.editTrackTypeName(trackType.uuid, trackTypeName)
     }
 
     fun onRemoveTrackType(trackTypeUid: String) {
-//         TODO remove all tracks or mark removed?
-        realm.executeTransactionAsync { bgRealm ->
-            val trackType = bgRealm.where<TrackType>().equalTo(TrackTypeFields.UUID, trackTypeUid).findFirst()
-            trackType?.deleteFromRealm()
-        }
+        presenter.removeTrackType(trackTypeUid)
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setHasOptionsMenu(true)
-        retainInstance = true
-        realm = Realm.getDefaultInstance()
-    }
-
-    override fun onDestroy() {
-        super.onDestroy()
-        trackTypeRecycler.adapter = null
-        realm.close()
     }
 
     override fun onCreateView(
@@ -69,14 +49,20 @@ class TrackTypeFragment : Fragment(), TrackTypeCreateDialog.Callbacks, TrackType
         trackTypeAddFab.setOnClickListener {
             TrackTypeCreateDialog.newInstance().show(childFragmentManager, TRACK_TYPE_CREATE_DIALOG)
         }
-
         trackTypeRecycler.apply {
             layoutManager = LinearLayoutManager(activity)
             setHasFixedSize(true)
-            adapter = TrackTypeAdapter(allTrackTypesAsync(), trackTypeCallbacks)
         }
+        presenter.start()
     }
 
+    override fun initTrackTypesView(trackTypes: RealmResults<TrackType>) {
+        trackTypeRecycler.adapter = TrackTypeAdapter(trackTypes, trackTypeCallbacks)
+    }
+
+    override fun showTrackTypeCreatedNotification(trackTypeName: String) {
+        Toast.makeText(activity, getString(R.string.msg_track_type_created, trackTypeName), Toast.LENGTH_LONG).show()
+    }
 
     private val trackTypeCallbacks = object : TrackTypeAdapter.Callbacks {
         override fun onTrackTypeEdit(trackType: TrackType) {
@@ -85,18 +71,14 @@ class TrackTypeFragment : Fragment(), TrackTypeCreateDialog.Callbacks, TrackType
 
         override fun onTrackTypeRemove(trackType: TrackType) {
             val dialog = AlertDialog.Builder(activity as Context)
-                .setMessage(getString(R.string.message_remove_track_type, trackType.name))
+                .setMessage(getString(R.string.msg_remove_track_type, trackType.name))
                 .setPositiveButton(android.R.string.ok, { dialog, which -> onRemoveTrackType(trackType.uuid) })
                 .setNegativeButton(android.R.string.cancel, null)
                 .create()
             dialog.show()
         }
-
     }
 
-    private fun allTrackTypesAsync(): RealmResults<TrackType> {
-        return realm.where<TrackType>().equalTo(TrackTypeFields.REMOVABLE, true).findAllAsync()
-    }
 
     companion object {
         const val TRACK_TYPE_CREATE_DIALOG = "TrackTypeCreateDialog"

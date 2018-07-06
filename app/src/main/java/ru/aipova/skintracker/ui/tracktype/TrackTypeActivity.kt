@@ -7,7 +7,9 @@ import ru.aipova.skintracker.ui.SingleFragmentActivity
 
 class TrackTypeActivity : SingleFragmentActivity() {
     override fun createFragment(): Fragment {
-        return TrackTypeFragment.newInstance()
+        val fragment = TrackTypeFragment.newInstance()
+        TrackTypePresenter(fragment)
+        return fragment
     }
 
     companion object {
