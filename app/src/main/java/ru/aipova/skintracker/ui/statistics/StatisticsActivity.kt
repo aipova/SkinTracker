@@ -1,11 +1,10 @@
 package ru.aipova.skintracker.ui.statistics
 
-import android.support.v4.app.Fragment
 import ru.aipova.skintracker.ui.SingleFragmentActivity
 import ru.aipova.skintracker.ui.track.TrackActivity
 import ru.aipova.skintracker.ui.tracktype.TrackTypeActivity
 
-class StatisticsActivity : SingleFragmentActivity(),
+class StatisticsActivity : SingleFragmentActivity<StatisticsFragment>(),
     StatisticsFragment.Callbacks {
     override fun onCreateNewTrack() {
         startActivity(TrackActivity.createIntent(this))
@@ -15,7 +14,11 @@ class StatisticsActivity : SingleFragmentActivity(),
         startActivity(TrackTypeActivity.createIntent(this))
     }
 
-    override fun createFragment(): Fragment {
+    override fun createFragment(): StatisticsFragment {
         return StatisticsFragment.newInstance()
+    }
+
+    override fun setupPresenter(fragment: StatisticsFragment) {
+        //TODO no presenter yet
     }
 }

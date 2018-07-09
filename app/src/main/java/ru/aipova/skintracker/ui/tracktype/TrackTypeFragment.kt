@@ -39,6 +39,11 @@ class TrackTypeFragment : Fragment(), TrackTypeContract.View, TrackTypeCreateDia
         setHasOptionsMenu(true)
     }
 
+    override fun onDestroy() {
+        super.onDestroy()
+        presenter.stop()
+    }
+
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -60,6 +65,16 @@ class TrackTypeFragment : Fragment(), TrackTypeContract.View, TrackTypeCreateDia
 
     override fun initTrackTypesView(trackTypes: RealmResults<TrackType>) {
         trackTypeRecycler.adapter = TrackTypeAdapter(trackTypes, trackTypeCallbacks)
+    }
+
+    override fun showNoTrackTypesView() {
+        noTrackTypesLayout.visibility = View.VISIBLE
+        trackTypeRecycler.visibility = View.GONE
+    }
+
+    override fun showTrackTypesView() {
+        noTrackTypesLayout.visibility = View.GONE
+        trackTypeRecycler.visibility = View.VISIBLE
     }
 
     override fun showTrackTypeCreatedMsg(trackTypeName: String) {

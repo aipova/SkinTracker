@@ -2,12 +2,15 @@ package ru.aipova.skintracker.ui.track
 
 import android.content.Context
 import android.content.Intent
-import android.support.v4.app.Fragment
 import ru.aipova.skintracker.ui.SingleFragmentActivity
 
-class TrackActivity : SingleFragmentActivity() {
-    override fun createFragment(): Fragment {
+class TrackActivity : SingleFragmentActivity<TrackFragment>() {
+    override fun createFragment(): TrackFragment {
         return TrackFragment.newInstance()
+    }
+
+    override fun setupPresenter(fragment: TrackFragment) {
+//         TODO no presenter yet
     }
 
     companion object {

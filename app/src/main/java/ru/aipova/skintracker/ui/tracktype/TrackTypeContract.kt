@@ -11,11 +11,14 @@ interface TrackTypeContract {
         fun initTrackTypesView(trackTypes: RealmResults<TrackType>)
         fun showTrackTypeCreatedMsg(trackTypeName: String)
         fun showCannotCreateTrackTypeMsg()
+        fun showNoTrackTypesView()
+        fun showTrackTypesView()
     }
 
     interface Presenter: BasePresenter {
         fun createNewTrackType(trackTypeName: String)
         fun editTrackTypeName(trackTypeUid: String, trackTypeName: String)
         fun removeTrackType(trackTypeUid: String)
+        fun stop()
     }
 }

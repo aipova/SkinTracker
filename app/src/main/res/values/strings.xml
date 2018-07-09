@@ -11,4 +11,5 @@
     <string name="msg_remove_track_type">Are you sure you want to remove Track Type \"%1$s\"?</string>
     <string name="msg_track_type_created">Track Type \"%1$s\" was created</string>
     <string name="err_cannot_create_track_type">Cannot create Track Type, please try later</string>
+    <string name="msg_no_track_types">You have no Track Types</string>
 </resources>

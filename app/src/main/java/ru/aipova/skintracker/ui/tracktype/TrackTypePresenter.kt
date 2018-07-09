@@ -1,5 +1,7 @@
 package ru.aipova.skintracker.ui.tracktype
 
+import io.realm.RealmResults
+import ru.aipova.skintracker.model.TrackType
 import ru.aipova.skintracker.model.source.TrackTypeRepository
 
 class TrackTypePresenter(
@@ -9,9 +11,24 @@ class TrackTypePresenter(
     init {
         trackTypeView.presenter = this
     }
+    private lateinit var trackTypes: RealmResults<TrackType>
 
     override fun start() {
-        trackTypeView.initTrackTypesView(trackTypeRepository.getAllTrackTypesAsync())
+        trackTypes = trackTypeRepository.getAllTrackTypesAsync()
+        trackTypes.addChangeListener { results ->
+            if (results.isLoaded && results.isValid) {
+                if (results.isEmpty()) {
+                    trackTypeView.showNoTrackTypesView()
+                } else {
+                    trackTypeView.showTrackTypesView()
+                }
+            }
+        }
+        trackTypeView.initTrackTypesView(trackTypes)
+    }
+
+    override fun stop() {
+        trackTypes.removeAllChangeListeners()
     }
 
     override fun removeTrackType(trackTypeUid: String) {
