@@ -1,4 +1,4 @@
-package ru.aipova.skintracker.ui.tracktype
+package ru.aipova.skintracker.ui.tracktype.dialog
 
 import android.os.Bundle
 import ru.aipova.skintracker.R
@@ -12,7 +12,7 @@ class TrackTypeEditDialog : TrackTypeDialog() {
 
     override fun onOkButtonClick(trackTypeName: String) {
         parentFragment.let {
-            if (it is TrackTypeEditDialog.Callbacks) {
+            if (it is Callbacks) {
                 it.onEditTrackType(getTrackType(), trackTypeName)
             }
         }
@@ -33,7 +33,8 @@ class TrackTypeEditDialog : TrackTypeDialog() {
         private const val TRACK_TYPE = "trackType"
         fun newInstance(trackType: TrackType): TrackTypeEditDialog {
             val bundle = Bundle().apply { putSerializable(TRACK_TYPE, trackType)}
-            return TrackTypeEditDialog().apply { arguments = bundle }
+            return TrackTypeEditDialog()
+                .apply { arguments = bundle }
         }
     }
 

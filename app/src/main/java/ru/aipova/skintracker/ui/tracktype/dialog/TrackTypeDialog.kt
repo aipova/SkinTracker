@@ -1,4 +1,4 @@
-package ru.aipova.skintracker.ui.tracktype
+package ru.aipova.skintracker.ui.tracktype.dialog
 
 import android.app.Dialog
 import android.content.Context

@@ -6,6 +6,7 @@ import io.realm.RealmConfiguration
 import ru.aipova.skintracker.model.TrackType
 import ru.aipova.skintracker.model.TrackType.Companion.SKIN_QUALITY_TRACK_NAME
 import ru.aipova.skintracker.model.TrackType.Companion.SKIN_QUALITY_TRACK_TYPE_UID
+import ru.aipova.skintracker.model.source.TrackTypeRepository
 
 class SkinTrackerApp : Application() {
     override fun onCreate() {
@@ -14,12 +15,14 @@ class SkinTrackerApp : Application() {
         Realm.init(this)
         Realm.setDefaultConfiguration(RealmConfiguration.Builder().deleteRealmIfMigrationNeeded().build())
 
-        RealmManager.realm = Realm.getDefaultInstance()
-
+        InjectionStub.realm = Realm.getDefaultInstance()
+        InjectionStub.trackTypeRepository = TrackTypeRepository(InjectionStub.realm)
 //        TODO set realm initial data
-        getSkinQualityTrackType()
+        setSkinQualityTrackType()
+
+
     }
-    private fun getSkinQualityTrackType() {
+    private fun setSkinQualityTrackType() {
         Realm.getDefaultInstance().use { r ->
             r.executeTransaction { realm ->
                 realm.insertOrUpdate(skinQualityTrackType)

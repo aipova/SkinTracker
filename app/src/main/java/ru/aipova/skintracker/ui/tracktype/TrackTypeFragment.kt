@@ -13,6 +13,8 @@ import io.realm.RealmResults
 import kotlinx.android.synthetic.main.track_type_fragment.*
 import ru.aipova.skintracker.R
 import ru.aipova.skintracker.model.TrackType
+import ru.aipova.skintracker.ui.tracktype.dialog.TrackTypeCreateDialog
+import ru.aipova.skintracker.ui.tracktype.dialog.TrackTypeEditDialog
 
 class TrackTypeFragment : Fragment(), TrackTypeContract.View, TrackTypeCreateDialog.Callbacks, TrackTypeEditDialog.Callbacks {
     override lateinit var presenter: TrackTypeContract.Presenter

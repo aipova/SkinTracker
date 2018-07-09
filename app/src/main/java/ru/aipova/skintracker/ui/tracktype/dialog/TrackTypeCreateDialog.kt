@@ -1,4 +1,4 @@
-package ru.aipova.skintracker.ui.tracktype
+package ru.aipova.skintracker.ui.tracktype.dialog
 
 import ru.aipova.skintracker.R
 
@@ -10,7 +10,7 @@ class TrackTypeCreateDialog : TrackTypeDialog() {
 
     override fun onOkButtonClick(trackTypeName: String) {
         parentFragment.let {
-            if (it is TrackTypeCreateDialog.Callbacks) {
+            if (it is Callbacks) {
                 it.onCreateNewTrackType(trackTypeName)
             }
         }
