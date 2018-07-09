@@ -13,22 +13,17 @@ class SkinTrackerApp : Application() {
         super.onCreate()
 
         Realm.init(this)
-        Realm.setDefaultConfiguration(RealmConfiguration.Builder().deleteRealmIfMigrationNeeded().build())
+        Realm.setDefaultConfiguration(getRealmConfiguration())
 
         InjectionStub.realm = Realm.getDefaultInstance()
         InjectionStub.trackTypeRepository = TrackTypeRepository(InjectionStub.realm)
-//        TODO set realm initial data
-        setSkinQualityTrackType()
-
-
     }
-    private fun setSkinQualityTrackType() {
-        Realm.getDefaultInstance().use { r ->
-            r.executeTransaction { realm ->
-                realm.insertOrUpdate(skinQualityTrackType)
-            }
-        }
-    }
+
+    private fun getRealmConfiguration() =
+        RealmConfiguration.Builder()
+            .initialData { realm -> realm.insertOrUpdate(skinQualityTrackType) }
+            .deleteRealmIfMigrationNeeded()
+            .build()
 
     companion object {
         var skinQualityTrackType: TrackType = TrackType().apply {
