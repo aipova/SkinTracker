@@ -62,8 +62,12 @@ class TrackTypeFragment : Fragment(), TrackTypeContract.View, TrackTypeCreateDia
         trackTypeRecycler.adapter = TrackTypeAdapter(trackTypes, trackTypeCallbacks)
     }
 
-    override fun showTrackTypeCreatedNotification(trackTypeName: String) {
+    override fun showTrackTypeCreatedMsg(trackTypeName: String) {
         Toast.makeText(activity, getString(R.string.msg_track_type_created, trackTypeName), Toast.LENGTH_LONG).show()
+    }
+
+    override fun showCannotCreateTrackTypeMsg() {
+        Toast.makeText(activity, getString(R.string.err_cannot_create_track_type), Toast.LENGTH_LONG).show()
     }
 
     private val trackTypeCallbacks = object : TrackTypeAdapter.Callbacks {

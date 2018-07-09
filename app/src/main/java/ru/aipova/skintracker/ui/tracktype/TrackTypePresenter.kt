@@ -2,7 +2,10 @@ package ru.aipova.skintracker.ui.tracktype
 
 import ru.aipova.skintracker.model.source.TrackTypeRepository
 
-class TrackTypePresenter(private val trackTypeView: TrackTypeContract.View, private val trackTypeRepository: TrackTypeRepository) : TrackTypeContract.Presenter {
+class TrackTypePresenter(
+    private val trackTypeView: TrackTypeContract.View,
+    private val trackTypeRepository: TrackTypeRepository
+) : TrackTypeContract.Presenter {
     init {
         trackTypeView.presenter = this
     }
@@ -20,7 +23,15 @@ class TrackTypePresenter(private val trackTypeView: TrackTypeContract.View, priv
     }
 
     override fun createNewTrackType(trackTypeName: String) {
-        trackTypeRepository.createNewTrackType(trackTypeName)
-        trackTypeView.showTrackTypeCreatedNotification(trackTypeName)
+        trackTypeRepository.createNewTrackType(trackTypeName,
+            object : TrackTypeRepository.CreateTrackTypeCallback {
+                override fun onTrackTypeCreated() {
+                    trackTypeView.showTrackTypeCreatedMsg(trackTypeName)
+                }
+
+                override fun onError() {
+                    trackTypeView.showCannotCreateTrackTypeMsg()
+                }
+            })
     }
 }

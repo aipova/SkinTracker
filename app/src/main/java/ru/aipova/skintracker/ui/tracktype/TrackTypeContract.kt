@@ -9,7 +9,8 @@ interface TrackTypeContract {
     interface View: BaseView<Presenter> {
         val isActive: Boolean
         fun initTrackTypesView(trackTypes: RealmResults<TrackType>)
-        fun showTrackTypeCreatedNotification(trackTypeName: String)
+        fun showTrackTypeCreatedMsg(trackTypeName: String)
+        fun showCannotCreateTrackTypeMsg()
     }
 
     interface Presenter: BasePresenter {
