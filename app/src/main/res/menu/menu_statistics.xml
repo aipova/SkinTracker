@@ -7,4 +7,10 @@
         android:orderInCategory="100"
         android:title="@string/action_settings"
         app:showAsAction="never"/>
+
+    <item
+        android:id="@+id/action_diary"
+        android:orderInCategory="90"
+        android:title="@string/action_diary"
+        app:showAsAction="never"/>
 </menu>

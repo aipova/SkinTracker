@@ -13,6 +13,7 @@ class StatisticsFragment : Fragment() {
     interface Callbacks {
         fun onCreateNewTrack()
         fun onShowTrackTypes()
+        fun onShowDiary()
     }
 
     override fun onAttach(context: Context?) {
@@ -40,6 +41,10 @@ class StatisticsFragment : Fragment() {
         when (item.itemId) {
             R.id.action_settings -> {
                 callbacks?.onShowTrackTypes()
+                true
+            }
+            R.id.action_diary -> {
+                callbacks?.onShowDiary()
                 true
             }
             else -> super.onOptionsItemSelected(item)
