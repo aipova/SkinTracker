@@ -13,4 +13,8 @@
     <string name="err_cannot_create_track_type">Cannot create Track Type, please try later</string>
     <string name="msg_no_track_types">You have no Track Types</string>
     <string name="action_diary">Diary</string>
+    <string name="navigation_drawer_open">Open navigation drawer</string>
+    <string name="navigation_drawer_close">Close navigation drawer</string>
+    <string name="menu_track_type_settings">Track Type Settings</string>
+    <string name="menu_statistics">Statistics</string>
 </resources>
