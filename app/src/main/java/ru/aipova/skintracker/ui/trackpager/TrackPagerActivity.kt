@@ -1,6 +1,6 @@
 package ru.aipova.skintracker.ui.trackpager
 
-import android.content.Context
+import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
 import android.support.design.widget.NavigationView
@@ -14,16 +14,23 @@ import android.view.MenuItem
 import kotlinx.android.synthetic.main.track_pager_activity.*
 import kotlinx.android.synthetic.main.track_pager_content.*
 import ru.aipova.skintracker.R
+import ru.aipova.skintracker.ui.statistics.StatisticsActivity
+import ru.aipova.skintracker.ui.track.TrackActivity
+import ru.aipova.skintracker.ui.tracktype.TrackTypeActivity
+import ru.aipova.skintracker.utils.TransitionUtils
 
 class TrackPagerActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelectedListener {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        TransitionUtils.enableTransitions(window)
         setContentView(R.layout.track_pager_activity)
         setSupportActionBar(toolbar)
 
         setupNavigation()
         setupTrackPager()
+
+        trackAddFab.setOnClickListener { startActivity(TrackActivity.createIntent(this)) }
     }
 
     private fun setupNavigation() {
@@ -56,18 +63,21 @@ class TrackPagerActivity : AppCompatActivity(), NavigationView.OnNavigationItemS
 
     override fun onNavigationItemSelected(item: MenuItem): Boolean {
         when (item.itemId) {
-
             R.id.nav_statistics -> {
-
+                startActivityWithTransition(StatisticsActivity::class.java)
             }
 
             R.id.nav_track_type_settings -> {
-
+                startActivityWithTransition(TrackTypeActivity::class.java)
             }
         }
 
         drawer_layout.closeDrawer(GravityCompat.START)
         return true
+    }
+
+    private fun <T : Activity> startActivityWithTransition(activityClass: Class<T>) {
+        startActivity(Intent(this, activityClass), TransitionUtils.makeTransition(this))
     }
 
     private val pageChangeListener = object : ViewPager.OnPageChangeListener {
@@ -103,11 +113,5 @@ class TrackPagerActivity : AppCompatActivity(), NavigationView.OnNavigationItemS
 
     private fun setCurrentTrack() {
         trackPager.currentItem = TimeUtils.getPositionForDate(TimeUtils.today())
-    }
-
-    companion object {
-        fun createIntent(context: Context): Intent {
-            return Intent(context, TrackPagerActivity::class.java)
-        }
     }
 }

@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.support.v4.app.Fragment
 import android.support.v7.app.AppCompatActivity
 import ru.aipova.skintracker.R
+import ru.aipova.skintracker.utils.TransitionUtils
 
 abstract class SingleFragmentActivity<T : Fragment> : AppCompatActivity() {
 
@@ -12,6 +13,7 @@ abstract class SingleFragmentActivity<T : Fragment> : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        TransitionUtils.enableTransitions(window)
         setContentView(R.layout.single_fragment_activity)
 
         val fm = supportFragmentManager
