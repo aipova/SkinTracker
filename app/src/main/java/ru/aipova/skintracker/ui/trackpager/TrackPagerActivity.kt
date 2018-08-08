@@ -5,8 +5,9 @@ import android.content.Intent
 import android.os.Bundle
 import android.support.design.widget.NavigationView
 import android.support.v4.app.Fragment
-import android.support.v4.app.FragmentPagerAdapter
+import android.support.v4.app.FragmentStatePagerAdapter
 import android.support.v4.view.GravityCompat
+import android.support.v4.view.PagerAdapter
 import android.support.v4.view.ViewPager
 import android.support.v7.app.ActionBarDrawerToggle
 import android.support.v7.app.AppCompatActivity
@@ -30,7 +31,28 @@ class TrackPagerActivity : AppCompatActivity(), NavigationView.OnNavigationItemS
         setupNavigation()
         setupTrackPager()
 
-        trackAddFab.setOnClickListener { startActivity(TrackActivity.createIntent(this)) }
+        setupEditButton()
+    }
+
+    private fun setupEditButton() {
+        trackAddFab.setOnClickListener {
+            startActivityForResult(
+                TrackActivity.createIntent(
+                    this,
+                    getCurrentDiaryDate()
+                ), EDIT_REQUEST
+            )
+        }
+    }
+
+    private fun getCurrentDiaryDate() = TimeUtils.getDateForPosition(trackPager.currentItem)
+
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        if (requestCode == EDIT_REQUEST && resultCode == Activity.RESULT_OK) {
+            viewPagerAdapter.notifyDataSetChanged()
+
+        }
     }
 
     private fun setupNavigation() {
@@ -96,9 +118,13 @@ class TrackPagerActivity : AppCompatActivity(), NavigationView.OnNavigationItemS
         }
     }
 
-    private val viewPagerAdapter = object : FragmentPagerAdapter(supportFragmentManager) {
+    private val viewPagerAdapter = object : FragmentStatePagerAdapter(supportFragmentManager) {
         override fun getItem(position: Int): Fragment {
             return TrackPagerFragment.getInstance(TimeUtils.getDateForPosition(position))
+        }
+
+        override fun getItemPosition(`object`: Any): Int {
+            return PagerAdapter.POSITION_NONE
         }
 
         override fun getCount(): Int {
@@ -113,5 +139,9 @@ class TrackPagerActivity : AppCompatActivity(), NavigationView.OnNavigationItemS
 
     private fun setCurrentTrack() {
         trackPager.currentItem = TimeUtils.getPositionForDate(TimeUtils.today())
+    }
+
+    companion object {
+        const val EDIT_REQUEST = 0
     }
 }

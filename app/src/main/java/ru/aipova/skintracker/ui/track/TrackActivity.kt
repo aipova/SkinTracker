@@ -3,10 +3,11 @@ package ru.aipova.skintracker.ui.track
 import android.content.Context
 import android.content.Intent
 import ru.aipova.skintracker.ui.SingleFragmentActivity
+import java.util.*
 
 class TrackActivity : SingleFragmentActivity<TrackFragment>() {
     override fun createFragment(): TrackFragment {
-        return TrackFragment.newInstance()
+        return TrackFragment.newInstance(intent.getSerializableExtra(DATE_PARAMETER) as Date)
     }
 
     override fun setupPresenter(fragment: TrackFragment) {
@@ -14,8 +15,9 @@ class TrackActivity : SingleFragmentActivity<TrackFragment>() {
     }
 
     companion object {
-        fun createIntent(context: Context): Intent {
-            return Intent(context, TrackActivity::class.java)
+        private const val DATE_PARAMETER = "date"
+        fun createIntent(context: Context, date: Date): Intent {
+            return Intent(context, TrackActivity::class.java).putExtra(DATE_PARAMETER, date)
         }
     }
 }

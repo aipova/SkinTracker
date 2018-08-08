@@ -1,5 +1,6 @@
 package ru.aipova.skintracker.ui.track
 
+import android.app.Activity.RESULT_OK
 import android.os.Bundle
 import android.support.v4.app.Fragment
 import android.support.v7.app.AppCompatActivity
@@ -22,9 +23,12 @@ class TrackFragment : Fragment() {
     private lateinit var trackTypes: OrderedRealmCollectionSnapshot<TrackType>
     private lateinit var realm: Realm
     private lateinit var layout: LinearLayout
+    private lateinit var currentDate: Date
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        currentDate = arguments?.getSerializable(DATE_PARAMETER) as? Date ?: Date()
+        truncateToDay(currentDate)
         setHasOptionsMenu(true)
         retainInstance = true
         realm = Realm.getDefaultInstance()
@@ -91,6 +95,7 @@ class TrackFragment : Fragment() {
         R.id.action_save_track -> {
             saveData()
             Toast.makeText(activity, "Track Created", Toast.LENGTH_LONG).show()
+            activity?.setResult(RESULT_OK)
             activity?.finish()
             true
         }
@@ -103,12 +108,12 @@ class TrackFragment : Fragment() {
             val todayTracks = mutableListOf<Track>()
 
             realm.executeTransaction { realm ->
-                val existingTracks = realm.where<Track>().equalTo(TrackFields.DATE, today()).findAll()
+                val existingTracks = realm.where<Track>().equalTo(TrackFields.DATE, currentDate).findAll()
                 if (child is SeekBar) {
                     val track = Track().apply {
                         trackType = trackTypes[child.id]
                         value = child.progress.toLong()
-                        date = today()
+                        date = currentDate
                     }
                     val existingTrack = existingTracks.find { it.trackType == track.trackType }
                     existingTrack?.let {
@@ -120,8 +125,10 @@ class TrackFragment : Fragment() {
         }
     }
 
-    private fun today(): Date? {
+
+    private fun truncateToDay(date: Date): Date {
         return Calendar.getInstance().apply {
+            time = date
             set(Calendar.HOUR_OF_DAY, 0)
             set(Calendar.MINUTE, 0)
             set(Calendar.SECOND, 0)
@@ -130,10 +137,12 @@ class TrackFragment : Fragment() {
     }
 
     companion object {
-        const val SEEK_BAR_VALUES = "seek_bar"
-        const val SEEK_BAR_MAX = 10
-        fun newInstance(): TrackFragment {
-            return TrackFragment()
+        private const val SEEK_BAR_VALUES = "seek_bar"
+        private const val DATE_PARAMETER = "date"
+        private const val SEEK_BAR_MAX = 10
+        fun newInstance(date: Date): TrackFragment {
+            val bundle = Bundle().apply { putSerializable(DATE_PARAMETER, date) }
+            return TrackFragment().apply { arguments = bundle }
         }
     }
 }
