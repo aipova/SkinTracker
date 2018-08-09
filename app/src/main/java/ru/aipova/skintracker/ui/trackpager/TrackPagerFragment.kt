@@ -6,20 +6,22 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
-import io.realm.RealmResults
+import io.realm.RealmList
 import kotlinx.android.synthetic.main.track_pager_fragment.*
 import ru.aipova.skintracker.InjectionStub.trackRepository
 import ru.aipova.skintracker.R
 import ru.aipova.skintracker.model.Track
+import ru.aipova.skintracker.model.TrackValue
 import java.util.*
 
 class TrackPagerFragment : Fragment() {
-    private lateinit var tracks: RealmResults<Track>
+    private lateinit var tracks: RealmList<TrackValue>
+    private var track: Track? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        tracks = trackRepository.getTracksByDate(getTrackDate())
-
+        track = trackRepository.getTrackByDate(getTrackDate())
+        tracks = track?.values ?: RealmList()
     }
 
     override fun onCreateView(
@@ -32,6 +34,7 @@ class TrackPagerFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         dateTxt.text = getTrackDate().toString()
+        noteTxt.text = track?.note
         for (track in tracks) {
             val tv = TextView(activity)
             tv.text = "${track.trackType?.name} - ${track.value}"

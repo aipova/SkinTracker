@@ -12,10 +12,11 @@ import android.widget.Toast
 import io.realm.OrderedRealmCollectionSnapshot
 import io.realm.Realm
 import io.realm.kotlin.where
+import ru.aipova.skintracker.InjectionStub
 import ru.aipova.skintracker.R
 import ru.aipova.skintracker.model.Track
-import ru.aipova.skintracker.model.TrackFields
 import ru.aipova.skintracker.model.TrackType
+import ru.aipova.skintracker.model.TrackValue
 import java.util.*
 
 class TrackFragment : Fragment() {
@@ -105,23 +106,33 @@ class TrackFragment : Fragment() {
     private fun saveData() {
         for (i in 0..layout.childCount) {
             val child = layout.getChildAt(i)
-            val todayTracks = mutableListOf<Track>()
+            val todayTracks = mutableListOf<TrackValue>()
 
             realm.executeTransaction { realm ->
-                val existingTracks = realm.where<Track>().equalTo(TrackFields.DATE, currentDate).findAll()
+                val currentTrack = getOrCreateCurrentTrack(realm)
+                val existingTrackValues = currentTrack.values
+
                 if (child is SeekBar) {
-                    val track = Track().apply {
+                    val trackValue = TrackValue().apply {
                         trackType = trackTypes[child.id]
                         value = child.progress.toLong()
-                        date = currentDate
                     }
-                    val existingTrack = existingTracks.find { it.trackType == track.trackType }
-                    existingTrack?.let {
-                        it.value = track.value
-                    } ?: todayTracks.add(track)
+                    val existingTrackValue = existingTrackValues.find { it.trackType == trackValue.trackType }
+                    existingTrackValue?.let {
+                        it.value = trackValue.value
+                    } ?: todayTracks.add(trackValue)
                 }
                 realm.insertOrUpdate(todayTracks)
+                currentTrack.values.addAll(todayTracks)
+                realm.insertOrUpdate(currentTrack)
             }
+        }
+    }
+
+    private fun getOrCreateCurrentTrack(realm: Realm): Track {
+        return InjectionStub.trackRepository.getTrackByDate(currentDate) ?: Track().apply {
+            date = currentDate
+            note = "note"
         }
     }
 

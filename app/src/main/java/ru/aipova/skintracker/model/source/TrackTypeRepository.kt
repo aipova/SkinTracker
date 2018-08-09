@@ -3,10 +3,10 @@ package ru.aipova.skintracker.model.source
 import io.realm.Realm
 import io.realm.RealmResults
 import io.realm.kotlin.where
-import ru.aipova.skintracker.model.Track
-import ru.aipova.skintracker.model.TrackFields
 import ru.aipova.skintracker.model.TrackType
 import ru.aipova.skintracker.model.TrackTypeFields
+import ru.aipova.skintracker.model.TrackValue
+import ru.aipova.skintracker.model.TrackValueFields
 
 class TrackTypeRepository(private val uiRealm: Realm) {
 
@@ -18,7 +18,7 @@ class TrackTypeRepository(private val uiRealm: Realm) {
     fun removeTrackType(trackTypeUid: String) {
         uiRealm.executeTransactionAsync { bgRealm ->
             val trackType = bgRealm.where<TrackType>().equalTo(TrackTypeFields.UUID, trackTypeUid).findFirst()
-            val tracks = bgRealm.where<Track>().equalTo(TrackFields.TRACK_TYPE.UUID, trackTypeUid).findAll()
+            val tracks = bgRealm.where<TrackValue>().equalTo(TrackValueFields.TRACK_TYPE.UUID, trackTypeUid).findAll()
             tracks.deleteAllFromRealm()
             trackType?.deleteFromRealm()
         }

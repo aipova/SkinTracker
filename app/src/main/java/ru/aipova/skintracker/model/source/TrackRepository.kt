@@ -38,6 +38,10 @@ class TrackRepository(private val uiRealm: Realm) {
         return uiRealm.where<Track>().equalTo(TrackFields.DATE, date).findAll()
     }
 
+    fun getTrackByDate(date: Date): Track? {
+        return uiRealm.where<Track>().equalTo(TrackFields.DATE, date).findFirst()
+    }
+
     fun getAllTracks(): RealmResults<Track> {
         return uiRealm.where<Track>().sort(TrackFields.DATE).findAll()
     }
