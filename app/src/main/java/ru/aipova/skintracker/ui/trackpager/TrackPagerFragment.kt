@@ -6,12 +6,14 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
+import com.squareup.picasso.Picasso
 import io.realm.RealmList
 import kotlinx.android.synthetic.main.track_pager_fragment.*
 import ru.aipova.skintracker.InjectionStub.trackRepository
 import ru.aipova.skintracker.R
 import ru.aipova.skintracker.model.Track
 import ru.aipova.skintracker.model.TrackValue
+import ru.aipova.skintracker.utils.PhotoUtils
 import java.util.*
 
 class TrackPagerFragment : Fragment() {
@@ -33,13 +35,21 @@ class TrackPagerFragment : Fragment() {
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        dateTxt.text = getTrackDate().toString()
         noteTxt.text = track?.note
+        track?.date?.let { trackDate ->
+            loadPhoto(trackDate)
+        }
         for (track in tracks) {
             val tv = TextView(activity)
             tv.text = "${track.trackType?.name} - ${track.value}"
             layout.addView(tv)
         }
+    }
+
+    private fun loadPhoto(trackDate: Date) {
+        val file = PhotoUtils.constructPhotoFile(trackDate, activity!!)
+        Picasso.get().invalidate(file)
+        Picasso.get().load(file).into(trackPhoto)
     }
 
     private fun getTrackDate() = arguments?.getSerializable(DATE) as Date

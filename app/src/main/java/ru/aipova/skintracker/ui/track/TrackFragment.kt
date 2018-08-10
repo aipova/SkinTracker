@@ -1,14 +1,18 @@
 package ru.aipova.skintracker.ui.track
 
 import android.app.Activity.RESULT_OK
+import android.content.Intent
 import android.os.Bundle
+import android.provider.MediaStore
 import android.support.v4.app.Fragment
+import android.support.v4.content.FileProvider
 import android.support.v7.app.AppCompatActivity
 import android.view.*
 import android.widget.LinearLayout
 import android.widget.SeekBar
 import android.widget.TextView
 import android.widget.Toast
+import com.squareup.picasso.Picasso
 import io.realm.OrderedRealmCollectionSnapshot
 import io.realm.Realm
 import io.realm.RealmList
@@ -19,7 +23,9 @@ import ru.aipova.skintracker.R
 import ru.aipova.skintracker.model.Track
 import ru.aipova.skintracker.model.TrackType
 import ru.aipova.skintracker.model.TrackValue
+import ru.aipova.skintracker.utils.PhotoUtils
 import java.util.*
+
 
 class TrackFragment : Fragment() {
 
@@ -82,6 +88,22 @@ class TrackFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         noteTxt.setText(existingTrack?.note)
+        takePhotoBtn.setOnClickListener {
+            val takePhotoIntent = Intent(MediaStore.ACTION_IMAGE_CAPTURE)
+            if (takePhotoIntent.resolveActivity(activity!!.packageManager) != null) {
+                val photoFile = PhotoUtils.constructPhotoFile(currentDate, activity!!)
+                val photoUri = FileProvider.getUriForFile(activity!!, "ru.aipova.skintracker.fileprovider", photoFile)
+                takePhotoIntent.putExtra(MediaStore.EXTRA_OUTPUT, photoUri)
+                startActivityForResult(takePhotoIntent, REQUEST_PHOTO)
+            }
+        }
+        loadPhoto()
+    }
+
+    private fun loadPhoto() {
+        val file = PhotoUtils.constructPhotoFile(currentDate, activity!!)
+        Picasso.get().invalidate(file)
+        Picasso.get().load(file).into(photoView)
     }
 
     override fun onSaveInstanceState(outState: Bundle) {
@@ -104,6 +126,12 @@ class TrackFragment : Fragment() {
             setDisplayHomeAsUpEnabled(true)
             setHomeAsUpIndicator(R.drawable.ic_close)
             title = getString(R.string.title_new_track)
+        }
+    }
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        if (requestCode == REQUEST_PHOTO && resultCode == RESULT_OK) {
+            loadPhoto()
         }
     }
 
@@ -169,6 +197,7 @@ class TrackFragment : Fragment() {
         private const val SEEK_BAR_VALUES = "seek_bar"
         private const val DATE_PARAMETER = "date"
         private const val SEEK_BAR_MAX = 10
+        private const val REQUEST_PHOTO = 1
         fun newInstance(date: Date): TrackFragment {
             val bundle = Bundle().apply { putSerializable(DATE_PARAMETER, date) }
             return TrackFragment().apply { arguments = bundle }
