@@ -11,7 +11,9 @@ import android.widget.TextView
 import android.widget.Toast
 import io.realm.OrderedRealmCollectionSnapshot
 import io.realm.Realm
+import io.realm.RealmList
 import io.realm.kotlin.where
+import kotlinx.android.synthetic.main.track_fragment.*
 import ru.aipova.skintracker.InjectionStub
 import ru.aipova.skintracker.R
 import ru.aipova.skintracker.model.Track
@@ -25,6 +27,7 @@ class TrackFragment : Fragment() {
     private lateinit var realm: Realm
     private lateinit var layout: LinearLayout
     private lateinit var currentDate: Date
+    private var existingTrack:Track? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -47,11 +50,13 @@ class TrackFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View? {
         val view = inflater.inflate(R.layout.track_fragment, container, false)
-        layout = view.findViewById(R.id.trackLayout)
+        layout = view.findViewById(R.id.trackValuesLayout)
         val savedSeekBarValues =
             if (savedInstanceState != null) savedInstanceState.getSerializable(SEEK_BAR_VALUES) as HashMap<Int, Int>
             else hashMapOf()
 
+        existingTrack = getExistingTrack()
+        val existingTracks = existingTrack?.values ?: RealmList()
         for ((index, trackType) in trackTypes.withIndex()) {
             val tv = TextView(activity)
             tv.text = trackType.name
@@ -60,13 +65,23 @@ class TrackFragment : Fragment() {
             val sb = SeekBar(activity).apply {
                 id = index
                 max = SEEK_BAR_MAX
+                val existingTrackValue = existingTracks.find { it.trackType == trackType }
+                existingTrackValue?.let {
+                    progress = it.value?.toInt() ?: 0
+                }
                 savedSeekBarValues[index]?.let {
                     progress = it
                 }
             }
             layout.addView(sb)
         }
+
         return view
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        noteTxt.setText(existingTrack?.note)
     }
 
     override fun onSaveInstanceState(outState: Bundle) {
@@ -109,7 +124,7 @@ class TrackFragment : Fragment() {
             val todayTracks = mutableListOf<TrackValue>()
 
             realm.executeTransaction { realm ->
-                val currentTrack = getOrCreateCurrentTrack(realm)
+                val currentTrack = getOrCreateCurrentTrack()
                 val existingTrackValues = currentTrack.values
 
                 if (child is SeekBar) {
@@ -124,17 +139,20 @@ class TrackFragment : Fragment() {
                 }
                 realm.insertOrUpdate(todayTracks)
                 currentTrack.values.addAll(todayTracks)
+                currentTrack.note = noteTxt.text.toString()
                 realm.insertOrUpdate(currentTrack)
             }
         }
     }
 
-    private fun getOrCreateCurrentTrack(realm: Realm): Track {
-        return InjectionStub.trackRepository.getTrackByDate(currentDate) ?: Track().apply {
+    private fun getOrCreateCurrentTrack(): Track {
+        return existingTrack ?: Track().apply {
             date = currentDate
-            note = "note"
+
         }
     }
+
+    private fun getExistingTrack() = InjectionStub.trackRepository.getTrackByDate(currentDate)
 
 
     private fun truncateToDay(date: Date): Date {

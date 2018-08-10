@@ -7,4 +7,21 @@
     android:layout_height="match_parent"
     android:layout_margin="16dp"
     android:orientation="vertical">
+
+    <LinearLayout
+        android:id="@+id/trackValuesLayout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="16dp"
+        android:orientation="vertical">
+    </LinearLayout>
+
+    <EditText
+        android:id="@+id/noteTxt"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:ems="10"
+        android:hint="@string/note_hint"
+        android:inputType="textMultiLine"/>
+
 </LinearLayout>

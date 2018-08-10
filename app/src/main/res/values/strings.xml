@@ -17,4 +17,5 @@
     <string name="navigation_drawer_close">Close navigation drawer</string>
     <string name="menu_track_type_settings">Track Type Settings</string>
     <string name="menu_statistics">Statistics</string>
+    <string name="note_hint">Note for this day</string>
 </resources>
