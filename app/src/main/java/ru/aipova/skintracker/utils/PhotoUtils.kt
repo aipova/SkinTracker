@@ -14,5 +14,10 @@ class PhotoUtils {
             val storageDir = context.getExternalFilesDir("photos")
             return File(storageDir, imageFileName)
         }
+
+        fun constructPhotoFile(imageFileName: String, context: Context): File {
+            val storageDir = context.getExternalFilesDir("photos")
+            return File(storageDir, imageFileName)
+        }
     }
 }

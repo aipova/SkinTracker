@@ -40,7 +40,12 @@ class TrackTypeRepository(private val uiRealm: Realm) {
         }, { callback.onTrackTypeCreated() }, { callback.onError() })
     }
 
-    fun getAllTrackTypesAsync(): RealmResults<TrackType> {
+    fun getEditableTrackTypesAsync(): RealmResults<TrackType> {
         return uiRealm.where<TrackType>().equalTo(TrackTypeFields.REMOVABLE, true).findAllAsync()
+    }
+
+    fun getTrackTypesSnapshot(): List<TrackType> {
+//        TODO add ordering
+        return uiRealm.where<TrackType>().findAll().createSnapshot()
     }
 }

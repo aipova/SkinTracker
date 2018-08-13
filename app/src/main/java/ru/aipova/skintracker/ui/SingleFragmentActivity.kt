@@ -12,8 +12,9 @@ abstract class SingleFragmentActivity<T : Fragment> : AppCompatActivity() {
     protected abstract fun setupPresenter(fragment: T)
 
     override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
         TransitionUtils.enableTransitions(window)
+        super.onCreate(savedInstanceState)
+
         setContentView(R.layout.single_fragment_activity)
 
         val fm = supportFragmentManager

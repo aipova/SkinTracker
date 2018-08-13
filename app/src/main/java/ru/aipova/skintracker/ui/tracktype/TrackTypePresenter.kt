@@ -14,7 +14,7 @@ class TrackTypePresenter(
     private lateinit var trackTypes: RealmResults<TrackType>
 
     override fun start() {
-        trackTypes = trackTypeRepository.getAllTrackTypesAsync()
+        trackTypes = trackTypeRepository.getEditableTrackTypesAsync()
         trackTypes.addChangeListener { results ->
             if (results.isLoaded && results.isValid) {
                 if (results.isEmpty()) {

@@ -8,46 +8,24 @@ import android.support.v4.app.Fragment
 import android.support.v4.content.FileProvider
 import android.support.v7.app.AppCompatActivity
 import android.view.*
-import android.widget.LinearLayout
 import android.widget.SeekBar
 import android.widget.TextView
 import android.widget.Toast
 import com.squareup.picasso.Picasso
-import io.realm.OrderedRealmCollectionSnapshot
-import io.realm.Realm
-import io.realm.RealmList
-import io.realm.kotlin.where
 import kotlinx.android.synthetic.main.track_fragment.*
-import ru.aipova.skintracker.InjectionStub
 import ru.aipova.skintracker.R
-import ru.aipova.skintracker.model.Track
-import ru.aipova.skintracker.model.TrackType
-import ru.aipova.skintracker.model.TrackValue
 import ru.aipova.skintracker.utils.PhotoUtils
-import java.util.*
 
 
-class TrackFragment : Fragment() {
+class TrackFragment : Fragment(), TrackContract.View {
 
-    private lateinit var trackTypes: OrderedRealmCollectionSnapshot<TrackType>
-    private lateinit var realm: Realm
-    private lateinit var layout: LinearLayout
-    private lateinit var currentDate: Date
-    private var existingTrack:Track? = null
+    override lateinit var presenter: TrackContract.Presenter
+    private var trackValueDataArray:Array<TrackValueData> = arrayOf()
+    private var seekBars: MutableList<SeekBar> = mutableListOf()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        currentDate = arguments?.getSerializable(DATE_PARAMETER) as? Date ?: Date()
-        truncateToDay(currentDate)
         setHasOptionsMenu(true)
-        retainInstance = true
-        realm = Realm.getDefaultInstance()
-        trackTypes = realm.where<TrackType>().findAll().createSnapshot()
-    }
-
-    override fun onDestroy() {
-        super.onDestroy()
-        realm.close()
     }
 
     override fun onCreateView(
@@ -55,69 +33,72 @@ class TrackFragment : Fragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        val view = inflater.inflate(R.layout.track_fragment, container, false)
-        layout = view.findViewById(R.id.trackValuesLayout)
-        val savedSeekBarValues =
-            if (savedInstanceState != null) savedInstanceState.getSerializable(SEEK_BAR_VALUES) as HashMap<Int, Int>
-            else hashMapOf()
-
-        existingTrack = getExistingTrack()
-        val existingTracks = existingTrack?.values ?: RealmList()
-        for ((index, trackType) in trackTypes.withIndex()) {
-            val tv = TextView(activity)
-            tv.text = trackType.name
-            layout.addView(tv)
-
-            val sb = SeekBar(activity).apply {
-                id = index
-                max = SEEK_BAR_MAX
-                val existingTrackValue = existingTracks.find { it.trackType == trackType }
-                existingTrackValue?.let {
-                    progress = it.value?.toInt() ?: 0
-                }
-                savedSeekBarValues[index]?.let {
-                    progress = it
-                }
-            }
-            layout.addView(sb)
-        }
-
-        return view
+        return inflater.inflate(R.layout.track_fragment, container, false)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
-        noteTxt.setText(existingTrack?.note)
+        presenter.start()
+        restoreSeekBarsProgress(savedInstanceState)
+        setupPhotoButton()
+        loadPhoto()
+    }
+
+    private fun setupPhotoButton() {
         takePhotoBtn.setOnClickListener {
             val takePhotoIntent = Intent(MediaStore.ACTION_IMAGE_CAPTURE)
             if (takePhotoIntent.resolveActivity(activity!!.packageManager) != null) {
-                val photoFile = PhotoUtils.constructPhotoFile(currentDate, activity!!)
-                val photoUri = FileProvider.getUriForFile(activity!!, "ru.aipova.skintracker.fileprovider", photoFile)
+                val photoFile = PhotoUtils.constructPhotoFile(presenter.getPhotoFileName(), activity!!)
+                val photoUri = FileProvider.getUriForFile(
+                    activity!!,
+                    "ru.aipova.skintracker.fileprovider",
+                    photoFile
+                )
                 takePhotoIntent.putExtra(MediaStore.EXTRA_OUTPUT, photoUri)
                 startActivityForResult(takePhotoIntent, REQUEST_PHOTO)
             }
         }
-        loadPhoto()
+    }
+
+    override fun initTrackValues(trackValueData: Array<TrackValueData>) {
+        trackValueDataArray = trackValueData
+        for ((index, trackData) in trackValueDataArray.withIndex()) {
+            val textView = TextView(activity).apply { text = trackData.name }
+            trackValuesLayout.addView(textView)
+
+            val seekBar = SeekBar(activity).apply {
+                id = index
+                max = SEEK_BAR_MAX
+                progress = trackData.value
+            }
+            trackValuesLayout.addView(seekBar)
+            seekBars.add(seekBar)
+        }
+    }
+
+    override fun setupNoteText(text: String) {
+        noteTxt.setText(text)
+    }
+
+    private fun restoreSeekBarsProgress(savedInstanceState: Bundle?) {
+        val savedSeekBarValues =
+            if (savedInstanceState != null) savedInstanceState.getSerializable(SEEK_BAR_VALUES) as? IntArray else null
+        savedSeekBarValues?.forEachIndexed { index, value ->
+            seekBars[index].progress = value
+        }
     }
 
     private fun loadPhoto() {
-        val file = PhotoUtils.constructPhotoFile(currentDate, activity!!)
+        val file = PhotoUtils.constructPhotoFile(presenter.getPhotoFileName(), activity!!)
         Picasso.get().invalidate(file)
         Picasso.get().load(file).into(photoView)
     }
 
     override fun onSaveInstanceState(outState: Bundle) {
         super.onSaveInstanceState(outState)
-
-        val states = hashMapOf<Int, Int>()
-        for (i in 0..layout.childCount) {
-            val child = layout.getChildAt(i)
-            if (child is SeekBar) {
-                states[child.id] = child.progress
-            }
-        }
-        outState.putSerializable(SEEK_BAR_VALUES, states)
+        outState.putSerializable(SEEK_BAR_VALUES, getTrackValues())
     }
+
+    private fun getTrackValues() = seekBars.map { it.progress }.toIntArray()
 
     override fun onCreateOptionsMenu(menu: Menu?, inflater: MenuInflater?) {
         super.onCreateOptionsMenu(menu, inflater)
@@ -138,69 +119,35 @@ class TrackFragment : Fragment() {
     override fun onOptionsItemSelected(item: MenuItem) = when (item.itemId) {
         R.id.action_save_track -> {
             saveData()
-            Toast.makeText(activity, "Track Created", Toast.LENGTH_LONG).show()
-            activity?.setResult(RESULT_OK)
-            activity?.finish()
             true
         }
         else -> super.onOptionsItemSelected(item)
     }
 
     private fun saveData() {
-        for (i in 0..layout.childCount) {
-            val child = layout.getChildAt(i)
-            val todayTracks = mutableListOf<TrackValue>()
-
-            realm.executeTransaction { realm ->
-                val currentTrack = getOrCreateCurrentTrack()
-                val existingTrackValues = currentTrack.values
-
-                if (child is SeekBar) {
-                    val trackValue = TrackValue().apply {
-                        trackType = trackTypes[child.id]
-                        value = child.progress.toLong()
-                    }
-                    val existingTrackValue = existingTrackValues.find { it.trackType == trackValue.trackType }
-                    existingTrackValue?.let {
-                        it.value = trackValue.value
-                    } ?: todayTracks.add(trackValue)
-                }
-                realm.insertOrUpdate(todayTracks)
-                currentTrack.values.addAll(todayTracks)
-                currentTrack.note = noteTxt.text.toString()
-                realm.insertOrUpdate(currentTrack)
-            }
+        val trackValues = getTrackValues()
+        trackValueDataArray.forEachIndexed { index, trackValueData ->
+            trackValueData.value = trackValues[index]
         }
+        presenter.saveTrackData(trackValueDataArray, noteTxt.text.toString())
     }
 
-    private fun getOrCreateCurrentTrack(): Track {
-        return existingTrack ?: Track().apply {
-            date = currentDate
-
-        }
+    override fun showTrackCreatedMsg() {
+        Toast.makeText(activity, "Track Created", Toast.LENGTH_LONG).show()
+        activity?.setResult(RESULT_OK)
+        activity?.finish()
     }
 
-    private fun getExistingTrack() = InjectionStub.trackRepository.getTrackByDate(currentDate)
-
-
-    private fun truncateToDay(date: Date): Date {
-        return Calendar.getInstance().apply {
-            time = date
-            set(Calendar.HOUR_OF_DAY, 0)
-            set(Calendar.MINUTE, 0)
-            set(Calendar.SECOND, 0)
-            set(Calendar.MILLISECOND, 0)
-        }.time
+    override fun showCannotCreateTrackMsg() {
+        Toast.makeText(activity, "Cannot create track", Toast.LENGTH_LONG).show()
     }
 
     companion object {
         private const val SEEK_BAR_VALUES = "seek_bar"
-        private const val DATE_PARAMETER = "date"
         private const val SEEK_BAR_MAX = 10
         private const val REQUEST_PHOTO = 1
-        fun newInstance(date: Date): TrackFragment {
-            val bundle = Bundle().apply { putSerializable(DATE_PARAMETER, date) }
-            return TrackFragment().apply { arguments = bundle }
+        fun newInstance(): TrackFragment {
+            return TrackFragment()
         }
     }
 }
