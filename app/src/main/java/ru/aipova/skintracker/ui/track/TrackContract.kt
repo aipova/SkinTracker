@@ -5,19 +5,21 @@ import ru.aipova.skintracker.ui.statistics.BasePresenter
 
 interface TrackContract {
     interface View: BaseView<Presenter> {
-
-        fun initTrackValues(trackValueData: Array<TrackValueData>)
+        var isActive: Boolean
+        fun showTrackValues(trackValueData: Array<TrackValueData>)
         fun setupNoteText(text: String)
         fun showTrackCreatedMsg()
         fun showCannotCreateTrackMsg()
+        fun close()
+        fun getTrackValueData(): Array<TrackValueData>
+        fun getNote(): String
+        fun makePhoto(filename: String)
+        fun loadPhoto(photoFileName: String)
     }
 
     interface Presenter: BasePresenter {
-
-        fun getPhotoFileName(): String
-        fun saveTrackData(
-            trackValueDataArray: Array<TrackValueData>,
-            note: String
-        )
+        fun save()
+        fun photoCalled()
+        fun photoCreated()
     }
 }
