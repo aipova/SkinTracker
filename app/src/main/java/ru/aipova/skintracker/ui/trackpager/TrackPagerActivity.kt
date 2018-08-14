@@ -51,7 +51,6 @@ class TrackPagerActivity : AppCompatActivity(), NavigationView.OnNavigationItemS
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         if (requestCode == EDIT_REQUEST && resultCode == Activity.RESULT_OK) {
             viewPagerAdapter.notifyDataSetChanged()
-
         }
     }
 

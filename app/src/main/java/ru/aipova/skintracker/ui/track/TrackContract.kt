@@ -15,6 +15,7 @@ interface TrackContract {
         fun getNote(): String
         fun makePhoto(filename: String)
         fun loadPhoto(photoFileName: String)
+        fun showCannotLoadTrackMsg()
     }
 
     interface Presenter: BasePresenter {

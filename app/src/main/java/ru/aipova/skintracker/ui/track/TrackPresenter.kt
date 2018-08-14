@@ -1,17 +1,16 @@
 package ru.aipova.skintracker.ui.track
 
-import io.realm.RealmList
+import io.reactivex.android.schedulers.AndroidSchedulers
+import io.reactivex.schedulers.Schedulers
 import ru.aipova.skintracker.model.Track
 import ru.aipova.skintracker.model.source.TrackRepository
-import ru.aipova.skintracker.model.source.TrackTypeRepository
 import java.text.SimpleDateFormat
 import java.util.*
 
 class TrackPresenter(
     private var trackView: TrackContract.View,
     private var currentDate: Date,
-    private val trackRepository: TrackRepository,
-    private val trackTypeRepository: TrackTypeRepository
+    private val trackRepository: TrackRepository
 ) : TrackContract.Presenter {
     init {
         trackView.presenter = this
@@ -19,22 +18,18 @@ class TrackPresenter(
     }
 
     override fun start() {
-        val existingTrack = trackRepository.getTrackByDate(currentDate)
-        showTrackNote(existingTrack)
+        loadTrackValues()
+        showTrackNote(trackRepository.getTrackByDate(currentDate))
         trackView.loadPhoto(getPhotoFileName())
-        // TODO usecase class + callback(rx?) + check attached
-        trackView.showTrackValues(createTrackValuesData(existingTrack))
     }
 
-    private fun createTrackValuesData(existingTrack: Track?): Array<TrackValueData> {
-        val trackTypes = trackTypeRepository.getTrackTypesSnapshot()
-        val existingTrackValues = existingTrack?.values ?: RealmList()
-
-        return trackTypes.map { trackType ->
-            val existingTrackValue = existingTrackValues.find { it.trackType == trackType }
-            val value = existingTrackValue?.value?.toInt() ?: 0
-            TrackValueData(trackType.uuid, trackType.name ?: "", value)
-        }.toTypedArray()
+    private fun loadTrackValues() {
+        trackRepository.getTrackValuesDataObservable(currentDate)
+            .subscribeOn(Schedulers.io())
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribe(
+                { if (trackView.isActive) trackView.showTrackValues(it) },
+                { trackView.showCannotLoadTrackMsg() })
     }
 
     private fun showTrackNote(existingTrack: Track?) {
@@ -59,6 +54,7 @@ class TrackPresenter(
                 trackView.showTrackCreatedMsg()
                 trackView.close()
             }
+
             override fun onError() {
                 if (!trackView.isActive) return
                 trackView.showCannotCreateTrackMsg()

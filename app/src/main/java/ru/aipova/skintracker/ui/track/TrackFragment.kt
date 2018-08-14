@@ -159,6 +159,10 @@ class TrackFragment : Fragment(), TrackContract.View {
         Toast.makeText(activity, "Cannot create track", Toast.LENGTH_LONG).show()
     }
 
+    override fun showCannotLoadTrackMsg() {
+        Toast.makeText(activity, "Cannot load track", Toast.LENGTH_LONG).show()
+    }
+
     companion object {
         private const val SEEK_BAR_VALUES = "seek_bar"
         private const val SEEK_BAR_MAX = 10

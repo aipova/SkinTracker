@@ -1,9 +1,12 @@
 package ru.aipova.skintracker.model.source
 
+import io.reactivex.Observable
 import io.realm.Realm
+import io.realm.RealmList
 import io.realm.kotlin.where
 import ru.aipova.skintracker.model.*
 import ru.aipova.skintracker.ui.track.TrackData
+import ru.aipova.skintracker.ui.track.TrackValueData
 import java.util.*
 
 class TrackRepository(private val uiRealm: Realm) {
@@ -13,44 +16,87 @@ class TrackRepository(private val uiRealm: Realm) {
         fun onError()
     }
 
-    fun removeTrack(trackUid: String) {
-        uiRealm.executeTransactionAsync { bgRealm ->
-            val track = bgRealm.where<Track>().equalTo(TrackFields.UUID, trackUid).findFirst()
-            track?.deleteFromRealm()
+    fun getTrackByDate(date: Date): Track? {
+        return getTrackByDate(date, uiRealm)
+    }
+
+    private fun getTrackByDate(date: Date, realm: Realm): Track? {
+        return realm.where<Track>().equalTo(TrackFields.DATE, date).findFirst()
+    }
+
+    fun getTrackValuesDataObservable(date: Date): Observable<Array<TrackValueData>> {
+        return Observable.fromCallable { createTrackValuesData(date) }
+    }
+
+    private fun createTrackValuesData(date: Date): Array<TrackValueData> {
+        Realm.getDefaultInstance().use { realm ->
+            val trackTypes = realm.where<TrackType>().findAll()
+            val existingValues = getTrackByDate(date, realm)?.values
+            return trackTypes.map { trackType ->
+                val value = getExistingValueOrZero(existingValues, trackType)
+                TrackValueData(trackType.uuid, trackType.name ?: "", value)
+            }.toTypedArray()
         }
     }
 
-    fun getTrackByDate(date: Date): Track? {
-        return uiRealm.where<Track>().equalTo(TrackFields.DATE, date).findFirst()
+    private fun getExistingValueOrZero(
+        existingValues: RealmList<TrackValue>?,
+        trackType: TrackType?
+    ): Int {
+        val existingValue = existingValues?.find { it.trackType == trackType }
+        return existingValue?.value?.toInt() ?: 0
     }
 
     fun createOrUpdate(trackData: TrackData, callback: CreateTrackCallback) {
-        val todayTracks = mutableListOf<TrackValue>()
         uiRealm.executeTransactionAsync({ bgRealm ->
-            val trackForDate =
-                bgRealm.where<Track>().equalTo(TrackFields.DATE, trackData.date).findFirst()
-                        ?: Track().apply { date = trackData.date }
-            val existingTrackValues = trackForDate.values
+            val trackForDate = getOrCreateTrack(trackData.date, bgRealm)
+            val todayTracks = createOrUpdateTrackValues(trackData, trackForDate, bgRealm)
 
-            trackData.values.forEach { trackValueData ->
-                val trackValue = TrackValue().apply {
-                    trackType = bgRealm.where<TrackType>()
-                        .equalTo(TrackTypeFields.UUID, trackValueData.uid).findFirst()
-                    value = trackValueData.value.toLong()
-                }
-
-                val existingTrackValue =
-                    existingTrackValues.find { it.trackType == trackValue.trackType }
-                existingTrackValue?.let {
-                    it.value = trackValue.value
-                } ?: todayTracks.add(trackValue)
+            trackForDate.apply {
+                values.addAll(todayTracks)
+                note = trackData.note
             }
-
-            bgRealm.insertOrUpdate(todayTracks)
-            trackForDate.values.addAll(todayTracks)
-            trackForDate.note = trackData.note
             bgRealm.insertOrUpdate(trackForDate)
         }, { callback.onTrackCreated() }, { callback.onError() })
     }
 
+    private fun getOrCreateTrack(
+        trackDate: Date,
+        bgRealm: Realm
+    ) = getTrackByDate(trackDate, bgRealm) ?: Track().apply { date = trackDate }
+
+    private fun createOrUpdateTrackValues(
+        trackData: TrackData,
+        trackForDate: Track,
+        realm: Realm
+    ): MutableList<TrackValue> {
+        val todayTracks = mutableListOf<TrackValue>()
+        trackData.values.forEach { trackValueData ->
+            val trackType = findTrackTypeByUid(trackValueData.uid, realm)
+            val newValue = trackValueData.value.toLong()
+
+            findTrackValue(trackForDate, trackType)?.let {
+                it.value = newValue
+            } ?: todayTracks.add(newTrackValue(trackType, newValue))
+        }
+        realm.insertOrUpdate(todayTracks)
+        return todayTracks
+    }
+
+    private fun findTrackTypeByUid(
+        uid: String,
+        realm: Realm
+    ) = realm.where<TrackType>().equalTo(TrackTypeFields.UUID, uid).findFirst()
+
+    private fun findTrackValue(
+        trackForDate: Track,
+        trackType: TrackType?
+    ) = trackForDate.values.find { it.trackType == trackType }
+
+    private fun newTrackValue(trackType: TrackType?, value: Long): TrackValue {
+        return TrackValue().apply {
+            this.trackType = trackType
+            this.value = value
+        }
+    }
 }
