@@ -99,8 +99,14 @@ class TrackFragment : Fragment(), TrackContract.View {
 
     override fun loadPhoto(photoFileName: String) {
         val file = PhotoUtils.constructPhotoFile(photoFileName, activity!!)
-        Picasso.get().invalidate(file)
-        Picasso.get().load(file).into(photoView)
+        if (file.exists()) {
+            Picasso.get().invalidate(file)
+            Picasso.get().load(file).into(photoView)
+        }
+//        else {
+//            Picasso.get().load(R.drawable.ic_perm).into(photoView)
+//        }
+
     }
 
     override fun onSaveInstanceState(outState: Bundle) {
@@ -127,6 +133,10 @@ class TrackFragment : Fragment(), TrackContract.View {
     }
 
     override fun onOptionsItemSelected(item: MenuItem) = when (item.itemId) {
+        android.R.id.home -> {
+            close()
+            true
+        }
         R.id.action_save_track -> {
             presenter.save()
             true

@@ -1,6 +1,5 @@
 package ru.aipova.skintracker.model.source
 
-import io.reactivex.Observable
 import io.realm.Realm
 import io.realm.RealmList
 import io.realm.kotlin.where
@@ -24,19 +23,13 @@ class TrackRepository(private val uiRealm: Realm) {
         return realm.where<Track>().equalTo(TrackFields.DATE, date).findFirst()
     }
 
-    fun getTrackValuesDataObservable(date: Date): Observable<Array<TrackValueData>> {
-        return Observable.fromCallable { createTrackValuesData(date) }
-    }
-
-    private fun createTrackValuesData(date: Date): Array<TrackValueData> {
-        Realm.getDefaultInstance().use { realm ->
-            val trackTypes = realm.where<TrackType>().findAll()
-            val existingValues = getTrackByDate(date, realm)?.values
-            return trackTypes.map { trackType ->
-                val value = getExistingValueOrZero(existingValues, trackType)
-                TrackValueData(trackType.uuid, trackType.name ?: "", value)
-            }.toTypedArray()
-        }
+    fun getTrackValuesData(date: Date): Array<TrackValueData> {
+        val trackTypes = uiRealm.where<TrackType>().findAll()
+        val existingValues = getTrackByDate(date, uiRealm)?.values
+        return trackTypes.map { trackType ->
+            val value = getExistingValueOrZero(existingValues, trackType)
+            TrackValueData(trackType.uuid, trackType.name ?: "", value)
+        }.toTypedArray()
     }
 
     private fun getExistingValueOrZero(

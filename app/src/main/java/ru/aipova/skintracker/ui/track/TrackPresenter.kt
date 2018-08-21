@@ -1,7 +1,5 @@
 package ru.aipova.skintracker.ui.track
 
-import io.reactivex.android.schedulers.AndroidSchedulers
-import io.reactivex.schedulers.Schedulers
 import ru.aipova.skintracker.model.Track
 import ru.aipova.skintracker.model.source.TrackRepository
 import java.text.SimpleDateFormat
@@ -18,18 +16,14 @@ class TrackPresenter(
     }
 
     override fun start() {
+        trackView.loadPhoto(getPhotoFileName())
         loadTrackValues()
         showTrackNote(trackRepository.getTrackByDate(currentDate))
-        trackView.loadPhoto(getPhotoFileName())
     }
 
     private fun loadTrackValues() {
-        trackRepository.getTrackValuesDataObservable(currentDate)
-            .subscribeOn(Schedulers.io())
-            .observeOn(AndroidSchedulers.mainThread())
-            .subscribe(
-                { if (trackView.isActive) trackView.showTrackValues(it) },
-                { trackView.showCannotLoadTrackMsg() })
+        val trackValues = trackRepository.getTrackValuesData(currentDate)
+        trackView.showTrackValues(trackValues)
     }
 
     private fun showTrackNote(existingTrack: Track?) {
