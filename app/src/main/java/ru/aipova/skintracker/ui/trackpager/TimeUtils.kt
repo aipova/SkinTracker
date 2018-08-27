@@ -1,11 +1,11 @@
 package ru.aipova.skintracker.ui.trackpager
 
 import android.content.Context
-import android.text.format.DateFormat
 import org.joda.time.DateTimeConstants
 import org.joda.time.Days
 import org.joda.time.DurationFieldType
 import org.joda.time.LocalDate
+import java.text.DateFormat
 import java.util.*
 
 class TimeUtils {
@@ -24,7 +24,7 @@ class TimeUtils {
         }
 
         fun getDateFormatted(context: Context, position: Int): String? {
-            return DateFormat.getDateFormat(context).format(getDateForPosition(position))
+            return DateFormat.getDateInstance(DateFormat.LONG).format(getDateForPosition(position))
         }
 
         fun today() = LocalDate.now()
