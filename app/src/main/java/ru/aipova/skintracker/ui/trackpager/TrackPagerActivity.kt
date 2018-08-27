@@ -1,6 +1,7 @@
 package ru.aipova.skintracker.ui.trackpager
 
 import android.app.Activity
+import android.app.DatePickerDialog
 import android.content.Intent
 import android.os.Bundle
 import android.support.design.widget.NavigationView
@@ -14,11 +15,13 @@ import android.support.v7.app.AppCompatActivity
 import android.view.MenuItem
 import kotlinx.android.synthetic.main.track_pager_activity.*
 import kotlinx.android.synthetic.main.track_pager_content.*
+import org.joda.time.LocalDate
 import ru.aipova.skintracker.R
 import ru.aipova.skintracker.ui.statistics.StatisticsActivity
 import ru.aipova.skintracker.ui.track.TrackActivity
 import ru.aipova.skintracker.ui.tracktype.TrackTypeActivity
 import ru.aipova.skintracker.utils.TransitionUtils
+import java.util.*
 
 class TrackPagerActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelectedListener {
 
@@ -32,6 +35,7 @@ class TrackPagerActivity : AppCompatActivity(), NavigationView.OnNavigationItemS
         setupTrackPager()
 
         setupEditButton()
+        setupNavigationButtons()
     }
 
     private fun setupEditButton() {
@@ -44,6 +48,29 @@ class TrackPagerActivity : AppCompatActivity(), NavigationView.OnNavigationItemS
             )
         }
     }
+
+    private fun setupNavigationButtons() {
+        leftBtn.setOnClickListener { trackPager.currentItem-- }
+        rightBtn.setOnClickListener { trackPager.currentItem++ }
+        calendarBtn.setOnClickListener {
+            val currentDate = Calendar.getInstance()
+            currentDate.time = TimeUtils.getDateForPosition(trackPager.currentItem)
+            DatePickerDialog(
+                this,
+                dateChangedListener,
+                currentDate.get(Calendar.YEAR),
+                currentDate.get(Calendar.MONTH),
+                currentDate.get(Calendar.DAY_OF_MONTH)
+            ).show()
+        }
+    }
+
+    private val dateChangedListener =
+        DatePickerDialog.OnDateSetListener { view, year, month, dayOfMonth ->
+            val newDate = Calendar.getInstance()
+            newDate.set(year, month, dayOfMonth)
+            trackPager.currentItem = TimeUtils.getPositionForDate(LocalDate.fromCalendarFields(newDate))
+        }
 
     private fun getCurrentDiaryDate() = TimeUtils.getDateForPosition(trackPager.currentItem)
 
