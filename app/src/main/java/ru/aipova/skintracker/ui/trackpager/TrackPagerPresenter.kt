@@ -13,7 +13,6 @@ class TrackPagerPresenter(
 ) : TrackPagerContract.Presenter {
     init {
         trackPagerView.presenter = this
-        currentDate = truncateToDay(currentDate)
     }
     private var existingTrack: Track? = null
 
@@ -51,15 +50,5 @@ class TrackPagerPresenter(
     private fun loadTrackValues() {
         val trackValues = trackRepository.getTrackValuesData(currentDate)
         trackPagerView.showTrackValues(trackValues)
-    }
-
-    private fun truncateToDay(date: Date): Date {
-        return Calendar.getInstance().apply {
-            time = date
-            set(Calendar.HOUR_OF_DAY, 0)
-            set(Calendar.MINUTE, 0)
-            set(Calendar.SECOND, 0)
-            set(Calendar.MILLISECOND, 0)
-        }.time
     }
 }

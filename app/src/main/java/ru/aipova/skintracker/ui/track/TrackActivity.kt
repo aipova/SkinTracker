@@ -22,7 +22,7 @@ class TrackActivity : SingleFragmentActivity<TrackFragment>() {
     private fun getDateExtra() = intent.getSerializableExtra(DATE_PARAMETER) as Date
 
     override fun setupPresenter(fragment: TrackFragment) {
-        TrackPresenter(fragment, getDateExtra(), InjectionStub.trackRepository)
+        TrackPresenter(fragment, getDateExtra(), InjectionStub.trackRepository, InjectionStub.photoUtils)
     }
 
     companion object {

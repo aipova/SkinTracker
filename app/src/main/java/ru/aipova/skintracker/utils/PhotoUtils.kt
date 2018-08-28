@@ -1,34 +1,21 @@
 package ru.aipova.skintracker.utils
 
-import android.content.Context
 import java.io.File
 import java.text.SimpleDateFormat
 import java.util.*
 
-class PhotoUtils(val storageDir: File) {
+class PhotoUtils(private val storageDir: File) {
 
     fun constructPhotoFile(date: Date): File {
-        val timeStamp = SimpleDateFormat("yyyyMMdd").format(date)
-        val imageFileName = "ST_$timeStamp.jpg"
-        return File(storageDir, imageFileName)
+        return File(storageDir, constructPhotoFileName(date))
     }
 
-    fun constructPhotoFile(imageFileName: String, context: Context): File {
-//        val storageDir = context.getExternalFilesDir("photos")
-        return File(storageDir, imageFileName)
+    fun constructPhotoFileName(date: Date): String {
+        val timeStamp = SimpleDateFormat(DATE_STAMP_FORMAT).format(date)
+        return "ST_$timeStamp.jpg"
     }
 
     companion object {
-        fun constructPhotoFile(date: Date, context: Context): File {
-            val timeStamp = SimpleDateFormat("yyyyMMdd").format(date)
-            val imageFileName = "ST_$timeStamp.jpg"
-            val storageDir = context.getExternalFilesDir("photos")
-            return File(storageDir, imageFileName)
-        }
-
-        fun constructPhotoFile(imageFileName: String, context: Context): File {
-            val storageDir = context.getExternalFilesDir("photos")
-            return File(storageDir, imageFileName)
-        }
+        const val DATE_STAMP_FORMAT = "yyyyMMdd"
     }
 }

@@ -2,6 +2,7 @@ package ru.aipova.skintracker.ui.track
 
 import ru.aipova.skintracker.ui.BaseView
 import ru.aipova.skintracker.ui.statistics.BasePresenter
+import java.io.File
 
 interface TrackContract {
     interface View: BaseView<Presenter> {
@@ -13,8 +14,8 @@ interface TrackContract {
         fun close()
         fun getTrackValueData(): Array<TrackValueData>
         fun getNote(): String
-        fun makePhoto(filename: String)
-        fun loadPhoto(photoFileName: String)
+        fun makePhoto(photoFile: File)
+        fun loadPhoto(photoFile: File)
         fun showCannotLoadTrackMsg()
     }
 

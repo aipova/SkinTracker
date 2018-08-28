@@ -1,6 +1,5 @@
 package ru.aipova.skintracker.ui.trackpager
 
-import android.content.Context
 import org.joda.time.DateTimeConstants
 import org.joda.time.Days
 import org.joda.time.DurationFieldType
@@ -19,11 +18,17 @@ class TimeUtils {
             return FIRST_DAY.withFieldAdded(DurationFieldType.days(), position).toDate()
         }
 
+        fun getCalendarForPosition(position: Int): Calendar {
+            return Calendar.getInstance().apply {
+                time = FIRST_DAY.withFieldAdded(DurationFieldType.days(), position).toDate()
+            }
+        }
+
         fun getPositionForDate(date: LocalDate): Int {
             return Days.daysBetween(FIRST_DAY, date).days
         }
 
-        fun getDateFormatted(context: Context, position: Int): String? {
+        fun getDateFormatted(position: Int): String? {
             return DateFormat.getDateInstance(DateFormat.LONG).format(getDateForPosition(position))
         }
 

@@ -53,22 +53,24 @@ class TrackPagerActivity : AppCompatActivity(), NavigationView.OnNavigationItemS
         leftBtn.setOnClickListener { trackPager.currentItem-- }
         rightBtn.setOnClickListener { trackPager.currentItem++ }
         calendarBtn.setOnClickListener {
-            val currentDate = Calendar.getInstance()
-            currentDate.time = TimeUtils.getDateForPosition(trackPager.currentItem)
-            DatePickerDialog(
-                this,
-                dateChangedListener,
-                currentDate.get(Calendar.YEAR),
-                currentDate.get(Calendar.MONTH),
-                currentDate.get(Calendar.DAY_OF_MONTH)
-            ).show()
+            showDatePickerDialog()
         }
+    }
+
+    private fun showDatePickerDialog() {
+        val currentDate = TimeUtils.getCalendarForPosition(trackPager.currentItem)
+        DatePickerDialog(
+            this,
+            dateChangedListener,
+            currentDate.get(Calendar.YEAR),
+            currentDate.get(Calendar.MONTH),
+            currentDate.get(Calendar.DAY_OF_MONTH)
+        ).show()
     }
 
     private val dateChangedListener =
         DatePickerDialog.OnDateSetListener { view, year, month, dayOfMonth ->
-            val newDate = Calendar.getInstance()
-            newDate.set(year, month, dayOfMonth)
+            val newDate = Calendar.getInstance().apply { set(year, month, dayOfMonth) }
             trackPager.currentItem = TimeUtils.getPositionForDate(LocalDate.fromCalendarFields(newDate))
         }
 
@@ -159,7 +161,7 @@ class TrackPagerActivity : AppCompatActivity(), NavigationView.OnNavigationItemS
     }
 
     private fun getFormattedDate(position: Int): String? {
-        return TimeUtils.getDateFormatted(this, position)
+        return TimeUtils.getDateFormatted(position)
     }
 
 

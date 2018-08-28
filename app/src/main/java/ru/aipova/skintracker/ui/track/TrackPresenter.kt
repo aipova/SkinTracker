@@ -2,23 +2,31 @@ package ru.aipova.skintracker.ui.track
 
 import ru.aipova.skintracker.model.Track
 import ru.aipova.skintracker.model.source.TrackRepository
-import java.text.SimpleDateFormat
+import ru.aipova.skintracker.utils.PhotoUtils
+import java.io.File
 import java.util.*
 
 class TrackPresenter(
     private var trackView: TrackContract.View,
     private var currentDate: Date,
-    private val trackRepository: TrackRepository
+    private val trackRepository: TrackRepository,
+    private val photoUtils: PhotoUtils
 ) : TrackContract.Presenter {
     init {
         trackView.presenter = this
-        currentDate = truncateToDay(currentDate)
     }
 
     override fun start() {
-        trackView.loadPhoto(getPhotoFileName())
+        loadPhotoIfExists()
         loadTrackValues()
         showTrackNote(trackRepository.getTrackByDate(currentDate))
+    }
+
+    private fun loadPhotoIfExists() {
+        val photoFile = getPhotoFile()
+        if (photoFile.exists()) {
+            trackView.loadPhoto(photoFile)
+        }
     }
 
     private fun loadTrackValues() {
@@ -33,11 +41,11 @@ class TrackPresenter(
     }
 
     override fun photoCalled() {
-        trackView.makePhoto(getPhotoFileName())
+        trackView.makePhoto(getPhotoFile())
     }
 
     override fun photoCreated() {
-        trackView.loadPhoto(getPhotoFileName())
+        loadPhotoIfExists()
     }
 
     override fun save() {
@@ -54,21 +62,9 @@ class TrackPresenter(
                 trackView.showCannotCreateTrackMsg()
             }
         })
-
     }
 
-    private fun getPhotoFileName(): String {
-        val timeStamp = SimpleDateFormat("yyyyMMdd").format(currentDate)
-        return "ST_$timeStamp.jpg"
-    }
-
-    private fun truncateToDay(date: Date): Date {
-        return Calendar.getInstance().apply {
-            time = date
-            set(Calendar.HOUR_OF_DAY, 0)
-            set(Calendar.MINUTE, 0)
-            set(Calendar.SECOND, 0)
-            set(Calendar.MILLISECOND, 0)
-        }.time
+    private fun getPhotoFile(): File {
+        return photoUtils.constructPhotoFile(currentDate)
     }
 }

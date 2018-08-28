@@ -15,7 +15,7 @@ import android.widget.Toast
 import com.squareup.picasso.Picasso
 import kotlinx.android.synthetic.main.track_fragment.*
 import ru.aipova.skintracker.R
-import ru.aipova.skintracker.utils.PhotoUtils
+import java.io.File
 
 
 class TrackFragment : Fragment(), TrackContract.View {
@@ -52,16 +52,15 @@ class TrackFragment : Fragment(), TrackContract.View {
         }
     }
 
-    override fun makePhoto(filename: String) {
+    override fun makePhoto(photoFile: File) {
         val takePhotoIntent = Intent(MediaStore.ACTION_IMAGE_CAPTURE)
         if (takePhotoIntent.resolveActivity(activity!!.packageManager) != null) {
-            takePhotoIntent.putExtra(MediaStore.EXTRA_OUTPUT, getPhotoUri(filename))
+            takePhotoIntent.putExtra(MediaStore.EXTRA_OUTPUT, getPhotoUri(photoFile))
             startActivityForResult(takePhotoIntent, REQUEST_PHOTO)
         }
     }
 
-    private fun getPhotoUri(filename: String): Uri? {
-        val photoFile = PhotoUtils.constructPhotoFile(filename, activity!!)
+    private fun getPhotoUri(photoFile: File): Uri? {
         return FileProvider.getUriForFile(
             activity!!,
             "ru.aipova.skintracker.fileprovider",
@@ -97,13 +96,9 @@ class TrackFragment : Fragment(), TrackContract.View {
     private fun getSavedSeekBarValues(savedInstanceState: Bundle?) =
         if (savedInstanceState != null) savedInstanceState.getSerializable(SEEK_BAR_VALUES) as? IntArray else null
 
-    override fun loadPhoto(photoFileName: String) {
-        val file = PhotoUtils.constructPhotoFile(photoFileName, activity!!)
-        if (file.exists()) {
-            Picasso.get().invalidate(file)
-            Picasso.get().load(file).into(photoView)
-        }
-
+    override fun loadPhoto(photoFile: File) {
+        Picasso.get().invalidate(photoFile)
+        Picasso.get().load(photoFile).into(photoView)
     }
 
     override fun onSaveInstanceState(outState: Bundle) {
