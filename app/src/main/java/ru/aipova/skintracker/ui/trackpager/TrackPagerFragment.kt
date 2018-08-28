@@ -5,13 +5,12 @@ import android.support.v4.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.SeekBar
-import android.widget.TextView
 import com.squareup.picasso.Picasso
 import kotlinx.android.synthetic.main.track_pager_fragment.*
 import ru.aipova.skintracker.InjectionStub
 import ru.aipova.skintracker.R
 import ru.aipova.skintracker.ui.track.TrackValueData
+import ru.aipova.skintracker.ui.view.TrackValuesView
 import java.io.File
 import java.util.*
 
@@ -28,7 +27,12 @@ class TrackPagerFragment : Fragment(), TrackPagerContract.View {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        presenter = TrackPagerPresenter(this, getTrackDate(), InjectionStub.trackRepository, InjectionStub.photoUtils)
+        presenter = TrackPagerPresenter(
+            this,
+            getTrackDate(),
+            InjectionStub.trackRepository,
+            InjectionStub.photoUtils
+        )
         presenter.init()
     }
 
@@ -37,9 +41,11 @@ class TrackPagerFragment : Fragment(), TrackPagerContract.View {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        val layoutId = if (trackExists) R.layout.track_pager_fragment else R.layout.track_pager_empty_fragment
-        return inflater.inflate(layoutId, container, false)
+        return inflater.inflate(getLayoutId(), container, false)
     }
+
+    private fun getLayoutId() =
+        if (trackExists) R.layout.track_pager_fragment else R.layout.track_pager_empty_fragment
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         presenter.start()
@@ -50,17 +56,12 @@ class TrackPagerFragment : Fragment(), TrackPagerContract.View {
     }
 
     override fun showTrackValues(trackValueData: Array<TrackValueData>) {
-        for ((index, trackData) in trackValueData.withIndex()) {
-            val textView = TextView(activity).apply { text = trackData.name }
-            trackValuesLayout.addView(textView)
-            val seekBar = SeekBar(activity).apply {
-                id = index
-                max = SEEK_BAR_MAX
-                progress = trackData.value
-                isEnabled = false
-            }
-            trackValuesLayout.addView(seekBar)
+        val trackValuesView = TrackValuesView(activity).apply {
+            setTrackValues(trackValueData, false)
+            setPadding()
         }
+//        TODO check why not updated
+        valuesCard.addView(trackValuesView)
     }
 
     override fun loadPhoto(photoFile: File) {

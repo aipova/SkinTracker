@@ -8,4 +8,5 @@
     <dimen name="min_margin">8dp</dimen>
     <dimen name="photo_width">200dp</dimen>
     <dimen name="photo_height">220dp</dimen>
+    <dimen name="small_margin">8dp</dimen>
 </resources>

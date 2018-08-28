@@ -61,16 +61,7 @@
             android:id="@+id/valuesCard"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="@dimen/default_margin">
-
-            <LinearLayout
-                android:id="@+id/trackValuesLayout"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="vertical"
-                android:padding="@dimen/default_margin">
-            </LinearLayout>
-        </android.support.v7.widget.CardView>
+            android:layout_marginBottom="@dimen/default_margin"/>
 
     </LinearLayout>
 </ScrollView>

@@ -10,11 +10,11 @@ import android.support.v4.content.FileProvider
 import android.support.v7.app.AppCompatActivity
 import android.view.*
 import android.widget.SeekBar
-import android.widget.TextView
 import android.widget.Toast
 import com.squareup.picasso.Picasso
 import kotlinx.android.synthetic.main.track_fragment.*
 import ru.aipova.skintracker.R
+import ru.aipova.skintracker.ui.view.TrackValuesView
 import java.io.File
 
 
@@ -26,6 +26,7 @@ class TrackFragment : Fragment(), TrackContract.View {
 
     private var trackValueDataArray:Array<TrackValueData> = arrayOf()
     private var seekBars: MutableList<SeekBar> = mutableListOf()
+    private lateinit var trackValuesView: TrackValuesView
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -70,17 +71,8 @@ class TrackFragment : Fragment(), TrackContract.View {
 
     override fun showTrackValues(trackValueData: Array<TrackValueData>) {
         trackValueDataArray = trackValueData
-        for ((index, trackData) in trackValueDataArray.withIndex()) {
-            val textView = TextView(activity).apply { text = trackData.name }
-            trackValuesLayout.addView(textView)
-            val seekBar = SeekBar(activity).apply {
-                id = index
-                max = SEEK_BAR_MAX
-                progress = trackData.value
-            }
-            trackValuesLayout.addView(seekBar)
-            seekBars.add(seekBar)
-        }
+        trackValuesView = TrackValuesView(activity).apply { setTrackValues(trackValueData, true) }
+        trackValuesLayout.addView(trackValuesView)
     }
 
     override fun setupNoteText(text: String) {
@@ -88,8 +80,8 @@ class TrackFragment : Fragment(), TrackContract.View {
     }
 
     private fun restoreSeekBarsProgress(savedInstanceState: Bundle?) {
-        getSavedSeekBarValues(savedInstanceState)?.forEachIndexed { index, value ->
-            seekBars[index].progress = value
+        getSavedSeekBarValues(savedInstanceState)?.let {
+            trackValuesView.updateValues(it)
         }
     }
 
@@ -103,10 +95,9 @@ class TrackFragment : Fragment(), TrackContract.View {
 
     override fun onSaveInstanceState(outState: Bundle) {
         super.onSaveInstanceState(outState)
-        outState.putSerializable(SEEK_BAR_VALUES, getTrackValues())
+        outState.putSerializable(SEEK_BAR_VALUES, trackValuesView.getTrackValues())
     }
 
-    private fun getTrackValues() = seekBars.map { it.progress }.toIntArray()
 
     override fun onCreateOptionsMenu(menu: Menu?, inflater: MenuInflater?) {
         super.onCreateOptionsMenu(menu, inflater)
@@ -137,7 +128,7 @@ class TrackFragment : Fragment(), TrackContract.View {
     }
 
     override fun getTrackValueData(): Array<TrackValueData> {
-        val trackValues = getTrackValues()
+        val trackValues = trackValuesView.getTrackValues()
         trackValueDataArray.forEachIndexed { index, trackValueData ->
             trackValueData.value = trackValues[index]
         }
