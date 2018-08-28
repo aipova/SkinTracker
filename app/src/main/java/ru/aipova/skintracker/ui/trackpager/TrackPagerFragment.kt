@@ -8,23 +8,28 @@ import android.view.ViewGroup
 import android.widget.SeekBar
 import android.widget.TextView
 import com.squareup.picasso.Picasso
-import io.realm.RealmList
 import kotlinx.android.synthetic.main.track_pager_fragment.*
-import ru.aipova.skintracker.InjectionStub.trackRepository
+import ru.aipova.skintracker.InjectionStub
 import ru.aipova.skintracker.R
-import ru.aipova.skintracker.model.Track
-import ru.aipova.skintracker.model.TrackValue
-import ru.aipova.skintracker.utils.PhotoUtils
+import ru.aipova.skintracker.ui.track.TrackValueData
+import java.io.File
 import java.util.*
 
-class TrackPagerFragment : Fragment() {
-    private lateinit var tracks: RealmList<TrackValue>
-    private var track: Track? = null
+class TrackPagerFragment : Fragment(), TrackPagerContract.View {
+    override var isActive: Boolean = false
+        get() = isAdded
+
+    override fun setupTrackExists(isExisting: Boolean) {
+        trackExists = isExisting
+    }
+
+    override lateinit var presenter: TrackPagerContract.Presenter
+    private var trackExists = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        track = trackRepository.getTrackByDate(getTrackDate())
-        tracks = track?.values ?: RealmList()
+        presenter = TrackPagerPresenter(this, getTrackDate(), InjectionStub.trackRepository, InjectionStub.photoUtils)
+        presenter.init()
     }
 
     override fun onCreateView(
@@ -32,48 +37,51 @@ class TrackPagerFragment : Fragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        val layoutId =
-            if (track == null) R.layout.track_pager_empty_fragment else R.layout.track_pager_fragment
+        val layoutId = if (trackExists) R.layout.track_pager_fragment else R.layout.track_pager_empty_fragment
         return inflater.inflate(layoutId, container, false)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        presenter.start()
+    }
 
-        track?.note?.let {
-            if (it.isNotBlank()) {
-                noteTxt.text = it
-                noteTxt.visibility = View.VISIBLE
-                photoCard.visibility = View.VISIBLE
-            }
-        }
+    override fun setupNoteText(text: String) {
+        noteTxt.text = text
+    }
 
-        track?.date?.let { trackDate ->
-            loadPhoto(trackDate)
-        }
-
-        for (track in tracks) {
-            val textView = TextView(activity).apply { text = track.trackType?.name }
+    override fun showTrackValues(trackValueData: Array<TrackValueData>) {
+        for ((index, trackData) in trackValueData.withIndex()) {
+            val textView = TextView(activity).apply { text = trackData.name }
             trackValuesLayout.addView(textView)
             val seekBar = SeekBar(activity).apply {
+                id = index
                 max = SEEK_BAR_MAX
-                progress = track.value?.toInt() ?: 0
+                progress = trackData.value
                 isEnabled = false
             }
             trackValuesLayout.addView(seekBar)
         }
     }
 
-    private fun loadPhoto(trackDate: Date) {
-        val file = PhotoUtils.constructPhotoFile(trackDate, activity!!)
-        if (file.exists()) {
-            Picasso.get().invalidate(file)
-            Picasso.get().load(file).into(trackPhoto)
-            trackPhoto.visibility = View.VISIBLE
-            photoCard.visibility = View.VISIBLE
-        } else {
-            trackPhoto.visibility = View.GONE
-        }
+    override fun loadPhoto(photoFile: File) {
+        Picasso.get().invalidate(photoFile)
+        Picasso.get().load(photoFile).into(trackPhoto)
     }
+
+    override fun showPhotoView() {
+        photoCard.visibility = View.VISIBLE
+        trackPhoto.visibility = View.VISIBLE
+    }
+
+    override fun showNoteView() {
+        photoCard.visibility = View.VISIBLE
+        noteTxt.visibility = View.VISIBLE
+    }
+
+    override fun hidePhotoView() {
+        trackPhoto.visibility = View.GONE
+    }
+
 
     private fun getTrackDate() = arguments?.getSerializable(DATE) as Date
 

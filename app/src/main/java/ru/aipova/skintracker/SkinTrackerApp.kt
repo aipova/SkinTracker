@@ -8,6 +8,7 @@ import ru.aipova.skintracker.model.TrackType.Companion.SKIN_QUALITY_TRACK_NAME
 import ru.aipova.skintracker.model.TrackType.Companion.SKIN_QUALITY_TRACK_TYPE_UID
 import ru.aipova.skintracker.model.source.TrackRepository
 import ru.aipova.skintracker.model.source.TrackTypeRepository
+import ru.aipova.skintracker.utils.PhotoUtils
 
 class SkinTrackerApp : Application() {
     override fun onCreate() {
@@ -19,6 +20,7 @@ class SkinTrackerApp : Application() {
         InjectionStub.realm = Realm.getDefaultInstance()
         InjectionStub.trackTypeRepository = TrackTypeRepository(InjectionStub.realm)
         InjectionStub.trackRepository = TrackRepository(InjectionStub.realm)
+        InjectionStub.photoUtils = PhotoUtils(this.getExternalFilesDir(PHOTOS_DIR))
     }
 
     private fun getRealmConfiguration() =
@@ -28,6 +30,7 @@ class SkinTrackerApp : Application() {
             .build()
 
     companion object {
+        const val PHOTOS_DIR = "photos"
         var skinQualityTrackType: TrackType = TrackType().apply {
             uuid = SKIN_QUALITY_TRACK_TYPE_UID
             name = SKIN_QUALITY_TRACK_NAME

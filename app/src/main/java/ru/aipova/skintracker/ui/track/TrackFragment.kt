@@ -103,9 +103,6 @@ class TrackFragment : Fragment(), TrackContract.View {
             Picasso.get().invalidate(file)
             Picasso.get().load(file).into(photoView)
         }
-//        else {
-//            Picasso.get().load(R.drawable.ic_perm).into(photoView)
-//        }
 
     }
 
