@@ -9,12 +9,10 @@ import android.support.v4.app.Fragment
 import android.support.v4.content.FileProvider
 import android.support.v7.app.AppCompatActivity
 import android.view.*
-import android.widget.SeekBar
 import android.widget.Toast
 import com.squareup.picasso.Picasso
 import kotlinx.android.synthetic.main.track_fragment.*
 import ru.aipova.skintracker.R
-import ru.aipova.skintracker.ui.view.TrackValuesView
 import java.io.File
 
 
@@ -25,8 +23,6 @@ class TrackFragment : Fragment(), TrackContract.View {
         get() = isAdded
 
     private var trackValueDataArray:Array<TrackValueData> = arrayOf()
-    private var seekBars: MutableList<SeekBar> = mutableListOf()
-    private lateinit var trackValuesView: TrackValuesView
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -71,8 +67,7 @@ class TrackFragment : Fragment(), TrackContract.View {
 
     override fun showTrackValues(trackValueData: Array<TrackValueData>) {
         trackValueDataArray = trackValueData
-        trackValuesView = TrackValuesView(activity).apply { setTrackValues(trackValueData, true) }
-        trackValuesLayout.addView(trackValuesView)
+        trackValuesView.setTrackValues(trackValueData, true)
     }
 
     override fun setupNoteText(text: String) {

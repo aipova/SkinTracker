@@ -58,8 +58,8 @@
             app:layout_constraintTop_toTopOf="@+id/photoView"/>
 
 
-        <FrameLayout
-            android:id="@+id/trackValuesLayout"
+        <ru.aipova.skintracker.ui.view.TrackValuesView
+            android:id="@+id/trackValuesView"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginBottom="@dimen/large_margin"
@@ -68,7 +68,7 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/takePhotoBtn">
-        </FrameLayout>
+        </ru.aipova.skintracker.ui.view.TrackValuesView>
 
 
     </android.support.constraint.ConstraintLayout>

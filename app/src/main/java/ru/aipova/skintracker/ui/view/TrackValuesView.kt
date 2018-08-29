@@ -1,6 +1,9 @@
 package ru.aipova.skintracker.ui.view
 
 import android.content.Context
+import android.os.Build
+import android.support.annotation.RequiresApi
+import android.util.AttributeSet
 import android.view.LayoutInflater
 import android.view.View
 import android.widget.LinearLayout
@@ -9,23 +12,34 @@ import android.widget.TextView
 import ru.aipova.skintracker.R
 import ru.aipova.skintracker.ui.track.TrackValueData
 
-class TrackValuesView(context: Context?) : LinearLayout(context) {
-    private var seekBars: MutableList<SeekBar> = mutableListOf()
+class TrackValuesView : LinearLayout {
+    constructor(context: Context?) : super(context)
+    constructor(context: Context?, attrs: AttributeSet?) : super(context, attrs)
+    constructor(context: Context?, attrs: AttributeSet?, defStyleAttr: Int) : super(
+        context,
+        attrs,
+        defStyleAttr
+    )
+
+    @RequiresApi(Build.VERSION_CODES.LOLLIPOP)
+    constructor(
+        context: Context?,
+        attrs: AttributeSet?,
+        defStyleAttr: Int,
+        defStyleRes: Int
+    ) : super(context, attrs, defStyleAttr, defStyleRes)
 
     init {
         orientation = LinearLayout.VERTICAL
     }
 
-    fun setPadding() {
-        context?.let {
-            val padding = it.resources.getDimensionPixelSize(R.dimen.default_margin)
-            setPadding(padding, padding, padding, padding)
-        }
-    }
+    private var seekBars: MutableList<SeekBar> = mutableListOf()
 
     fun setTrackValues(trackValues: Array<TrackValueData>, editable: Boolean) {
-        trackValues.forEachIndexed { index, trackValueData ->
-            addView(trackValueView(index, trackValueData, editable))
+        post {
+            trackValues.forEachIndexed { index, trackValueData ->
+                addView(trackValueView(index, trackValueData, editable))
+            }
         }
     }
 
@@ -36,14 +50,17 @@ class TrackValuesView(context: Context?) : LinearLayout(context) {
             id = index
             max = SEEK_BAR_MAX
             progress = trackValue.value
+            isEnabled = editable
         }
         seekBars.add(seekBar)
         return view
     }
 
     fun updateValues(values: IntArray) {
-        values.forEachIndexed { index, value ->
-            seekBars[index].progress = value
+        post {
+            values.forEachIndexed { index, value ->
+                seekBars[index].progress = value
+            }
         }
     }
 

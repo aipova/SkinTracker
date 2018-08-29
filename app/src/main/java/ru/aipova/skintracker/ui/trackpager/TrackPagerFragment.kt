@@ -10,7 +10,6 @@ import kotlinx.android.synthetic.main.track_pager_fragment.*
 import ru.aipova.skintracker.InjectionStub
 import ru.aipova.skintracker.R
 import ru.aipova.skintracker.ui.track.TrackValueData
-import ru.aipova.skintracker.ui.view.TrackValuesView
 import java.io.File
 import java.util.*
 
@@ -56,12 +55,7 @@ class TrackPagerFragment : Fragment(), TrackPagerContract.View {
     }
 
     override fun showTrackValues(trackValueData: Array<TrackValueData>) {
-        val trackValuesView = TrackValuesView(activity).apply {
-            setTrackValues(trackValueData, false)
-            setPadding()
-        }
-//        TODO check why not updated
-        valuesCard.addView(trackValuesView)
+        trackValuesView.setTrackValues(trackValueData, false)
     }
 
     override fun loadPhoto(photoFile: File) {
