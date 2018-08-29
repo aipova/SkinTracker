@@ -16,10 +16,15 @@ class TrackPresenter(
         trackView.presenter = this
     }
 
+    private var trackExists: Boolean = false
+
     override fun start() {
         loadPhotoIfExists()
         loadTrackValues()
-        showTrackNote(trackRepository.getTrackByDate(currentDate))
+        trackRepository.getTrackByDate(currentDate)?.let {
+            trackExists = true
+            showTrackNote(it)
+        }
     }
 
     private fun loadPhotoIfExists() {
@@ -34,8 +39,8 @@ class TrackPresenter(
         trackView.showTrackValues(trackValues)
     }
 
-    private fun showTrackNote(existingTrack: Track?) {
-        existingTrack?.note?.let {
+    private fun showTrackNote(existingTrack: Track) {
+        existingTrack.note?.let {
             trackView.setupNoteText(it)
         }
     }
@@ -53,7 +58,12 @@ class TrackPresenter(
         trackRepository.createOrUpdate(trackData, object : TrackRepository.CreateTrackCallback {
             override fun onTrackCreated() {
                 if (!trackView.isActive) return
-                trackView.showTrackCreatedMsg()
+                if (trackExists) {
+                    trackView.showTrackUpdatedMsg()
+                } else {
+                    trackView.showTrackCreatedMsg()
+                }
+
                 trackView.close()
             }
 

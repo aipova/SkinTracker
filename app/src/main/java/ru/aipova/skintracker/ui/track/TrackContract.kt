@@ -17,6 +17,7 @@ interface TrackContract {
         fun makePhoto(photoFile: File)
         fun loadPhoto(photoFile: File)
         fun showCannotLoadTrackMsg()
+        fun showTrackUpdatedMsg()
     }
 
     interface Presenter: BasePresenter {

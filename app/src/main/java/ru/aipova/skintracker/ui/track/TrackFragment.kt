@@ -135,7 +135,11 @@ class TrackFragment : Fragment(), TrackContract.View {
     }
 
     override fun showTrackCreatedMsg() {
-        Toast.makeText(activity, "Track Created", Toast.LENGTH_LONG).show()
+        Toast.makeText(activity, R.string.msg_track_created, Toast.LENGTH_LONG).show()
+    }
+
+    override fun showTrackUpdatedMsg() {
+        Toast.makeText(activity, R.string.msg_track_updated, Toast.LENGTH_LONG).show()
     }
 
     override fun close() {
@@ -144,16 +148,15 @@ class TrackFragment : Fragment(), TrackContract.View {
     }
 
     override fun showCannotCreateTrackMsg() {
-        Toast.makeText(activity, "Cannot create track", Toast.LENGTH_LONG).show()
+        Toast.makeText(activity, R.string.msg_cannot_create_track, Toast.LENGTH_LONG).show()
     }
 
     override fun showCannotLoadTrackMsg() {
-        Toast.makeText(activity, "Cannot load track", Toast.LENGTH_LONG).show()
+        Toast.makeText(activity, R.string.msg_cannot_load_track, Toast.LENGTH_LONG).show()
     }
 
     companion object {
         private const val SEEK_BAR_VALUES = "seek_bar"
-        private const val SEEK_BAR_MAX = 10
         private const val REQUEST_PHOTO = 1
         fun newInstance(): TrackFragment {
             return TrackFragment()

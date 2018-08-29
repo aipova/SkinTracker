@@ -18,4 +18,8 @@
     <string name="menu_track_type_settings">Track Type Settings</string>
     <string name="menu_statistics">Statistics</string>
     <string name="note_hint">Note for this day</string>
+    <string name="msg_track_created">New track was created</string>
+    <string name="msg_track_updated">Track was updated</string>
+    <string name="msg_cannot_create_track">Cannot create new Track</string>
+    <string name="msg_cannot_load_track">Cannot load track</string>
 </resources>
