@@ -39,19 +39,16 @@ class SkinTrackerApp : Application() {
         var skinQualityTrackType: TrackType = TrackType().apply {
             uuid = SKIN_QUALITY_TRACK_TYPE_UID
             name = SKIN_QUALITY_TRACK_NAME
-            removable = false
             setValueTypeEnum(ValueType.SEEK)
         }
         var pimplesCountTrackType: TrackType = TrackType().apply {
             uuid = PIMPLES_COUNT_TRACK_TYPE_UID
             name = PIMPLES_COUNT_TRACK_NAME
-            removable = false
             setValueTypeEnum(ValueType.AMOUNT)
         }
         var pimplesPickingTrackType: TrackType = TrackType().apply {
             uuid = PIMPLES_PICKING_TRACK_TYPE_UID
             name = PIMPLES_PICKING_TRACK_NAME
-            removable = false
             setValueTypeEnum(ValueType.BOOLEAN)
         }
         var initialTrackTypes = listOf(skinQualityTrackType, pimplesCountTrackType, pimplesPickingTrackType)
