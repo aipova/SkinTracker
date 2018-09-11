@@ -4,8 +4,13 @@ import android.app.Application
 import io.realm.Realm
 import io.realm.RealmConfiguration
 import ru.aipova.skintracker.model.TrackType
+import ru.aipova.skintracker.model.TrackType.Companion.PIMPLES_COUNT_TRACK_NAME
+import ru.aipova.skintracker.model.TrackType.Companion.PIMPLES_COUNT_TRACK_TYPE_UID
+import ru.aipova.skintracker.model.TrackType.Companion.PIMPLES_PICKING_TRACK_NAME
+import ru.aipova.skintracker.model.TrackType.Companion.PIMPLES_PICKING_TRACK_TYPE_UID
 import ru.aipova.skintracker.model.TrackType.Companion.SKIN_QUALITY_TRACK_NAME
 import ru.aipova.skintracker.model.TrackType.Companion.SKIN_QUALITY_TRACK_TYPE_UID
+import ru.aipova.skintracker.model.ValueType
 import ru.aipova.skintracker.model.source.TrackRepository
 import ru.aipova.skintracker.model.source.TrackTypeRepository
 import ru.aipova.skintracker.utils.PhotoUtils
@@ -25,7 +30,7 @@ class SkinTrackerApp : Application() {
 
     private fun getRealmConfiguration() =
         RealmConfiguration.Builder()
-            .initialData { realm -> realm.insertOrUpdate(skinQualityTrackType) }
+            .initialData { realm -> realm.insertOrUpdate(initialTrackTypes) }
             .deleteRealmIfMigrationNeeded()
             .build()
 
@@ -35,6 +40,20 @@ class SkinTrackerApp : Application() {
             uuid = SKIN_QUALITY_TRACK_TYPE_UID
             name = SKIN_QUALITY_TRACK_NAME
             removable = false
+            setValueTypeEnum(ValueType.SEEK)
         }
+        var pimplesCountTrackType: TrackType = TrackType().apply {
+            uuid = PIMPLES_COUNT_TRACK_TYPE_UID
+            name = PIMPLES_COUNT_TRACK_NAME
+            removable = false
+            setValueTypeEnum(ValueType.AMOUNT)
+        }
+        var pimplesPickingTrackType: TrackType = TrackType().apply {
+            uuid = PIMPLES_PICKING_TRACK_TYPE_UID
+            name = PIMPLES_PICKING_TRACK_NAME
+            removable = false
+            setValueTypeEnum(ValueType.BOOLEAN)
+        }
+        var initialTrackTypes = listOf(skinQualityTrackType, pimplesCountTrackType, pimplesPickingTrackType)
     }
 }

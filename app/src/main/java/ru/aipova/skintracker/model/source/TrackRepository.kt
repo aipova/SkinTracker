@@ -28,9 +28,21 @@ class TrackRepository(private val uiRealm: Realm) {
         val existingValues = getTrackByDate(date, uiRealm)?.values
         return trackTypes.map { trackType ->
             val value = getExistingValueOrZero(existingValues, trackType)
-            TrackValueData(trackType.uuid, trackType.name ?: "", value)
+            toData(trackType, value)
         }.toTypedArray()
     }
+
+    private fun toData(
+        trackType: TrackType,
+        value: Int
+    ) =
+        TrackValueData(
+            trackType.uuid,
+            trackType.name ?: "",
+            trackType.getValueTypeEnum(),
+            value,
+            trackType.maxValue.toInt()
+        )
 
     private fun getExistingValueOrZero(
         existingValues: RealmList<TrackValue>?,

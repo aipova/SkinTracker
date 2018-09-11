@@ -11,10 +11,23 @@ open class TrackType : RealmObject(), Serializable {
     var uuid: String = UUID.randomUUID().toString()
     var removable: Boolean = true
     var name: String? = null
-    var removed: Boolean = false
+    var valueType: String = ValueType.SEEK.name
+    var maxValue: Long = 10L
+
+    fun setValueTypeEnum(valueType: ValueType) {
+        this.valueType = valueType.name
+    }
+
+    fun getValueTypeEnum(): ValueType {
+        return ValueType.valueOf(valueType)
+    }
 
     companion object {
-        public const val SKIN_QUALITY_TRACK_TYPE_UID = "skin-quality"
-        public const val SKIN_QUALITY_TRACK_NAME = "Skin Quality"
+        const val SKIN_QUALITY_TRACK_TYPE_UID = "skin-quality"
+        const val SKIN_QUALITY_TRACK_NAME = "Skin Quality"
+        const val PIMPLES_COUNT_TRACK_TYPE_UID = "pimples-amount"
+        const val PIMPLES_COUNT_TRACK_NAME = "Pimples Amount"
+        const val PIMPLES_PICKING_TRACK_TYPE_UID = "pimples-picking"
+        const val PIMPLES_PICKING_TRACK_NAME = "Pimples Picking"
     }
 }

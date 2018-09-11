@@ -82,7 +82,6 @@ class TrackPagerFragment : Fragment(), TrackPagerContract.View {
 
     companion object {
         private const val DATE = "date"
-        private const val SEEK_BAR_MAX = 10
 
         fun getInstance(date: Date): TrackPagerFragment {
             val bundle = Bundle().apply { putSerializable(DATE, date) }

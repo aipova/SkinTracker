@@ -8,8 +8,11 @@ import android.view.LayoutInflater
 import android.view.View
 import android.widget.LinearLayout
 import android.widget.SeekBar
+import android.widget.Switch
 import android.widget.TextView
+import com.travijuu.numberpicker.library.NumberPicker
 import ru.aipova.skintracker.R
+import ru.aipova.skintracker.model.ValueType
 import ru.aipova.skintracker.ui.track.TrackValueData
 
 class TrackValuesView : LinearLayout {
@@ -33,7 +36,7 @@ class TrackValuesView : LinearLayout {
         orientation = LinearLayout.VERTICAL
     }
 
-    private var seekBars: MutableList<SeekBar> = mutableListOf()
+    private var views: MutableList<View> = mutableListOf()
 
     fun setTrackValues(trackValues: Array<TrackValueData>, editable: Boolean) {
         post {
@@ -45,32 +48,90 @@ class TrackValuesView : LinearLayout {
 
     private fun trackValueView(index: Int, trackValue: TrackValueData, editable: Boolean): View {
         val view = LayoutInflater.from(context).inflate(R.layout.track_value_item, this, false)
-        view.findViewById<TextView>(R.id.nameTxt).apply { text = trackValue.name }
-        val seekBar = view.findViewById<SeekBar>(R.id.valueSeekBar).apply {
-            id = index
-            max = SEEK_BAR_MAX
-            progress = trackValue.value
-            isEnabled = editable
+        val trackNameTxt = view.findViewById<TextView>(R.id.nameTxt).apply { text = trackValue.name }
+        when(trackValue.type) {
+            ValueType.SEEK -> {
+                if (editable) {
+                    val seekBar = view.findViewById<SeekBar>(R.id.valueSeekBar).apply {
+                        id = index
+                        max = trackValue.max
+                        progress = trackValue.value
+                        visibility = View.VISIBLE
+                    }
+                    views.add(seekBar)
+                } else {
+                    trackNameTxt.text = seekText(trackValue)
+                }
+
+            }
+            ValueType.AMOUNT -> {
+                if (editable) {
+                    val number = view.findViewById<NumberPicker>(R.id.valueNum).apply {
+                        id = index
+                        value = trackValue.value
+                        visibility = View.VISIBLE
+                    }
+                    views.add(number)
+                } else {
+                    trackNameTxt.text = amountText(trackValue)
+                }
+            }
+            ValueType.BOOLEAN -> {
+                if (editable) {
+                    val switch = view.findViewById<Switch>(R.id.valueSwitch).apply {
+                        id = index
+                        isChecked = trackValue.value != 0
+                        isEnabled = editable
+                        visibility = View.VISIBLE
+                    }
+                    views.add(switch)
+                } else {
+                    trackNameTxt.text = booleanText(trackValue)
+                }
+
+            }
         }
-        seekBars.add(seekBar)
+
         return view
     }
+
+    private fun amountText(trackValue: TrackValueData) =
+        context.getString(R.string.track_value_amount, trackValue.name, trackValue.value.toString())
+
+    private fun seekText(trackValue: TrackValueData) =
+        context.getString(
+            R.string.track_value_seek,
+            trackValue.name,
+            trackValue.value.toString(),
+            trackValue.max.toString()
+        )
+
+    private fun booleanText(trackValue: TrackValueData) =
+        context.getString(
+            if (trackValue.value == 0) R.string.track_value_boolean_false else R.string.track_value_boolean_true,
+            trackValue.name
+        )
+
 
     fun updateValues(values: IntArray) {
         post {
             values.forEachIndexed { index, value ->
-                seekBars[index].progress = value
+                val view = views[index]
+                when(view) {
+                    is SeekBar -> { view.progress = value }
+                    is NumberPicker -> { view.value = value }
+                    is Switch -> { view.isChecked = value != 0 }
+                }
             }
         }
     }
 
-    fun getTrackValues() = seekBars.map { it.progress }.toIntArray()
-
-    companion object {
-        const val SEEK_BAR_MAX = 10
-    }
-
-
-
-
+    fun getTrackValues() = views.map {
+        when(it) {
+            is SeekBar -> it.progress
+            is NumberPicker -> it.value
+            is Switch -> if (it.isChecked) 1 else 0
+            else -> 0
+        }
+    }.toIntArray()
 }
