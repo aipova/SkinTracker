@@ -10,6 +10,12 @@ ext {
     realmAdaptersVersion = '2.1.1'
     realmFieldsVersion = '1.1.1'
     daggerVersion = '2.16'
+    jodaTimeVersion = '2.10'
+    picassoVersion = '2.71828'
+    rxJavaVersion = '2.2.0'
+    rxAndroidVersion = '2.0.2'
+    numberPickerVersion = '1.0.7'
+    butterknifeVersion = '8.8.1'
 }
 
 buildscript {
