@@ -2,6 +2,7 @@ package ru.aipova.skintracker.ui.tracktype
 
 import io.realm.RealmResults
 import ru.aipova.skintracker.model.TrackType
+import ru.aipova.skintracker.model.ValueType
 import ru.aipova.skintracker.model.source.TrackTypeRepository
 
 class TrackTypePresenter(
@@ -35,12 +36,23 @@ class TrackTypePresenter(
         trackTypeRepository.removeTrackType(trackTypeUid)
     }
 
-    override fun editTrackTypeName(trackTypeUid: String, trackTypeName: String) {
-        trackTypeRepository.editTrackTypeName(trackTypeUid, trackTypeName)
+    override fun editTrackTypeName(
+        trackTypeUid: String,
+        trackTypeName: String,
+        selectedValueType: ValueType,
+        min: Int,
+        max: Int
+    ) {
+        trackTypeRepository.editTrackType(trackTypeUid, trackTypeName, selectedValueType, min, max)
     }
 
-    override fun createNewTrackType(trackTypeName: String) {
-        trackTypeRepository.createNewTrackType(trackTypeName,
+    override fun createNewTrackType(
+        trackTypeName: String,
+        selectedValueType: ValueType,
+        min: Int,
+        max: Int
+    ) {
+        trackTypeRepository.createNewTrackType(trackTypeName, selectedValueType, min, max,
             object : TrackTypeRepository.CreateTrackTypeCallback {
                 override fun onTrackTypeCreated() {
                     trackTypeView.showTrackTypeCreatedMsg(trackTypeName)

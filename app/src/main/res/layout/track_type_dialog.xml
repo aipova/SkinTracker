@@ -10,14 +10,16 @@
         android:id="@+id/trackTypeNameTxtLayout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_marginBottom="8dp"
         android:layout_marginEnd="8dp"
         android:layout_marginStart="8dp"
         android:layout_marginTop="16dp"
         app:errorEnabled="true"
-        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintBottom_toTopOf="@+id/trackTypeSpinner"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent">
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_chainStyle="packed">
 
         <android.support.design.widget.TextInputEditText
             android:id="@+id/trackTypeNameEditTxt"
@@ -25,5 +27,80 @@
             android:layout_height="wrap_content"
             android:hint="@string/track_type_name"/>
     </android.support.design.widget.TextInputLayout>
+
+    <Spinner
+        android:id="@+id/trackTypeSpinner"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="8dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="8dp"
+        app:layout_constraintBottom_toTopOf="@+id/fromNumberPicker"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/trackTypeNameTxtLayout"/>
+
+    <TextView
+        android:id="@+id/fromTxt"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="8dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="8dp"
+        android:text="@string/from"
+        android:textAppearance="@style/TextAppearance.AppCompat.Medium"
+        app:layout_constraintBottom_toBottomOf="@+id/fromNumberPicker"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/fromNumberPicker"/>
+
+    <com.travijuu.numberpicker.library.NumberPicker
+        android:id="@+id/fromNumberPicker"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="8dp"
+        app:value="0"
+        app:layout_constraintBottom_toTopOf="@+id/toNumberPicker"
+        app:layout_constraintStart_toEndOf="@+id/txtBarrier"
+        app:layout_constraintTop_toBottomOf="@+id/trackTypeSpinner"/>
+
+    <TextView
+        android:id="@+id/toTxt"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="8dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="8dp"
+        android:text="@string/to"
+        android:textAppearance="@style/TextAppearance.AppCompat.Medium"
+        app:layout_constraintBottom_toBottomOf="@+id/toNumberPicker"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/toNumberPicker"/>
+
+    <com.travijuu.numberpicker.library.NumberPicker
+        android:id="@+id/toNumberPicker"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="8dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="8dp"
+        app:value="10"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/txtBarrier"
+        app:layout_constraintTop_toBottomOf="@+id/fromNumberPicker"/>
+
+    <android.support.constraint.Barrier
+        android:id="@+id/txtBarrier"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:barrierDirection="end"
+        app:constraint_referenced_ids="fromTxt,toTxt"/>
+
+    <android.support.constraint.Group
+        android:id="@+id/rangeGroup"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:constraint_referenced_ids="fromTxt,fromNumberPicker,toTxt,toNumberPicker"/>
 
 </android.support.constraint.ConstraintLayout>

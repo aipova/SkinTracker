@@ -3,17 +3,29 @@ package ru.aipova.skintracker.ui.tracktype.dialog
 import android.os.Bundle
 import ru.aipova.skintracker.R
 import ru.aipova.skintracker.model.TrackType
+import ru.aipova.skintracker.model.ValueType
 
 class TrackTypeEditDialog : TrackTypeDialog() {
 
     interface Callbacks {
-        fun onEditTrackType(trackType: TrackType, trackTypeName: String)
+        fun onEditTrackType(
+            trackType: TrackType,
+            trackTypeName: String,
+            selectedValueType: ValueType,
+            min: Int,
+            max: Int
+        )
     }
 
-    override fun onOkButtonClick(trackTypeName: String) {
+    override fun onOkButtonClick(
+        trackTypeName: String,
+        selectedValueType: ValueType,
+        min: Int,
+        max: Int
+    ) {
         parentFragment.let {
             if (it is Callbacks) {
-                it.onEditTrackType(getTrackType(), trackTypeName)
+                it.onEditTrackType(getTrackType(), trackTypeName, selectedValueType, min, max)
             }
         }
     }
@@ -22,11 +34,22 @@ class TrackTypeEditDialog : TrackTypeDialog() {
 
     override fun getTitle(): Int {
         return R.string.title_edit_track_type
-
     }
 
     override fun getNameText(): String? {
         return getTrackType().name
+    }
+
+    override fun getValueType(): ValueType {
+        return getTrackType().getValueTypeEnum()
+    }
+
+    override fun getMinValue(): Int {
+        return getTrackType().minValue.toInt()
+    }
+
+    override fun getMaxValue(): Int {
+        return getTrackType().maxValue.toInt()
     }
 
     companion object {

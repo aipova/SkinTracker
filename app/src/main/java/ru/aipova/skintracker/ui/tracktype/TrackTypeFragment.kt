@@ -13,6 +13,7 @@ import io.realm.RealmResults
 import kotlinx.android.synthetic.main.track_type_fragment.*
 import ru.aipova.skintracker.R
 import ru.aipova.skintracker.model.TrackType
+import ru.aipova.skintracker.model.ValueType
 import ru.aipova.skintracker.ui.tracktype.dialog.TrackTypeCreateDialog
 import ru.aipova.skintracker.ui.tracktype.dialog.TrackTypeEditDialog
 
@@ -22,12 +23,23 @@ class TrackTypeFragment : Fragment(), TrackTypeContract.View, TrackTypeCreateDia
     override var isActive: Boolean = false
         get() = isAdded
 
-    override fun onCreateNewTrackType(trackTypeName: String) {
-        presenter.createNewTrackType(trackTypeName)
+    override fun onCreateNewTrackType(
+        trackTypeName: String,
+        selectedValueType: ValueType,
+        min: Int,
+        max: Int
+    ) {
+        presenter.createNewTrackType(trackTypeName, selectedValueType, min, max)
     }
 
-    override fun onEditTrackType(trackType: TrackType, trackTypeName: String) {
-        presenter.editTrackTypeName(trackType.uuid, trackTypeName)
+    override fun onEditTrackType(
+        trackType: TrackType,
+        trackTypeName: String,
+        selectedValueType: ValueType,
+        min: Int,
+        max: Int
+    ) {
+        presenter.editTrackTypeName(trackType.uuid, trackTypeName, selectedValueType, min, max)
     }
 
     fun onRemoveTrackType(trackTypeUid: String) {

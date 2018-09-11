@@ -13,6 +13,7 @@ open class TrackType : RealmObject(), Serializable {
     var name: String? = null
     var valueType: String = ValueType.SEEK.name
     var maxValue: Long = 10L
+    var minValue: Long = 0L
 
     fun setValueTypeEnum(valueType: ValueType) {
         this.valueType = valueType.name

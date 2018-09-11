@@ -3,10 +3,7 @@ package ru.aipova.skintracker.model.source
 import io.realm.Realm
 import io.realm.RealmResults
 import io.realm.kotlin.where
-import ru.aipova.skintracker.model.TrackType
-import ru.aipova.skintracker.model.TrackTypeFields
-import ru.aipova.skintracker.model.TrackValue
-import ru.aipova.skintracker.model.TrackValueFields
+import ru.aipova.skintracker.model.*
 
 class TrackTypeRepository(private val uiRealm: Realm) {
 
@@ -17,25 +14,46 @@ class TrackTypeRepository(private val uiRealm: Realm) {
 
     fun removeTrackType(trackTypeUid: String) {
         uiRealm.executeTransactionAsync { bgRealm ->
-            val trackType = bgRealm.where<TrackType>().equalTo(TrackTypeFields.UUID, trackTypeUid).findFirst()
-            val tracks = bgRealm.where<TrackValue>().equalTo(TrackValueFields.TRACK_TYPE.UUID, trackTypeUid).findAll()
+            val trackType =
+                bgRealm.where<TrackType>().equalTo(TrackTypeFields.UUID, trackTypeUid).findFirst()
+            val tracks =
+                bgRealm.where<TrackValue>().equalTo(TrackValueFields.TRACK_TYPE.UUID, trackTypeUid)
+                    .findAll()
             tracks.deleteAllFromRealm()
             trackType?.deleteFromRealm()
         }
     }
 
-    fun editTrackTypeName(trackTypeUid: String, trackTypeName: String) {
+    fun editTrackType(
+        trackTypeUid: String,
+        trackTypeName: String,
+        valueType: ValueType,
+        min: Int,
+        max: Int
+    ) {
         uiRealm.executeTransactionAsync { bgRealm ->
             val trackTypeManaged =
                 bgRealm.where<TrackType>().equalTo(TrackTypeFields.UUID, trackTypeUid).findFirst()
-            trackTypeManaged?.name = trackTypeName
+            trackTypeManaged?.apply {
+                name = trackTypeName
+                setValueTypeEnum(valueType)
+                maxValue = max.toLong()
+                minValue = min.toLong()
+            }
         }
     }
 
-    fun createNewTrackType(trackTypeName: String, callback: CreateTrackTypeCallback) {
+    fun createNewTrackType(
+        trackTypeName: String, valueType: ValueType,
+        min: Int,
+        max: Int, callback: CreateTrackTypeCallback
+    ) {
         uiRealm.executeTransactionAsync({ bgRealm ->
             bgRealm.insert(TrackType().apply {
                 name = trackTypeName
+                setValueTypeEnum(valueType)
+                maxValue = max.toLong()
+                minValue = min.toLong()
             })
         }, { callback.onTrackTypeCreated() }, { callback.onError() })
     }

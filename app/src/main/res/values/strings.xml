@@ -26,4 +26,9 @@
     <string name="track_value_amount">%1$s: %2$s</string>
     <string name="track_value_boolean_true">%1$s: Yes</string>
     <string name="track_value_boolean_false">%1$s: NO</string>
+    <string name="from">From</string>
+    <string name="to">to</string>
+    <string name="range">Range</string>
+    <string name="yes_no">Yes/No</string>
+    <string name="amount">Amount</string>
 </resources>

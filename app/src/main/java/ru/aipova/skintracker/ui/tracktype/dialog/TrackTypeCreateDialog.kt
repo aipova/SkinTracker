@@ -1,17 +1,28 @@
 package ru.aipova.skintracker.ui.tracktype.dialog
 
 import ru.aipova.skintracker.R
+import ru.aipova.skintracker.model.ValueType
 
 class TrackTypeCreateDialog : TrackTypeDialog() {
 
     interface Callbacks {
-        fun onCreateNewTrackType(trackTypeName: String)
+        fun onCreateNewTrackType(
+            trackTypeName: String,
+            selectedValueType: ValueType,
+            min: Int,
+            max: Int
+        )
     }
 
-    override fun onOkButtonClick(trackTypeName: String) {
+    override fun onOkButtonClick(
+        trackTypeName: String,
+        selectedValueType: ValueType,
+        min: Int,
+        max: Int
+    ) {
         parentFragment.let {
             if (it is Callbacks) {
-                it.onCreateNewTrackType(trackTypeName)
+                it.onCreateNewTrackType(trackTypeName, selectedValueType, min, max)
             }
         }
     }
