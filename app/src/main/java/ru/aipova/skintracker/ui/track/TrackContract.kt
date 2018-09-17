@@ -1,7 +1,7 @@
 package ru.aipova.skintracker.ui.track
 
 import ru.aipova.skintracker.ui.BaseView
-import ru.aipova.skintracker.ui.statistics.BasePresenter
+import ru.aipova.skintracker.ui.BasePresenter
 import java.io.File
 
 interface TrackContract {

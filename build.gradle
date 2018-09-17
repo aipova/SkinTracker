@@ -16,6 +16,7 @@ ext {
     rxAndroidVersion = '2.0.2'
     numberPickerVersion = '1.0.7'
     butterknifeVersion = '8.8.1'
+    mpAndroidChartVersion = 'v3.0.3'
 }
 
 buildscript {
@@ -37,6 +38,7 @@ allprojects {
     repositories {
         google()
         jcenter()
+        maven { url 'https://jitpack.io' }
     }
 }
 

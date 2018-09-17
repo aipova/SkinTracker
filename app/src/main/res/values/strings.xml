@@ -31,4 +31,11 @@
     <string name="range">Range</string>
     <string name="yes_no">Yes/No</string>
     <string name="amount">Amount</string>
+    <string name="period">Period</string>
+    <string name="date_range">%1$s - %2$s</string>
+    <string-array name="date_range_array">
+        <item>Week</item>
+        <item>Month</item>
+        <item>Custom</item>
+    </string-array>
 </resources>

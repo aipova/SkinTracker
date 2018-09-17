@@ -48,12 +48,14 @@ dependencies {
     implementation "com.google.dagger:dagger-android:$daggerVersion"
     kapt "com.google.dagger:dagger-android-processor:$daggerVersion"
 
+    implementation "com.jakewharton:butterknife:$butterknifeVersion"
+    kapt "com.jakewharton:butterknife-compiler:$butterknifeVersion"
+
     implementation "joda-time:joda-time:$jodaTimeVersion"
     implementation "com.squareup.picasso:picasso:$picassoVersion"
     implementation "io.reactivex.rxjava2:rxjava:$rxJavaVersion"
     implementation "io.reactivex.rxjava2:rxandroid:$rxAndroidVersion"
     implementation "com.github.travijuu:numberpicker:$numberPickerVersion"
+    implementation "com.github.PhilJay:MPAndroidChart:$mpAndroidChartVersion"
 
-    implementation "com.jakewharton:butterknife:$butterknifeVersion"
-    kapt "com.jakewharton:butterknife-compiler:$butterknifeVersion"
 }

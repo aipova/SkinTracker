@@ -4,7 +4,7 @@ import io.realm.RealmResults
 import ru.aipova.skintracker.model.TrackType
 import ru.aipova.skintracker.model.ValueType
 import ru.aipova.skintracker.ui.BaseView
-import ru.aipova.skintracker.ui.statistics.BasePresenter
+import ru.aipova.skintracker.ui.BasePresenter
 
 interface TrackTypeContract {
     interface View: BaseView<Presenter> {
