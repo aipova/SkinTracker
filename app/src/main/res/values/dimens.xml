@@ -9,4 +9,5 @@
     <dimen name="photo_width">200dp</dimen>
     <dimen name="photo_height">220dp</dimen>
     <dimen name="small_margin">8dp</dimen>
+    <dimen name="date_btn_height">40dp</dimen>
 </resources>

@@ -10,7 +10,7 @@ open class TrackType : RealmObject(), Serializable {
     @PrimaryKey
     var uuid: String = UUID.randomUUID().toString()
     var removable: Boolean = true
-    var name: String? = null
+    var name: String = ""
     var valueType: String = ValueType.SEEK.name
     var maxValue: Long = 10L
     var minValue: Long = 0L
@@ -25,10 +25,7 @@ open class TrackType : RealmObject(), Serializable {
 
     companion object {
         const val SKIN_QUALITY_TRACK_TYPE_UID = "skin-quality"
-        const val SKIN_QUALITY_TRACK_NAME = "Skin Quality"
         const val PIMPLES_COUNT_TRACK_TYPE_UID = "pimples-amount"
-        const val PIMPLES_COUNT_TRACK_NAME = "Pimples Amount"
         const val PIMPLES_PICKING_TRACK_TYPE_UID = "pimples-picking"
-        const val PIMPLES_PICKING_TRACK_NAME = "Pimples Picking"
     }
 }

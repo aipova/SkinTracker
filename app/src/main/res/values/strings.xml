@@ -10,7 +10,7 @@
     <string name="err_track_type_empty_name">You need to enter name</string>
     <string name="msg_remove_track_type">Are you sure you want to remove Track Type \"%1$s\"?</string>
     <string name="msg_track_type_created">Track Type \"%1$s\" was created</string>
-    <string name="err_cannot_create_track_type">Cannot create Track Type, please try later</string>
+    <string name="err_cannot_create_track_type">Cannot create Track Type</string>
     <string name="msg_no_track_types">You have no Track Types</string>
     <string name="action_diary">Diary</string>
     <string name="navigation_drawer_open">Open navigation drawer</string>
@@ -25,7 +25,7 @@
     <string name="track_value_seek">%1$s: %2$s from %3$s</string>
     <string name="track_value_amount">%1$s: %2$s</string>
     <string name="track_value_boolean_true">%1$s: Yes</string>
-    <string name="track_value_boolean_false">%1$s: NO</string>
+    <string name="track_value_boolean_false">%1$s: No</string>
     <string name="from">From</string>
     <string name="to">to</string>
     <string name="range">Range</string>
@@ -33,9 +33,14 @@
     <string name="amount">Amount</string>
     <string name="period">Period</string>
     <string name="date_range">%1$s - %2$s</string>
+    <string name="msg_no_chart_data">You don\'t have diary records for period</string>
+    <string name="msg_empty_diary">Here will be your photo and skin track</string>
+    <string name="diary">Diary</string>
+    <string name="track_type_name_pimples_amount">Pimples amount</string>
+    <string name="track_type_name_pimples_picking">Pimples picking</string>
     <string-array name="date_range_array">
-        <item>Week</item>
-        <item>Month</item>
-        <item>Custom</item>
+        <item>Last week</item>
+        <item>Last month</item>
+        <item>Custom range</item>
     </string-array>
 </resources>

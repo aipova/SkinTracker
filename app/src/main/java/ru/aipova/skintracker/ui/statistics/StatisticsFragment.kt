@@ -8,6 +8,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.AdapterView
 import android.widget.ArrayAdapter
+import android.widget.CheckBox
 import com.github.mikephil.charting.components.XAxis
 import com.github.mikephil.charting.data.Entry
 import com.github.mikephil.charting.data.LineData
@@ -31,6 +32,8 @@ class StatisticsFragment : Fragment() {
     private lateinit var trackTypes: RealmResults<TrackType>
     private val xAxisValues = mutableListOf<String>()
     private val colors = ColorTemplate.COLORFUL_COLORS
+        .plus(ColorTemplate.JOYFUL_COLORS)
+        .plus(ColorTemplate.VORDIPLOM_COLORS)
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -46,16 +49,49 @@ class StatisticsFragment : Fragment() {
         realm.close()
     }
 
-    private var datasets = mutableListOf<ILineDataSet>()
+    private var dataset = mutableMapOf<String, ILineDataSet>()
+    private var legendColors = mutableMapOf<TrackType, Int>()
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         // TODO async
-        trackTypes = realm.where<TrackType>().`in`(TrackTypeFields.VALUE_TYPE, arrayOf(ValueType.SEEK.name, ValueType.AMOUNT.name)).findAll()
+        trackTypes = realm.where<TrackType>()
+            .`in`(TrackTypeFields.VALUE_TYPE, arrayOf(ValueType.SEEK.name, ValueType.AMOUNT.name))
+            .findAll()
+        setupChartLegend()
         setupChartProperties()
+        setupDateRange()
+    }
+
+    private fun setupDateRange() {
         setupDateRangeSelection()
         dateFromBtn.setOnClickListener { showStartDatePickerDialog() }
         dateToBtn.setOnClickListener { showEndDatePickerDialog() }
         dateRangeSpinner.setSelection(0)
+    }
+
+    private fun setupChartLegend() {
+        setupLegendColors()
+        drawLegend()
+    }
+
+    private fun drawLegend() {
+        legendColors.forEach { (trackType, color) ->
+            val checkBox = CheckBox(activity)
+            checkBox.text = trackType.name
+            checkBox.isChecked = true
+            checkBox.setTextColor(color)
+            checkBox.setOnCheckedChangeListener { buttonView, isChecked -> redrawChart() }
+            legendLayout.addView(checkBox)
+        }
+    }
+
+    private fun setupLegendColors() {
+        var colorIndex = 0
+        trackTypes.forEach {
+            val color = if (colorIndex < colors.size) colorIndex else colorIndex.rem(colors.size)
+            legendColors[it] = colors[color]
+            colorIndex++
+        }
     }
 
     private fun setupDateRangeSelection() {
@@ -133,31 +169,51 @@ class StatisticsFragment : Fragment() {
 
     fun resetChart() {
         setDateRangeText(startDate, endDate)
-        datasets.clear()
-        xAxisValues.clear()
+        clearOldData()
+        loadData()
+        redrawChart()
+    }
 
+    private fun clearOldData() {
+        dataset.clear()
+        xAxisValues.clear()
+    }
+
+    private fun loadData() {
         val tracksMap = fillValuesMap(startDate, endDate)
-        if (tracksMap.isNotEmpty()) {
-            fillDataset(tracksMap)
-            chart.data = LineData(datasets)
+        fillDataset(tracksMap)
+    }
+
+    private fun redrawChart() {
+        val selectedDataset = (0 until legendLayout.childCount)
+            .map { index -> legendLayout.getChildAt(index) as CheckBox}
+            .filter { it.isChecked }
+            .map { it.text }
+            .mapNotNull { dataset[it] }
+        if (selectedDataset.isNotEmpty()) {
+            chart.data = LineData(selectedDataset)
             chart.invalidate()
+        } else {
+            chart.clear()
         }
+
 
     }
 
     private fun fillDataset(tracksMap: MutableMap<TrackType, MutableList<Entry>>) {
-        var colorIndex = 0
         tracksMap.forEach { (trackType, values) ->
             val line = LineDataSet(values, trackType.name)
-            val color = if (colorIndex < colors.size) colorIndex else colorIndex.rem(colors.size)
-            line.color = colors[color]
+            line.color = legendColors[trackType]!!
             line.circleColors = listOf(line.color)
-            datasets.add(line)
-            colorIndex++
+            // TODO validate unique name on creation
+            dataset[trackType.name] = line
         }
     }
 
-    private fun fillValuesMap(startDate: Date, endDate: Date): MutableMap<TrackType, MutableList<Entry>> {
+    private fun fillValuesMap(
+        startDate: Date,
+        endDate: Date
+    ): MutableMap<TrackType, MutableList<Entry>> {
         val tracksMap = mutableMapOf<TrackType, MutableList<Entry>>()
         val tracks = realm.where<Track>().between(TrackFields.DATE, startDate, endDate)
             .sort(TrackFields.DATE).findAll()
@@ -199,10 +255,10 @@ class StatisticsFragment : Fragment() {
     private fun setupChartProperties() {
         with(chart) {
             description.isEnabled = false
-            setNoDataText("You don't have any diary records")
             setDrawBorders(true)
             setTouchEnabled(false)
             legend.isEnabled = false
+            setNoDataText(getString(R.string.msg_no_chart_data))
 
             axisLeft.setDrawGridLines(false)
             axisRight.setDrawGridLines(false)
@@ -226,7 +282,6 @@ class StatisticsFragment : Fragment() {
             }
         }
     }
-
 
 
     companion object {
