@@ -23,6 +23,23 @@ class TrackRepository(private val uiRealm: Realm) {
         return realm.where<Track>().equalTo(TrackFields.DATE, date).findFirst()
     }
 
+    fun findTracks(startDate: Date, endDate: Date): List<TrackData> {
+        Realm.getDefaultInstance().use {
+            val tracks = it.where<Track>()
+                .between(TrackFields.DATE, startDate, endDate)
+                .sort(TrackFields.DATE)
+                .findAll()
+            return tracks.map { toData(it) }
+        }
+    }
+
+    private fun toData(track: Track): TrackData {
+        val trackValues = track.values.map { trackValue ->
+            toData(trackValue.trackType!!, trackValue.value?.toInt() ?: 0)
+        }
+        return TrackData(track.date!!, track.note!!, trackValues.toTypedArray())
+    }
+
     fun getTrackValuesData(date: Date): Array<TrackValueData> {
         val trackTypes = uiRealm.where<TrackType>().findAll()
         val existingValues = getTrackByDate(date, uiRealm)?.values

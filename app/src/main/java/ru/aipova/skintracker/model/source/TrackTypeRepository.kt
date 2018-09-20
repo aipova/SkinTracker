@@ -62,8 +62,12 @@ class TrackTypeRepository(private val uiRealm: Realm) {
         return uiRealm.where<TrackType>().equalTo(TrackTypeFields.REMOVABLE, true).findAllAsync()
     }
 
-    fun getTrackTypesSnapshot(): List<TrackType> {
-//        TODO add ordering
-        return uiRealm.where<TrackType>().findAll().createSnapshot()
+    fun getChartTrackTypeNames(): List<String> {
+        return Realm.getDefaultInstance().use {
+            it.where<TrackType>()
+                .`in`(TrackTypeFields.VALUE_TYPE, arrayOf(ValueType.SEEK.name, ValueType.AMOUNT.name))
+                .findAll()
+                .map { it.name }
+        }
     }
 }
