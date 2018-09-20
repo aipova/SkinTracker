@@ -57,5 +57,6 @@ dependencies {
     implementation "io.reactivex.rxjava2:rxandroid:$rxAndroidVersion"
     implementation "com.github.travijuu:numberpicker:$numberPickerVersion"
     implementation "com.github.PhilJay:MPAndroidChart:$mpAndroidChartVersion"
+    implementation "com.getbase:floatingactionbutton:$fabVersion"
 
 }

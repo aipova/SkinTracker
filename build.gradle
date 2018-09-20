@@ -17,6 +17,7 @@ ext {
     numberPickerVersion = '1.0.7'
     butterknifeVersion = '8.8.1'
     mpAndroidChartVersion = 'v3.0.3'
+    fabVersion = '1.10.1'
 }
 
 buildscript {

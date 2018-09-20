@@ -40,7 +40,7 @@ class TrackPagerActivity : AppCompatActivity(), NavigationView.OnNavigationItemS
     }
 
     private fun setupEditButton() {
-        trackAddFab.setOnClickListener {
+        fabAddParameters.setOnClickListener {
             startActivityForResult(
                 TrackActivity.createIntent(
                     this,

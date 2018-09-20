@@ -29,13 +29,48 @@
 
         <include layout="@layout/track_pager_content"/>
 
-        <android.support.design.widget.FloatingActionButton
-            android:id="@+id/trackAddFab"
+        <com.getbase.floatingactionbutton.FloatingActionsMenu
+            android:id="@+id/multiple_actions"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="bottom|end"
             android:layout_margin="@dimen/fab_margin"
-            app:srcCompat="@drawable/ic_edit"/>
+            app:fab_addButtonColorNormal="@color/colorAccent"
+            app:fab_addButtonColorPressed="@color/colorAccentDark"
+            app:fab_addButtonPlusIconColor="@color/white"
+            app:fab_labelStyle="@style/fab_labels_style">
+
+            <com.getbase.floatingactionbutton.FloatingActionButton
+                android:id="@+id/fabAddNote"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:fab_icon="@drawable/ic_edit"
+                app:fab_size="mini"
+                app:fab_colorNormal="@color/colorAccentLight"
+                app:fab_title="Add note"
+                app:fab_colorPressed="@color/colorAccent"/>
+
+            <com.getbase.floatingactionbutton.FloatingActionButton
+                android:id="@+id/fabAddPhoto"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:fab_icon="@drawable/ic_camera"
+                app:fab_size="mini"
+                app:fab_colorNormal="@color/colorAccentLight"
+                app:fab_title="Add photo"
+                app:fab_colorPressed="@color/colorAccent"/>
+
+            <com.getbase.floatingactionbutton.FloatingActionButton
+                android:id="@+id/fabAddParameters"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:fab_icon="@drawable/ic_params"
+                app:fab_size="mini"
+                app:fab_colorNormal="@color/colorAccentLight"
+                app:fab_title="Add parameters"
+                app:fab_colorPressed="@color/colorAccent"/>
+
+        </com.getbase.floatingactionbutton.FloatingActionsMenu>
 
     </android.support.design.widget.CoordinatorLayout>
 
