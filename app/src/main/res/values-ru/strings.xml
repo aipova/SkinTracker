@@ -37,8 +37,11 @@
     <string name="msg_no_chart_data">Нет записей в дневнике за период</string>
     <string name="msg_empty_diary">Здесь будет ваше фото, заметки и параметры за день</string>
     <string name="diary">Дневник</string>
-    <string name="track_type_name_pimples_amount">Количество прыщиков</string>
+    <string name="track_type_name_pimples_amount">Количество прыщей</string>
     <string name="track_type_name_pimples_picking">Ковыряние</string>
+    <string name="add_photo">Фото</string>
+    <string name="add_note">Заметка</string>
+    <string name="add_parameters">Параметры</string>
     <string-array name="date_range_array">
         <item>Последняя неделя</item>
         <item>Последний месяц</item>

@@ -2,14 +2,14 @@ package ru.aipova.skintracker.ui.trackpager
 
 import ru.aipova.skintracker.model.Track
 import ru.aipova.skintracker.model.source.TrackRepository
-import ru.aipova.skintracker.utils.PhotoUtils
+import ru.aipova.skintracker.utils.PhotoFileConstructor
 import java.util.*
 
 class TrackPagerPresenter(
     private var trackPagerView: TrackPagerContract.View,
     private var currentDate: Date,
     private val trackRepository: TrackRepository,
-    private val photoUtils: PhotoUtils
+    private val photoFileConstructor: PhotoFileConstructor
 ) : TrackPagerContract.Presenter {
     init {
         trackPagerView.presenter = this
@@ -38,7 +38,7 @@ class TrackPagerPresenter(
     }
 
     private fun loadPhoto() {
-        val photoFile = photoUtils.constructPhotoFile(currentDate)
+        val photoFile = photoFileConstructor.getForDate(currentDate)
         if (photoFile.exists()) {
             trackPagerView.showPhotoView()
             trackPagerView.loadPhoto(photoFile)

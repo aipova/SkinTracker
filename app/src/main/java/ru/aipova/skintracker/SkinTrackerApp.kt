@@ -10,7 +10,7 @@ import ru.aipova.skintracker.model.TrackType.Companion.SKIN_QUALITY_TRACK_TYPE_U
 import ru.aipova.skintracker.model.ValueType
 import ru.aipova.skintracker.model.source.TrackRepository
 import ru.aipova.skintracker.model.source.TrackTypeRepository
-import ru.aipova.skintracker.utils.PhotoUtils
+import ru.aipova.skintracker.utils.PhotoFileConstructor
 
 class SkinTrackerApp : Application() {
 
@@ -23,7 +23,7 @@ class SkinTrackerApp : Application() {
         InjectionStub.realm = Realm.getDefaultInstance()
         InjectionStub.trackTypeRepository = TrackTypeRepository(InjectionStub.realm)
         InjectionStub.trackRepository = TrackRepository(InjectionStub.realm)
-        InjectionStub.photoUtils = PhotoUtils(this.getExternalFilesDir(PHOTOS_DIR))
+        InjectionStub.sPhotoFileConstructor = PhotoFileConstructor(this.getExternalFilesDir(PHOTOS_DIR))
     }
 
     private val  skinQualityTrackType: TrackType

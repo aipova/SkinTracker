@@ -29,48 +29,40 @@
 
         <include layout="@layout/track_pager_content"/>
 
-        <com.getbase.floatingactionbutton.FloatingActionsMenu
-            android:id="@+id/multiple_actions"
+        <com.github.clans.fab.FloatingActionMenu
+            android:id="@+id/menuFab"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="bottom|end"
             android:layout_margin="@dimen/fab_margin"
-            app:fab_addButtonColorNormal="@color/colorAccent"
-            app:fab_addButtonColorPressed="@color/colorAccentDark"
-            app:fab_addButtonPlusIconColor="@color/white"
-            app:fab_labelStyle="@style/fab_labels_style">
+            app:menu_animationDelayPerItem="0"
+            app:menu_colorNormal="@color/colorAccent"
+            app:menu_colorPressed="@color/colorAccentDark"
+            app:menu_icon="@drawable/ic_edit"
+            app:menu_labels_style="@style/MenuLabelsStyle">
 
-            <com.getbase.floatingactionbutton.FloatingActionButton
-                android:id="@+id/fabAddNote"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                app:fab_icon="@drawable/ic_edit"
-                app:fab_size="mini"
-                app:fab_colorNormal="@color/colorAccentLight"
-                app:fab_title="Add note"
-                app:fab_colorPressed="@color/colorAccent"/>
-
-            <com.getbase.floatingactionbutton.FloatingActionButton
-                android:id="@+id/fabAddPhoto"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                app:fab_icon="@drawable/ic_camera"
-                app:fab_size="mini"
-                app:fab_colorNormal="@color/colorAccentLight"
-                app:fab_title="Add photo"
-                app:fab_colorPressed="@color/colorAccent"/>
-
-            <com.getbase.floatingactionbutton.FloatingActionButton
+            <com.github.clans.fab.FloatingActionButton
                 android:id="@+id/fabAddParameters"
+                style="@style/MenuButtonsSmall"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                app:fab_icon="@drawable/ic_params"
-                app:fab_size="mini"
-                app:fab_colorNormal="@color/colorAccentLight"
-                app:fab_title="Add parameters"
-                app:fab_colorPressed="@color/colorAccent"/>
+                app:fab_label="@string/add_parameters"/>
 
-        </com.getbase.floatingactionbutton.FloatingActionsMenu>
+            <com.github.clans.fab.FloatingActionButton
+                android:id="@+id/fabAddPhoto"
+                style="@style/MenuButtonsSmall"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:fab_label="@string/add_photo"/>
+
+            <com.github.clans.fab.FloatingActionButton
+                android:id="@+id/fabAddNote"
+                style="@style/MenuButtonsSmall"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:fab_label="@string/add_note"/>
+
+        </com.github.clans.fab.FloatingActionMenu>
 
     </android.support.design.widget.CoordinatorLayout>
 

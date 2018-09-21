@@ -1,5 +1,9 @@
 package ru.aipova.skintracker.ui.trackpager
 
+import android.animation.Animator
+import android.animation.AnimatorListenerAdapter
+import android.animation.AnimatorSet
+import android.animation.ObjectAnimator
 import android.app.Activity
 import android.app.DatePickerDialog
 import android.content.Intent
@@ -7,12 +11,15 @@ import android.os.Bundle
 import android.support.design.widget.NavigationView
 import android.support.v4.app.Fragment
 import android.support.v4.app.FragmentStatePagerAdapter
+import android.support.v4.content.ContextCompat
 import android.support.v4.view.GravityCompat
 import android.support.v4.view.PagerAdapter
 import android.support.v4.view.ViewPager
 import android.support.v7.app.ActionBarDrawerToggle
 import android.support.v7.app.AppCompatActivity
 import android.view.MenuItem
+import android.view.View
+import android.view.animation.OvershootInterpolator
 import kotlinx.android.synthetic.main.track_pager_activity.*
 import kotlinx.android.synthetic.main.track_pager_content.*
 import org.joda.time.LocalDate
@@ -24,7 +31,9 @@ import ru.aipova.skintracker.utils.TimeUtils
 import ru.aipova.skintracker.utils.TransitionUtils
 import java.util.*
 
-class TrackPagerActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelectedListener {
+
+
+class TrackPagerActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelectedListener, TrackPagerFragment.Callbacks {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -37,6 +46,7 @@ class TrackPagerActivity : AppCompatActivity(), NavigationView.OnNavigationItemS
 
         setupEditButton()
         setupNavigationButtons()
+        setupMenuFab()
     }
 
     private fun setupEditButton() {
@@ -104,6 +114,13 @@ class TrackPagerActivity : AppCompatActivity(), NavigationView.OnNavigationItemS
         setCurrentTrack()
     }
 
+    private fun setupMenuFab() {
+        createMenuFabAnimation()
+        fabAddParameters.setImageDrawable(ContextCompat.getDrawable(this, R.drawable.ic_params))
+        fabAddNote.setImageDrawable(ContextCompat.getDrawable(this, R.drawable.ic_note))
+        fabAddPhoto.setImageDrawable(ContextCompat.getDrawable(this, R.drawable.ic_photo))
+    }
+
     override fun onBackPressed() {
         if (drawer_layout.isDrawerOpen(GravityCompat.START)) {
             drawer_layout.closeDrawer(GravityCompat.START)
@@ -133,6 +150,11 @@ class TrackPagerActivity : AppCompatActivity(), NavigationView.OnNavigationItemS
 
     private val pageChangeListener = object : ViewPager.OnPageChangeListener {
         override fun onPageScrollStateChanged(state: Int) {
+            if (state == ViewPager.SCROLL_STATE_DRAGGING) {
+                hideMenuFab()
+            } else {
+                showMenuFab()
+            }
         }
 
         override fun onPageScrolled(
@@ -145,6 +167,58 @@ class TrackPagerActivity : AppCompatActivity(), NavigationView.OnNavigationItemS
         override fun onPageSelected(position: Int) {
             trackDateTxt.text = getFormattedDate(position)
         }
+    }
+
+    override fun onViewTouchDown() {
+        hideMenuFab()
+    }
+
+    override fun onViewTouchUp() {
+        showMenuFab()
+    }
+
+    private fun showMenuFab() {
+        menuFab.visibility = View.VISIBLE
+    }
+
+    private fun hideMenuFab() {
+        if (menuFab.isOpened) {
+            menuFab.close(true)
+        } else {
+            menuFab.visibility = View.GONE
+        }
+    }
+
+    private fun createMenuFabAnimation() {
+        val scaleOutX = ObjectAnimator.ofFloat(menuFab.menuIconView, "scaleX", 1.0f, 0.2f)
+        val scaleOutY = ObjectAnimator.ofFloat(menuFab.menuIconView, "scaleY", 1.0f, 0.2f)
+
+        val scaleInX = ObjectAnimator.ofFloat(menuFab.menuIconView, "scaleX", 0.2f, 1.0f)
+        val scaleInY = ObjectAnimator.ofFloat(menuFab.menuIconView, "scaleY", 0.2f, 1.0f)
+
+        scaleOutX.duration = 50
+        scaleOutY.duration = 50
+
+        scaleInX.duration = 150
+        scaleInY.duration = 150
+
+        scaleInX.addListener(object : AnimatorListenerAdapter() {
+            override fun onAnimationStart(animation: Animator) {
+                menuFab.menuIconView.setImageResource(
+                    if (menuFab.isOpened)
+                        R.drawable.ic_close
+                    else
+                        R.drawable.ic_edit
+                )
+            }
+        })
+
+        val set = AnimatorSet().apply {
+            play(scaleOutX).with(scaleOutY)
+            play(scaleInX).with(scaleInY).after(scaleOutX)
+            interpolator = OvershootInterpolator(2f)
+        }
+        menuFab.iconToggleAnimatorSet = set
     }
 
     private val viewPagerAdapter = object : FragmentStatePagerAdapter(supportFragmentManager) {

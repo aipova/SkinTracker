@@ -2,7 +2,7 @@ package ru.aipova.skintracker.ui.track
 
 import ru.aipova.skintracker.model.Track
 import ru.aipova.skintracker.model.source.TrackRepository
-import ru.aipova.skintracker.utils.PhotoUtils
+import ru.aipova.skintracker.utils.PhotoFileConstructor
 import java.io.File
 import java.util.*
 
@@ -10,7 +10,7 @@ class TrackPresenter(
     private var trackView: TrackContract.View,
     private var currentDate: Date,
     private val trackRepository: TrackRepository,
-    private val photoUtils: PhotoUtils
+    private val photoFileConstructor: PhotoFileConstructor
 ) : TrackContract.Presenter {
     init {
         trackView.presenter = this
@@ -75,6 +75,6 @@ class TrackPresenter(
     }
 
     private fun getPhotoFile(): File {
-        return photoUtils.constructPhotoFile(currentDate)
+        return photoFileConstructor.getForDate(currentDate)
     }
 }

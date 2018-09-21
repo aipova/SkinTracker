@@ -1,8 +1,10 @@
 package ru.aipova.skintracker.ui.trackpager
 
+import android.content.Context
 import android.os.Bundle
 import android.support.v4.app.Fragment
 import android.view.LayoutInflater
+import android.view.MotionEvent
 import android.view.View
 import android.view.ViewGroup
 import com.squareup.picasso.Picasso
@@ -14,11 +16,30 @@ import java.io.File
 import java.util.*
 
 class TrackPagerFragment : Fragment(), TrackPagerContract.View {
+
+    interface Callbacks {
+        fun onViewTouchDown()
+        fun onViewTouchUp()
+    }
+
+    private var callbacks: Callbacks? = null
     override var isActive: Boolean = false
         get() = isAdded
 
     override fun setupTrackExists(isExisting: Boolean) {
         trackExists = isExisting
+    }
+
+    override fun onAttach(context: Context?) {
+        super.onAttach(context)
+        if (context is Callbacks) {
+            callbacks = context
+        }
+    }
+
+    override fun onDetach() {
+        super.onDetach()
+        callbacks = null
     }
 
     override lateinit var presenter: TrackPagerContract.Presenter
@@ -30,7 +51,7 @@ class TrackPagerFragment : Fragment(), TrackPagerContract.View {
             this,
             getTrackDate(),
             InjectionStub.trackRepository,
-            InjectionStub.photoUtils
+            InjectionStub.sPhotoFileConstructor
         )
         presenter.init()
     }
@@ -48,6 +69,19 @@ class TrackPagerFragment : Fragment(), TrackPagerContract.View {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         presenter.start()
+        view.setOnTouchListener { v, event ->
+            when (event.action) {
+                MotionEvent.ACTION_DOWN -> {
+                    callbacks?.onViewTouchDown()
+                    true
+                }
+                MotionEvent.ACTION_UP -> {
+                    callbacks?.onViewTouchUp()
+                    true
+                }
+                else -> false
+            }
+        }
     }
 
     override fun setupNoteText(text: String) {
