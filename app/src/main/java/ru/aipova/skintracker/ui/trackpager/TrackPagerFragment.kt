@@ -11,7 +11,7 @@ import com.squareup.picasso.Picasso
 import kotlinx.android.synthetic.main.track_pager_fragment.*
 import ru.aipova.skintracker.InjectionStub
 import ru.aipova.skintracker.R
-import ru.aipova.skintracker.ui.track.TrackValueData
+import ru.aipova.skintracker.ui.data.TrackValueData
 import java.io.File
 import java.util.*
 

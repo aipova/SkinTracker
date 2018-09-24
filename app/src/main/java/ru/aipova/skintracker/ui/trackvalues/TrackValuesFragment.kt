@@ -1,4 +1,4 @@
-package ru.aipova.skintracker.ui.track
+package ru.aipova.skintracker.ui.trackvalues
 
 import android.app.Activity.RESULT_OK
 import android.os.Bundle
@@ -6,19 +6,20 @@ import android.support.v4.app.Fragment
 import android.support.v7.app.AppCompatActivity
 import android.view.*
 import android.widget.Toast
-import kotlinx.android.synthetic.main.track_fragment.*
+import kotlinx.android.synthetic.main.track_values_fragment.*
 import ru.aipova.skintracker.R
+import ru.aipova.skintracker.ui.data.TrackValueData
 import ru.aipova.skintracker.utils.TimeUtils
 import java.util.*
 
 
-class TrackFragment : Fragment(), TrackContract.View {
+class TrackValuesFragment : Fragment(), TrackValuesContract.View {
 
-    override lateinit var presenter: TrackContract.Presenter
+    override lateinit var presenter: TrackValuesContract.Presenter
     override var isActive: Boolean = false
         get() = isAdded
 
-    private var trackValueDataArray:Array<TrackValueData> = arrayOf()
+    private var trackValueDataArray: Array<TrackValueData> = arrayOf()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -30,7 +31,7 @@ class TrackFragment : Fragment(), TrackContract.View {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        return inflater.inflate(R.layout.track_fragment, container, false)
+        return inflater.inflate(R.layout.track_values_fragment, container, false)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -90,12 +91,12 @@ class TrackFragment : Fragment(), TrackContract.View {
         return trackValueDataArray
     }
 
-    override fun showTrackCreatedMsg() {
-        Toast.makeText(activity, R.string.msg_track_created, Toast.LENGTH_LONG).show()
+    override fun showTrackValuesCreatedMsg() {
+        Toast.makeText(activity, R.string.msg_parameters_created, Toast.LENGTH_LONG).show()
     }
 
-    override fun showTrackUpdatedMsg() {
-        Toast.makeText(activity, R.string.msg_track_updated, Toast.LENGTH_LONG).show()
+    override fun showTrackValuesUpdatedMsg() {
+        Toast.makeText(activity, R.string.msg_parameters_updated, Toast.LENGTH_LONG).show()
     }
 
     override fun close() {
@@ -103,18 +104,18 @@ class TrackFragment : Fragment(), TrackContract.View {
         activity?.finish()
     }
 
-    override fun showCannotCreateTrackMsg() {
-        Toast.makeText(activity, R.string.msg_cannot_create_track, Toast.LENGTH_LONG).show()
+    override fun showCannotSaveTrackValuesMsg() {
+        Toast.makeText(activity, R.string.msg_cannot_save_parameters, Toast.LENGTH_LONG).show()
     }
 
     override fun showCannotLoadTrackMsg() {
-        Toast.makeText(activity, R.string.msg_cannot_load_track, Toast.LENGTH_LONG).show()
+        Toast.makeText(activity, R.string.msg_cannot_load_parameters, Toast.LENGTH_LONG).show()
     }
 
     companion object {
         private const val SEEK_BAR_VALUES = "ru.aipova.skintracker.track.SEEK_BAR_VALUES"
-        fun newInstance(): TrackFragment {
-            return TrackFragment()
+        fun newInstance(): TrackValuesFragment {
+            return TrackValuesFragment()
         }
     }
 }

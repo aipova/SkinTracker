@@ -4,8 +4,8 @@ import io.realm.Realm
 import io.realm.RealmList
 import io.realm.kotlin.where
 import ru.aipova.skintracker.model.*
-import ru.aipova.skintracker.ui.track.TrackData
-import ru.aipova.skintracker.ui.track.TrackValueData
+import ru.aipova.skintracker.ui.data.TrackData
+import ru.aipova.skintracker.ui.data.TrackValueData
 import java.util.*
 
 class TrackRepository(private val uiRealm: Realm) {
@@ -37,7 +37,10 @@ class TrackRepository(private val uiRealm: Realm) {
         val trackValues = track.values.map { trackValue ->
             toData(trackValue.trackType!!, trackValue.value?.toInt() ?: 0)
         }
-        return TrackData(date = track.date!!, values = trackValues.toTypedArray())
+        return TrackData(
+            date = track.date!!,
+            values = trackValues.toTypedArray()
+        )
     }
 
     fun getTrackValuesData(date: Date): Array<TrackValueData> {

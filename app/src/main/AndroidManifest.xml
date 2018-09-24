@@ -33,7 +33,7 @@
             android:parentActivityName=".ui.trackpager.TrackPagerActivity"/>
 
         <activity
-            android:name=".ui.track.TrackActivity"
+            android:name=".ui.trackvalues.TrackValuesActivity"
             android:parentActivityName=".ui.trackpager.TrackPagerActivity"/>
 
         <activity

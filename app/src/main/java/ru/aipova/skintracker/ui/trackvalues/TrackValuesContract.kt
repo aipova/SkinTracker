@@ -1,19 +1,20 @@
-package ru.aipova.skintracker.ui.track
+package ru.aipova.skintracker.ui.trackvalues
 
 import ru.aipova.skintracker.ui.BasePresenter
 import ru.aipova.skintracker.ui.BaseView
+import ru.aipova.skintracker.ui.data.TrackValueData
 import java.util.*
 
-interface TrackContract {
+interface TrackValuesContract {
     interface View: BaseView<Presenter> {
         var isActive: Boolean
         fun showTrackValues(trackValueData: Array<TrackValueData>)
-        fun showTrackCreatedMsg()
-        fun showCannotCreateTrackMsg()
+        fun showTrackValuesCreatedMsg()
+        fun showCannotSaveTrackValuesMsg()
         fun close()
         fun getTrackValueData(): Array<TrackValueData>
         fun showCannotLoadTrackMsg()
-        fun showTrackUpdatedMsg()
+        fun showTrackValuesUpdatedMsg()
         fun setTitle(date: Date)
     }
 

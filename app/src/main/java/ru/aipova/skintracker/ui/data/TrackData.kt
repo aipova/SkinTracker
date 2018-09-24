@@ -1,4 +1,4 @@
-package ru.aipova.skintracker.ui.track
+package ru.aipova.skintracker.ui.data
 
 import java.util.*
 

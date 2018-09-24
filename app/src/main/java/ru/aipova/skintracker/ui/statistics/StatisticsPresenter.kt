@@ -14,7 +14,7 @@ import io.reactivex.disposables.Disposable
 import io.reactivex.schedulers.Schedulers
 import ru.aipova.skintracker.model.source.TrackRepository
 import ru.aipova.skintracker.model.source.TrackTypeRepository
-import ru.aipova.skintracker.ui.track.TrackData
+import ru.aipova.skintracker.ui.data.TrackData
 import ru.aipova.skintracker.utils.TimeUtils
 import java.util.*
 

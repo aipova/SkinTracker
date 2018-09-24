@@ -30,10 +30,10 @@ import org.joda.time.LocalDate
 import ru.aipova.skintracker.InjectionStub
 import ru.aipova.skintracker.R
 import ru.aipova.skintracker.ui.statistics.StatisticsActivity
-import ru.aipova.skintracker.ui.track.TrackActivity
 import ru.aipova.skintracker.ui.trackpager.dialog.NoteCreateDialog
 import ru.aipova.skintracker.ui.trackpager.dialog.NoteEditDialog
 import ru.aipova.skintracker.ui.tracktype.TrackTypeActivity
+import ru.aipova.skintracker.ui.trackvalues.TrackValuesActivity
 import ru.aipova.skintracker.utils.TimeUtils
 import ru.aipova.skintracker.utils.TransitionUtils
 import java.io.File
@@ -130,7 +130,7 @@ class TrackPagerActivity :
         fabAddParameters.setOnClickListener {
             menuFab.close(false)
             startActivityForResult(
-                TrackActivity.createIntent(
+                TrackValuesActivity.createIntent(
                     this,
                     getCurrentDiaryDate()
                 ), EDIT_REQUEST
@@ -330,7 +330,7 @@ class TrackPagerActivity :
         private const val EDIT_REQUEST = 0
         private const val PHOTO_REQUEST = 1
         private const val CURRENT_ITEM = "ru.aipova.skintracker.trackpager.CURRENT_ITEM"
-        private const val CREATE_NOTE_DIALOG = "ru.aipova.skintracker.trackpager.CREATE_NOTE"
-        private const val EDIT_NOTE_DIALOG = "ru.aipova.skintracker.trackpager.EDIT_NOTE"
+        private const val CREATE_NOTE_DIALOG = "NoteCreateDialog"
+        private const val EDIT_NOTE_DIALOG = "NoteEditDialog"
     }
 }

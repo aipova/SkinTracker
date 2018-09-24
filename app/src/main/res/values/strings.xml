@@ -18,11 +18,11 @@
     <string name="menu_track_type_settings">Track Type Settings</string>
     <string name="menu_statistics">Statistics</string>
     <string name="note_hint">Note for this day</string>
-    <string name="msg_track_created">New track was created</string>
-    <string name="msg_track_updated">Track was updated</string>
-    <string name="msg_cannot_create_track">Cannot create new Track</string>
-    <string name="msg_cannot_load_track">Cannot load track</string>
-    <string name="track_value_seek">%1$s: %2$s from %3$s</string>
+    <string name="msg_parameters_created">Parameters were created</string>
+    <string name="msg_parameters_updated">Parameters were updated</string>
+    <string name="msg_cannot_save_parameters">Cannot save parameters</string>
+    <string name="msg_cannot_load_parameters">Cannot load parameters</string>
+    <string name="track_value_seek">%1$s: %2$s/%3$s</string>
     <string name="track_value_amount">%1$s: %2$s</string>
     <string name="track_value_boolean_true">%1$s: Yes</string>
     <string name="track_value_boolean_false">%1$s: No</string>

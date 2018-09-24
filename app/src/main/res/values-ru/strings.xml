@@ -8,7 +8,7 @@
     <string name="track_type_name">Название</string>
     <string name="title_new_track_type">Новый параметр</string>
     <string name="title_edit_track_type">Редактировать параметр</string>
-    <string name="err_track_type_empty_name">Название обязательно</string>
+    <string name="err_track_type_empty_name">Обязательное поле</string>
     <string name="msg_remove_track_type">Вы уверены, что хотите удалить параметр %1$s?</string>
     <string name="msg_track_type_created">Параметр %1$s создан</string>
     <string name="err_cannot_create_track_type">Не удалось создать параметр</string>
@@ -19,11 +19,11 @@
     <string name="menu_track_type_settings">Настройка параметров</string>
     <string name="menu_statistics">Статистика</string>
     <string name="note_hint">Заметка</string>
-    <string name="msg_track_created">Новая запись создана</string>
-    <string name="msg_track_updated">Запись обновлена</string>
-    <string name="msg_cannot_create_track">Не удалось создать запись</string>
-    <string name="msg_cannot_load_track">Не удалось загрузить запись</string>
-    <string name="track_value_seek">%1$s: %2$s из %3$s</string>
+    <string name="msg_parameters_created">Параметры созданы</string>
+    <string name="msg_parameters_updated">Параметры обновлены</string>
+    <string name="msg_cannot_save_parameters">Не удалось сохранить параметры</string>
+    <string name="msg_cannot_load_parameters">Не удалось загрузить параметры</string>
+    <string name="track_value_seek">%1$s: %2$s/%3$s</string>
     <string name="track_value_amount">%1$s: %2$s</string>
     <string name="track_value_boolean_true">%1$s: Да</string>
     <string name="track_value_boolean_false">%1$s: Нет</string>
@@ -42,10 +42,10 @@
     <string name="add_photo">Фото</string>
     <string name="add_note">Заметка</string>
     <string name="add_parameters">Параметры</string>
-    <string name="title_new_note">New note</string>
-    <string name="title_edit_note">Edit note</string>
-    <string name="note_text">Note text</string>
-    <string name="err_note_empty">You need to enter note text</string>
+    <string name="title_new_note">Новая заметка</string>
+    <string name="title_edit_note">Редактировать заметку</string>
+    <string name="note_text">Текст заметки</string>
+    <string name="err_note_empty">Обязательное поле</string>
     <string-array name="date_range_array">
         <item>Последняя неделя</item>
         <item>Последний месяц</item>

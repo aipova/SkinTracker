@@ -13,7 +13,7 @@ import android.widget.TextView
 import com.travijuu.numberpicker.library.NumberPicker
 import ru.aipova.skintracker.R
 import ru.aipova.skintracker.model.ValueType
-import ru.aipova.skintracker.ui.track.TrackValueData
+import ru.aipova.skintracker.ui.data.TrackValueData
 
 class TrackValuesView : LinearLayout {
     constructor(context: Context?) : super(context)
@@ -52,38 +52,22 @@ class TrackValuesView : LinearLayout {
         when(trackValue.type) {
             ValueType.SEEK -> {
                 if (editable) {
-                    val seekBar = view.findViewById<SeekBar>(R.id.valueSeekBar).apply {
-                        id = index
-                        max = trackValue.max
-                        progress = trackValue.value
-                        visibility = View.VISIBLE
-                    }
+                    val seekBar = createSeekBar(view, index, trackValue, trackNameTxt)
                     views.add(seekBar)
-                } else {
-                    trackNameTxt.text = seekText(trackValue)
                 }
-
+                trackNameTxt.text = seekText(trackValue)
             }
             ValueType.AMOUNT -> {
                 if (editable) {
-                    val number = view.findViewById<NumberPicker>(R.id.valueNum).apply {
-                        id = index
-                        value = trackValue.value
-                        visibility = View.VISIBLE
-                    }
-                    views.add(number)
+                    val amountView = createAmountView(view, index, trackValue)
+                    views.add(amountView)
                 } else {
                     trackNameTxt.text = amountText(trackValue)
                 }
             }
             ValueType.BOOLEAN -> {
                 if (editable) {
-                    val switch = view.findViewById<Switch>(R.id.valueSwitch).apply {
-                        id = index
-                        isChecked = trackValue.value != 0
-                        isEnabled = editable
-                        visibility = View.VISIBLE
-                    }
+                    val switch = createSwitchView(view, index, trackValue, editable)
                     views.add(switch)
                 } else {
                     trackNameTxt.text = booleanText(trackValue)
@@ -95,15 +79,74 @@ class TrackValuesView : LinearLayout {
         return view
     }
 
+    private fun createSwitchView(
+        view: View,
+        index: Int,
+        trackValue: TrackValueData,
+        editable: Boolean
+    ): Switch {
+        return view.findViewById<Switch>(R.id.valueSwitch).apply {
+            id = index
+            isChecked = trackValue.value != 0
+            isEnabled = editable
+            visibility = View.VISIBLE
+        }
+    }
+
+    private fun createAmountView(
+        view: View,
+        index: Int,
+        trackValue: TrackValueData
+    ): NumberPicker {
+        return view.findViewById<NumberPicker>(R.id.valueNum).apply {
+            id = index
+            value = trackValue.value
+            visibility = View.VISIBLE
+        }
+    }
+
+    private fun createSeekBar(
+        view: View,
+        index: Int,
+        trackValue: TrackValueData,
+        trackNameTxt: TextView
+    ): SeekBar {
+        return view.findViewById<SeekBar>(R.id.valueSeekBar).apply {
+            id = index
+            max = trackValue.max
+            progress = trackValue.value
+            visibility = View.VISIBLE
+            setOnSeekBarChangeListener(object : SeekBar.OnSeekBarChangeListener {
+                val trackName = trackValue.name
+                override fun onProgressChanged(
+                    seekBar: SeekBar,
+                    progress: Int,
+                    fromUser: Boolean
+                ) {
+                    trackNameTxt.text = seekText(trackName, progress, max)
+                }
+
+                override fun onStartTrackingTouch(seekBar: SeekBar) {
+                }
+
+                override fun onStopTrackingTouch(seekBar: SeekBar) {
+                }
+            })
+        }
+    }
+
     private fun amountText(trackValue: TrackValueData) =
         context.getString(R.string.track_value_amount, trackValue.name, trackValue.value.toString())
 
     private fun seekText(trackValue: TrackValueData) =
+        seekText(trackValue.name, trackValue.value, trackValue.max)
+
+    private fun seekText(trackName: String, trackValue: Int, maxValue: Int) =
         context.getString(
             R.string.track_value_seek,
-            trackValue.name,
-            trackValue.value.toString(),
-            trackValue.max.toString()
+            trackName,
+            trackValue.toString(),
+            maxValue.toString()
         )
 
     private fun booleanText(trackValue: TrackValueData) =

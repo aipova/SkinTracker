@@ -2,7 +2,7 @@ package ru.aipova.skintracker.ui.trackpager
 
 import ru.aipova.skintracker.ui.BasePresenter
 import ru.aipova.skintracker.ui.BaseView
-import ru.aipova.skintracker.ui.track.TrackValueData
+import ru.aipova.skintracker.ui.data.TrackValueData
 import java.io.File
 
 interface TrackPagerContract {

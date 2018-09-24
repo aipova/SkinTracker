@@ -1,13 +1,13 @@
-package ru.aipova.skintracker.ui.track
+package ru.aipova.skintracker.ui.trackvalues
 
 import ru.aipova.skintracker.model.source.TrackRepository
 import java.util.*
 
-class TrackPresenter(
-    private var trackView: TrackContract.View,
+class TrackValuesPresenter(
+    private var trackView: TrackValuesContract.View,
     private var currentDate: Date,
     private val trackRepository: TrackRepository
-) : TrackContract.Presenter {
+) : TrackValuesContract.Presenter {
     init {
         trackView.presenter = this
     }
@@ -33,9 +33,9 @@ class TrackPresenter(
             override fun onTrackCreated() {
                 if (!trackView.isActive) return
                 if (trackExists) {
-                    trackView.showTrackUpdatedMsg()
+                    trackView.showTrackValuesUpdatedMsg()
                 } else {
-                    trackView.showTrackCreatedMsg()
+                    trackView.showTrackValuesCreatedMsg()
                 }
 
                 trackView.close()
@@ -43,7 +43,7 @@ class TrackPresenter(
 
             override fun onError() {
                 if (!trackView.isActive) return
-                trackView.showCannotCreateTrackMsg()
+                trackView.showCannotSaveTrackValuesMsg()
             }
         })
     }
