@@ -1,24 +1,24 @@
-package ru.aipova.skintracker.ui.trackpager
+package ru.aipova.skintracker.ui.trackpager.track
 
 import ru.aipova.skintracker.model.Track
 import ru.aipova.skintracker.model.source.TrackRepository
 import ru.aipova.skintracker.utils.PhotoFileConstructor
 import java.util.*
 
-class TrackPagerPresenter(
-    private var trackPagerView: TrackPagerContract.View,
+class TrackPresenter(
+    private var trackView: TrackContract.View,
     private var currentDate: Date,
     private val trackRepository: TrackRepository,
     private val photoFileConstructor: PhotoFileConstructor
-) : TrackPagerContract.Presenter {
+) : TrackContract.Presenter {
     init {
-        trackPagerView.presenter = this
+        trackView.presenter = this
     }
     private var existingTrack: Track? = null
 
     override fun init() {
         existingTrack = trackRepository.getTrackByDate(currentDate)
-        trackPagerView.setupTrackExists(existingTrack != null || photoExists())
+        trackView.setupTrackExists(existingTrack != null || photoExists())
     }
 
     override fun start() {
@@ -31,8 +31,8 @@ class TrackPagerPresenter(
 
     private fun loadNote(track: Track) {
         if (!track.note.isNullOrBlank()) {
-            trackPagerView.showNoteView()
-            trackPagerView.setupNoteText(track.note!!)
+            trackView.showNoteView()
+            trackView.setupNoteText(track.note!!)
 
         }
     }
@@ -40,8 +40,8 @@ class TrackPagerPresenter(
     private fun loadPhoto() {
         val photoFile = photoFileConstructor.getForDate(currentDate)
         if (photoFile.exists()) {
-            trackPagerView.showPhotoView()
-            trackPagerView.loadPhoto(photoFile)
+            trackView.showPhotoView()
+            trackView.loadPhoto(photoFile)
         }
     }
 
@@ -51,6 +51,6 @@ class TrackPagerPresenter(
 
     private fun loadTrackValues() {
         val trackValues = trackRepository.getTrackValuesData(currentDate)
-        trackPagerView.showTrackValues(trackValues)
+        trackView.showTrackValues(trackValues)
     }
 }

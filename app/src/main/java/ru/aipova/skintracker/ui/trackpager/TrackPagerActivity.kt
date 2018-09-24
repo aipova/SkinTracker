@@ -32,6 +32,7 @@ import ru.aipova.skintracker.R
 import ru.aipova.skintracker.ui.statistics.StatisticsActivity
 import ru.aipova.skintracker.ui.trackpager.dialog.NoteCreateDialog
 import ru.aipova.skintracker.ui.trackpager.dialog.NoteEditDialog
+import ru.aipova.skintracker.ui.trackpager.track.TrackFragment
 import ru.aipova.skintracker.ui.tracktype.TrackTypeActivity
 import ru.aipova.skintracker.ui.trackvalues.TrackValuesActivity
 import ru.aipova.skintracker.utils.TimeUtils
@@ -43,7 +44,7 @@ import java.util.*
 class TrackPagerActivity :
     AppCompatActivity(),
     NavigationView.OnNavigationItemSelectedListener,
-    TrackPagerFragment.Callbacks,
+    TrackFragment.Callbacks,
     NoteCreateDialog.Callbacks,
     NoteEditDialog.Callbacks {
 
@@ -299,7 +300,7 @@ class TrackPagerActivity :
 
     private val viewPagerAdapter = object : FragmentStatePagerAdapter(supportFragmentManager) {
         override fun getItem(position: Int): Fragment {
-            return TrackPagerFragment.getInstance(TimeUtils.getDateForPosition(position))
+            return TrackFragment.getInstance(TimeUtils.getDateForPosition(position))
         }
 
         override fun getItemPosition(`object`: Any): Int {

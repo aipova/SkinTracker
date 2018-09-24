@@ -1,4 +1,4 @@
-package ru.aipova.skintracker.ui.trackpager
+package ru.aipova.skintracker.ui.trackpager.track
 
 import android.content.Context
 import android.os.Bundle
@@ -8,14 +8,14 @@ import android.view.MotionEvent
 import android.view.View
 import android.view.ViewGroup
 import com.squareup.picasso.Picasso
-import kotlinx.android.synthetic.main.track_pager_fragment.*
+import kotlinx.android.synthetic.main.track_fragment.*
 import ru.aipova.skintracker.InjectionStub
 import ru.aipova.skintracker.R
 import ru.aipova.skintracker.ui.data.TrackValueData
 import java.io.File
 import java.util.*
 
-class TrackPagerFragment : Fragment(), TrackPagerContract.View {
+class TrackFragment : Fragment(), TrackContract.View {
 
     interface Callbacks {
         fun onViewTouchDown()
@@ -42,12 +42,12 @@ class TrackPagerFragment : Fragment(), TrackPagerContract.View {
         callbacks = null
     }
 
-    override lateinit var presenter: TrackPagerContract.Presenter
+    override lateinit var presenter: TrackContract.Presenter
     private var trackExists = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        presenter = TrackPagerPresenter(
+        presenter = TrackPresenter(
             this,
             getTrackDate(),
             InjectionStub.trackRepository,
@@ -65,7 +65,7 @@ class TrackPagerFragment : Fragment(), TrackPagerContract.View {
     }
 
     private fun getLayoutId() =
-        if (trackExists) R.layout.track_pager_fragment else R.layout.track_pager_empty_fragment
+        if (trackExists) R.layout.track_fragment else R.layout.track_pager_empty_fragment
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         presenter.start()
@@ -118,9 +118,10 @@ class TrackPagerFragment : Fragment(), TrackPagerContract.View {
     companion object {
         private const val DATE = "date"
 
-        fun getInstance(date: Date): TrackPagerFragment {
+        fun getInstance(date: Date): TrackFragment {
             val bundle = Bundle().apply { putSerializable(DATE, date) }
-            return TrackPagerFragment().apply { arguments = bundle }
+            return TrackFragment()
+                .apply { arguments = bundle }
         }
     }
 }
