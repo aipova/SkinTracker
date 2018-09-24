@@ -9,65 +9,63 @@
 
     <android.support.constraint.ConstraintLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_margin="@dimen/default_margin"
-        android:focusableInTouchMode="true">
+        android:layout_height="wrap_content">
 
-        <ImageView
-            android:id="@+id/photoView"
-            android:layout_width="@dimen/photo_preview_size"
-            android:layout_height="@dimen/photo_preview_size"
-            android:background="@drawable/ic_perm"
-            android:cropToPadding="true"
-            android:focusable="true"
-            android:scaleType="centerCrop"
-            app:layout_constraintBottom_toTopOf="@+id/takePhotoBtn"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintVertical_chainStyle="spread_inside"/>
+        <!--<ImageView-->
+            <!--android:id="@+id/photoView"-->
+            <!--android:layout_width="@dimen/photo_preview_size"-->
+            <!--android:layout_height="@dimen/photo_preview_size"-->
+            <!--android:background="@drawable/ic_perm"-->
+            <!--android:cropToPadding="true"-->
+            <!--android:focusable="true"-->
+            <!--android:scaleType="centerCrop"-->
+            <!--app:layout_constraintBottom_toTopOf="@+id/takePhotoBtn"-->
+            <!--app:layout_constraintEnd_toEndOf="parent"-->
+            <!--app:layout_constraintStart_toStartOf="parent"-->
+            <!--app:layout_constraintTop_toTopOf="parent"-->
+            <!--app:layout_constraintVertical_chainStyle="spread_inside"/>-->
 
-        <ImageButton
-            android:id="@+id/takePhotoBtn"
-            android:layout_width="@dimen/photo_btn_size"
-            android:layout_height="wrap_content"
-            app:srcCompat="@drawable/ic_camera"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/photoView"/>
+        <!--<ImageButton-->
+            <!--android:id="@+id/takePhotoBtn"-->
+            <!--android:layout_width="@dimen/photo_btn_size"-->
+            <!--android:layout_height="wrap_content"-->
+            <!--app:srcCompat="@drawable/ic_camera"-->
+            <!--app:layout_constraintEnd_toEndOf="parent"-->
+            <!--app:layout_constraintStart_toStartOf="parent"-->
+            <!--app:layout_constraintTop_toBottomOf="@+id/photoView"/>-->
 
 
-        <EditText
-            android:id="@+id/noteTxt"
-            android:layout_width="0dp"
-            android:layout_height="match_parent"
-            android:layout_marginTop="@dimen/min_margin"
-            android:ems="10"
-            android:gravity="top|start"
-            android:hint="@string/note_hint"
-            android:inputType="textMultiLine"
-            android:lines="4"
-            android:maxLength="250"
-            android:maxLines="4"
-            android:scrollbars="vertical"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.0"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/takePhotoBtn"/>
+        <!--<EditText-->
+            <!--android:id="@+id/noteTxt"-->
+            <!--android:layout_width="0dp"-->
+            <!--android:layout_height="match_parent"-->
+            <!--android:layout_marginTop="@dimen/min_margin"-->
+            <!--android:ems="10"-->
+            <!--android:gravity="top|start"-->
+            <!--android:hint="@string/note_hint"-->
+            <!--android:inputType="textMultiLine"-->
+            <!--android:lines="4"-->
+            <!--android:maxLength="250"-->
+            <!--android:maxLines="4"-->
+            <!--android:scrollbars="vertical"-->
+            <!--app:layout_constraintEnd_toEndOf="parent"-->
+            <!--app:layout_constraintHorizontal_bias="0.0"-->
+            <!--app:layout_constraintStart_toStartOf="parent"-->
+            <!--app:layout_constraintTop_toBottomOf="@+id/takePhotoBtn"/>-->
 
 
         <ru.aipova.skintracker.ui.view.TrackValuesView
             android:id="@+id/trackValuesView"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="@dimen/large_margin"
+            android:layout_marginBottom="@dimen/default_margin"
+            android:layout_marginEnd="@dimen/lateral_margin"
+            android:layout_marginStart="@dimen/lateral_margin"
             android:layout_marginTop="@dimen/default_margin"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/noteTxt">
-        </ru.aipova.skintracker.ui.view.TrackValuesView>
-
+            app:layout_constraintTop_toTopOf="parent"/>
 
     </android.support.constraint.ConstraintLayout>
 </ScrollView>

@@ -1,6 +1,7 @@
 package ru.aipova.skintracker.ui.statistics
 
 import android.app.DatePickerDialog
+import android.util.Log
 import com.github.mikephil.charting.data.Entry
 import com.github.mikephil.charting.data.LineData
 import com.github.mikephil.charting.data.LineDataSet
@@ -78,7 +79,9 @@ class StatisticsPresenter(
 
     private fun setupAndDrawLegend(trackTypes: List<String>) {
         setupLegend(trackTypes)
-        if (statisticsView.isActive) statisticsView.drawLegend(legend, onLegendChoose = { redrawChart() })
+        if (statisticsView.isActive) statisticsView.drawLegend(
+            legend,
+            onLegendChoose = { redrawChart() })
     }
 
     private fun setupLegend(trackTypes: List<String>) {
@@ -134,10 +137,12 @@ class StatisticsPresenter(
             .map { createValuesMap(it) }
             .map { createDataset(it) }
             .observeOn(AndroidSchedulers.mainThread())
-            .subscribe { result ->
+            .subscribe({ result ->
                 dataset = result
                 onLoadComplete()
-            }
+            }, { error ->
+                Log.e("StatisticsPresenter", error.message, error)
+            })
     }
 
     override fun stop() {

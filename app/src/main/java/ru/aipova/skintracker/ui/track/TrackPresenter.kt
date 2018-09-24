@@ -1,16 +1,12 @@
 package ru.aipova.skintracker.ui.track
 
-import ru.aipova.skintracker.model.Track
 import ru.aipova.skintracker.model.source.TrackRepository
-import ru.aipova.skintracker.utils.PhotoFileConstructor
-import java.io.File
 import java.util.*
 
 class TrackPresenter(
     private var trackView: TrackContract.View,
     private var currentDate: Date,
-    private val trackRepository: TrackRepository,
-    private val photoFileConstructor: PhotoFileConstructor
+    private val trackRepository: TrackRepository
 ) : TrackContract.Presenter {
     init {
         trackView.presenter = this
@@ -19,18 +15,10 @@ class TrackPresenter(
     private var trackExists: Boolean = false
 
     override fun start() {
-        loadPhotoIfExists()
+        trackView.setTitle(currentDate)
         loadTrackValues()
         trackRepository.getTrackByDate(currentDate)?.let {
             trackExists = true
-            showTrackNote(it)
-        }
-    }
-
-    private fun loadPhotoIfExists() {
-        val photoFile = getPhotoFile()
-        if (photoFile.exists()) {
-            trackView.loadPhoto(photoFile)
         }
     }
 
@@ -39,23 +27,9 @@ class TrackPresenter(
         trackView.showTrackValues(trackValues)
     }
 
-    private fun showTrackNote(existingTrack: Track) {
-        existingTrack.note?.let {
-            trackView.setupNoteText(it)
-        }
-    }
-
-    override fun photoCalled() {
-        trackView.makePhoto(getPhotoFile())
-    }
-
-    override fun photoCreated() {
-        loadPhotoIfExists()
-    }
-
     override fun save() {
-        val trackData = TrackData(currentDate, trackView.getNote(), trackView.getTrackValueData())
-        trackRepository.createOrUpdate(trackData, object : TrackRepository.CreateTrackCallback {
+        val trackValues =  trackView.getTrackValueData()
+        trackRepository.createOrUpdate(currentDate, trackValues, object : TrackRepository.CreateTrackCallback {
             override fun onTrackCreated() {
                 if (!trackView.isActive) return
                 if (trackExists) {
@@ -72,9 +46,5 @@ class TrackPresenter(
                 trackView.showCannotCreateTrackMsg()
             }
         })
-    }
-
-    private fun getPhotoFile(): File {
-        return photoFileConstructor.getForDate(currentDate)
     }
 }

@@ -1,19 +1,15 @@
 package ru.aipova.skintracker.ui.track
 
 import android.app.Activity.RESULT_OK
-import android.content.Intent
-import android.net.Uri
 import android.os.Bundle
-import android.provider.MediaStore
 import android.support.v4.app.Fragment
-import android.support.v4.content.FileProvider
 import android.support.v7.app.AppCompatActivity
 import android.view.*
 import android.widget.Toast
-import com.squareup.picasso.Picasso
 import kotlinx.android.synthetic.main.track_fragment.*
 import ru.aipova.skintracker.R
-import java.io.File
+import ru.aipova.skintracker.utils.TimeUtils
+import java.util.*
 
 
 class TrackFragment : Fragment(), TrackContract.View {
@@ -40,38 +36,11 @@ class TrackFragment : Fragment(), TrackContract.View {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         presenter.start()
         restoreSeekBarsProgress(savedInstanceState)
-        setupPhotoButton()
-    }
-
-    private fun setupPhotoButton() {
-        takePhotoBtn.setOnClickListener {
-            presenter.photoCalled()
-        }
-    }
-
-    override fun makePhoto(photoFile: File) {
-        val takePhotoIntent = Intent(MediaStore.ACTION_IMAGE_CAPTURE)
-        if (takePhotoIntent.resolveActivity(activity!!.packageManager) != null) {
-            takePhotoIntent.putExtra(MediaStore.EXTRA_OUTPUT, getPhotoUri(photoFile))
-            startActivityForResult(takePhotoIntent, REQUEST_PHOTO)
-        }
-    }
-
-    private fun getPhotoUri(photoFile: File): Uri? {
-        return FileProvider.getUriForFile(
-            activity!!,
-            "ru.aipova.skintracker.fileprovider",
-            photoFile
-        )
     }
 
     override fun showTrackValues(trackValueData: Array<TrackValueData>) {
         trackValueDataArray = trackValueData
         trackValuesView.setTrackValues(trackValueData, true)
-    }
-
-    override fun setupNoteText(text: String) {
-        noteTxt.setText(text)
     }
 
     private fun restoreSeekBarsProgress(savedInstanceState: Bundle?) {
@@ -83,14 +52,16 @@ class TrackFragment : Fragment(), TrackContract.View {
     private fun getSavedSeekBarValues(savedInstanceState: Bundle?) =
         if (savedInstanceState != null) savedInstanceState.getSerializable(SEEK_BAR_VALUES) as? IntArray else null
 
-    override fun loadPhoto(photoFile: File) {
-        Picasso.get().invalidate(photoFile)
-        Picasso.get().load(photoFile).into(photoView)
-    }
-
     override fun onSaveInstanceState(outState: Bundle) {
         super.onSaveInstanceState(outState)
         outState.putSerializable(SEEK_BAR_VALUES, trackValuesView.getTrackValues())
+    }
+
+    override fun setTitle(date: Date) {
+        (activity as AppCompatActivity).supportActionBar?.run {
+            title = getString(R.string.title_track_parameters)
+            subtitle = TimeUtils.getDateFormatted(date)
+        }
     }
 
 
@@ -100,21 +71,10 @@ class TrackFragment : Fragment(), TrackContract.View {
         (activity as AppCompatActivity).supportActionBar?.run {
             setDisplayHomeAsUpEnabled(true)
             setHomeAsUpIndicator(R.drawable.ic_close)
-            title = getString(R.string.title_new_track)
-        }
-    }
-
-    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-        if (requestCode == REQUEST_PHOTO && resultCode == RESULT_OK) {
-            presenter.photoCreated()
         }
     }
 
     override fun onOptionsItemSelected(item: MenuItem) = when (item.itemId) {
-//        android.R.id.home -> {
-//            close()
-//            true
-//        }
         R.id.action_save_track -> {
             presenter.save()
             true
@@ -128,10 +88,6 @@ class TrackFragment : Fragment(), TrackContract.View {
             trackValueData.value = trackValues[index]
         }
         return trackValueDataArray
-    }
-
-    override fun getNote(): String {
-        return noteTxt.text.toString()
     }
 
     override fun showTrackCreatedMsg() {
@@ -156,8 +112,7 @@ class TrackFragment : Fragment(), TrackContract.View {
     }
 
     companion object {
-        private const val SEEK_BAR_VALUES = "seek_bar"
-        private const val REQUEST_PHOTO = 1
+        private const val SEEK_BAR_VALUES = "ru.aipova.skintracker.track.SEEK_BAR_VALUES"
         fun newInstance(): TrackFragment {
             return TrackFragment()
         }

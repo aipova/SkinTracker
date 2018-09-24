@@ -2,7 +2,7 @@
     <string name="app_name">SkinTracker</string>
     <string name="action_settings">Settings</string>
     <string name="action_save">Save</string>
-    <string name="title_new_track">New Skin Track</string>
+    <string name="title_track_parameters">Skin Parameters</string>
     <string name="track_type_name_skin_quality">Skin Quality</string>
     <string name="track_type_name">Track Type Name</string>
     <string name="title_new_track_type">New Track Type</string>

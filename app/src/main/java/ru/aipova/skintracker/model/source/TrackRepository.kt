@@ -37,7 +37,7 @@ class TrackRepository(private val uiRealm: Realm) {
         val trackValues = track.values.map { trackValue ->
             toData(trackValue.trackType!!, trackValue.value?.toInt() ?: 0)
         }
-        return TrackData(track.date!!, track.note!!, trackValues.toTypedArray())
+        return TrackData(date = track.date!!, values = trackValues.toTypedArray())
     }
 
     fun getTrackValuesData(date: Date): Array<TrackValueData> {
@@ -55,7 +55,7 @@ class TrackRepository(private val uiRealm: Realm) {
     ) =
         TrackValueData(
             trackType.uuid,
-            trackType.name ?: "",
+            trackType.name,
             trackType.getValueTypeEnum(),
             value,
             trackType.maxValue.toInt()
@@ -69,14 +69,13 @@ class TrackRepository(private val uiRealm: Realm) {
         return existingValue?.value?.toInt() ?: 0
     }
 
-    fun createOrUpdate(trackData: TrackData, callback: CreateTrackCallback) {
+    fun createOrUpdate(date: Date, trackValues: Array<TrackValueData>, callback: CreateTrackCallback) {
         uiRealm.executeTransactionAsync({ bgRealm ->
-            val trackForDate = getOrCreateTrack(trackData.date, bgRealm)
-            val todayTracks = createOrUpdateTrackValues(trackData, trackForDate, bgRealm)
+            val trackForDate = getOrCreateTrack(date, bgRealm)
+            val todayTracks = createOrUpdateTrackValues(trackValues, trackForDate, bgRealm)
 
             trackForDate.apply {
                 values.addAll(todayTracks)
-                note = trackData.note
             }
             bgRealm.insertOrUpdate(trackForDate)
         }, { callback.onTrackCreated() }, { callback.onError() })
@@ -88,12 +87,12 @@ class TrackRepository(private val uiRealm: Realm) {
     ) = getTrackByDate(trackDate, bgRealm) ?: Track().apply { date = trackDate }
 
     private fun createOrUpdateTrackValues(
-        trackData: TrackData,
+        trackValues: Array<TrackValueData>,
         trackForDate: Track,
         realm: Realm
     ): MutableList<TrackValue> {
         val todayTracks = mutableListOf<TrackValue>()
-        trackData.values.forEach { trackValueData ->
+        trackValues.forEach { trackValueData ->
             val trackType = findTrackTypeByUid(trackValueData.uid, realm)
             val newValue = trackValueData.value.toLong()
 

@@ -3,7 +3,7 @@
     <string name="app_name">SkinTracker</string>
     <string name="action_settings">Настройки</string>
     <string name="action_save">Сохранить</string>
-    <string name="title_new_track">Новая запись</string>
+    <string name="title_track_parameters">Параметры</string>
     <string name="track_type_name_skin_quality">Качество кожи</string>
     <string name="track_type_name">Название</string>
     <string name="title_new_track_type">Новый параметр</string>
