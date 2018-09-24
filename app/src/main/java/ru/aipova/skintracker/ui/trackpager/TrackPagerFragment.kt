@@ -51,7 +51,7 @@ class TrackPagerFragment : Fragment(), TrackPagerContract.View {
             this,
             getTrackDate(),
             InjectionStub.trackRepository,
-            InjectionStub.sPhotoFileConstructor
+            InjectionStub.photoFileConstructor
         )
         presenter.init()
     }
@@ -89,6 +89,7 @@ class TrackPagerFragment : Fragment(), TrackPagerContract.View {
     }
 
     override fun showTrackValues(trackValueData: Array<TrackValueData>) {
+        valuesCard.visibility = View.VISIBLE
         trackValuesView.setTrackValues(trackValueData, false)
     }
 

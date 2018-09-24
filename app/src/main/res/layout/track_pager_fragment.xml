@@ -61,7 +61,8 @@
             android:id="@+id/valuesCard"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="@dimen/default_margin">
+            android:layout_marginBottom="@dimen/default_margin"
+            android:visibility="gone">
 
             <ru.aipova.skintracker.ui.view.TrackValuesView
                 android:id="@+id/trackValuesView"

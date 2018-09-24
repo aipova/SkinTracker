@@ -10,5 +10,5 @@ object InjectionStub {
     lateinit var realm: Realm
     lateinit var trackTypeRepository: TrackTypeRepository
     lateinit var trackRepository: TrackRepository
-    lateinit var sPhotoFileConstructor: PhotoFileConstructor
+    lateinit var photoFileConstructor: PhotoFileConstructor
 }

@@ -7,11 +7,15 @@ import android.animation.ObjectAnimator
 import android.app.Activity
 import android.app.DatePickerDialog
 import android.content.Intent
+import android.net.Uri
 import android.os.Bundle
+import android.os.PersistableBundle
+import android.provider.MediaStore
 import android.support.design.widget.NavigationView
 import android.support.v4.app.Fragment
 import android.support.v4.app.FragmentStatePagerAdapter
 import android.support.v4.content.ContextCompat
+import android.support.v4.content.FileProvider
 import android.support.v4.view.GravityCompat
 import android.support.v4.view.PagerAdapter
 import android.support.v4.view.ViewPager
@@ -23,12 +27,14 @@ import android.view.animation.OvershootInterpolator
 import kotlinx.android.synthetic.main.track_pager_activity.*
 import kotlinx.android.synthetic.main.track_pager_content.*
 import org.joda.time.LocalDate
+import ru.aipova.skintracker.InjectionStub
 import ru.aipova.skintracker.R
 import ru.aipova.skintracker.ui.statistics.StatisticsActivity
 import ru.aipova.skintracker.ui.track.TrackActivity
 import ru.aipova.skintracker.ui.tracktype.TrackTypeActivity
 import ru.aipova.skintracker.utils.TimeUtils
 import ru.aipova.skintracker.utils.TransitionUtils
+import java.io.File
 import java.util.*
 
 
@@ -42,22 +48,18 @@ class TrackPagerActivity : AppCompatActivity(), NavigationView.OnNavigationItemS
         setSupportActionBar(toolbar)
 
         setupNavigation()
-        setupTrackPager()
 
-        setupEditButton()
+        val currentPage = savedInstanceState?.getInt(CURRENT_ITEM) ?: getTodaysPage()
+        setupTrackPager(currentPage)
+
         setupNavigationButtons()
         setupMenuFab()
     }
 
-    private fun setupEditButton() {
-        fabAddParameters.setOnClickListener {
-            startActivityForResult(
-                TrackActivity.createIntent(
-                    this,
-                    getCurrentDiaryDate()
-                ), EDIT_REQUEST
-            )
-        }
+
+    override fun onSaveInstanceState(outState: Bundle?, outPersistentState: PersistableBundle?) {
+        outState?.putInt(CURRENT_ITEM, getCurrentPage())
+        super.onSaveInstanceState(outState, outPersistentState)
     }
 
     private fun setupNavigationButtons() {
@@ -69,7 +71,7 @@ class TrackPagerActivity : AppCompatActivity(), NavigationView.OnNavigationItemS
     }
 
     private fun showDatePickerDialog() {
-        val currentDate = TimeUtils.getCalendarForPosition(trackPager.currentItem)
+        val currentDate = TimeUtils.getCalendarForPosition(getCurrentPage())
         DatePickerDialog(
             this,
             dateChangedListener,
@@ -85,11 +87,12 @@ class TrackPagerActivity : AppCompatActivity(), NavigationView.OnNavigationItemS
             trackPager.currentItem = TimeUtils.getPositionForDate(LocalDate.fromCalendarFields(newDate))
         }
 
-    private fun getCurrentDiaryDate() = TimeUtils.getDateForPosition(trackPager.currentItem)
+    private fun getCurrentDiaryDate() = TimeUtils.getDateForPosition(getCurrentPage())
 
+    private fun getCurrentPage() = trackPager.currentItem
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-        if (requestCode == EDIT_REQUEST && resultCode == Activity.RESULT_OK) {
+        if ((requestCode == EDIT_REQUEST || requestCode == PHOTO_REQUEST) && resultCode == Activity.RESULT_OK) {
             viewPagerAdapter.notifyDataSetChanged()
         }
     }
@@ -108,17 +111,57 @@ class TrackPagerActivity : AppCompatActivity(), NavigationView.OnNavigationItemS
         nav_view.setNavigationItemSelectedListener(this)
     }
 
-    private fun setupTrackPager() {
+    private fun setupTrackPager(currentPage: Int) {
         trackPager.adapter = viewPagerAdapter
         trackPager.addOnPageChangeListener(pageChangeListener)
-        setCurrentTrack()
+        setCurrentTrack(currentPage)
     }
 
     private fun setupMenuFab() {
         createMenuFabAnimation()
         fabAddParameters.setImageDrawable(ContextCompat.getDrawable(this, R.drawable.ic_params))
+        fabAddParameters.setOnClickListener {
+            menuFab.close(false)
+            startActivityForResult(
+                TrackActivity.createIntent(
+                    this,
+                    getCurrentDiaryDate()
+                ), EDIT_REQUEST
+            )
+        }
         fabAddNote.setImageDrawable(ContextCompat.getDrawable(this, R.drawable.ic_note))
-        fabAddPhoto.setImageDrawable(ContextCompat.getDrawable(this, R.drawable.ic_photo))
+        fabAddNote.setOnClickListener {
+            menuFab.close(false)
+        }
+        with(fabAddPhoto) {
+            setImageDrawable(ContextCompat.getDrawable(this@TrackPagerActivity, R.drawable.ic_photo))
+            setOnClickListener {
+                menuFab.close(false)
+                makePhoto(getPhotoFile())
+            }
+        }
+    }
+
+    private fun getPhotoFile(): File {
+        return InjectionStub.photoFileConstructor.getForDate(getCurrentDiaryDate())
+    }
+
+    private fun makePhoto(photoFile: File) {
+        val takePhotoIntent = Intent(MediaStore.ACTION_IMAGE_CAPTURE)
+        if (takePhotoIntent.resolveActivity(packageManager) != null) {
+            takePhotoIntent.putExtra(MediaStore.EXTRA_OUTPUT, getPhotoUri(photoFile))
+            startActivityForResult(takePhotoIntent, PHOTO_REQUEST)
+        }
+    }
+
+
+
+    private fun getPhotoUri(photoFile: File): Uri? {
+        return FileProvider.getUriForFile(
+            this,
+            "ru.aipova.skintracker.fileprovider",
+            photoFile
+        )
     }
 
     override fun onBackPressed() {
@@ -240,11 +283,15 @@ class TrackPagerActivity : AppCompatActivity(), NavigationView.OnNavigationItemS
     }
 
 
-    private fun setCurrentTrack() {
-        trackPager.currentItem = TimeUtils.getPositionForDate(TimeUtils.today())
+    private fun setCurrentTrack(currentPage: Int) {
+        trackPager.currentItem = currentPage
     }
 
+    private fun getTodaysPage() = TimeUtils.getPositionForDate(TimeUtils.today())
+
     companion object {
-        const val EDIT_REQUEST = 0
+        private const val EDIT_REQUEST = 0
+        private const val PHOTO_REQUEST = 1
+        private const val CURRENT_ITEM = "ru.aipova.skintracker.trackpager.CURRENT_ITEM"
     }
 }

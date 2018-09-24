@@ -23,7 +23,7 @@ class SkinTrackerApp : Application() {
         InjectionStub.realm = Realm.getDefaultInstance()
         InjectionStub.trackTypeRepository = TrackTypeRepository(InjectionStub.realm)
         InjectionStub.trackRepository = TrackRepository(InjectionStub.realm)
-        InjectionStub.sPhotoFileConstructor = PhotoFileConstructor(this.getExternalFilesDir(PHOTOS_DIR))
+        InjectionStub.photoFileConstructor = PhotoFileConstructor(this.getExternalFilesDir(PHOTOS_DIR))
     }
 
     private val  skinQualityTrackType: TrackType

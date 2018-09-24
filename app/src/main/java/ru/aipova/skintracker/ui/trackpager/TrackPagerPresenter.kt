@@ -18,13 +18,13 @@ class TrackPagerPresenter(
 
     override fun init() {
         existingTrack = trackRepository.getTrackByDate(currentDate)
-        trackPagerView.setupTrackExists(existingTrack != null)
+        trackPagerView.setupTrackExists(existingTrack != null || photoExists())
     }
 
     override fun start() {
+        loadPhoto()
         existingTrack?.run {
             loadNote(this)
-            loadPhoto()
             loadTrackValues()
         }
     }
@@ -42,9 +42,14 @@ class TrackPagerPresenter(
         if (photoFile.exists()) {
             trackPagerView.showPhotoView()
             trackPagerView.loadPhoto(photoFile)
-        } else {
-            trackPagerView.hidePhotoView()
         }
+//        else {
+//            trackPagerView.hidePhotoView()
+//        }
+    }
+
+    private fun photoExists(): Boolean {
+        return photoFileConstructor.getForDate(currentDate).exists()
     }
 
     private fun loadTrackValues() {

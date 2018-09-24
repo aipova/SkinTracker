@@ -111,10 +111,10 @@ class TrackFragment : Fragment(), TrackContract.View {
     }
 
     override fun onOptionsItemSelected(item: MenuItem) = when (item.itemId) {
-        android.R.id.home -> {
-            close()
-            true
-        }
+//        android.R.id.home -> {
+//            close()
+//            true
+//        }
         R.id.action_save_track -> {
             presenter.save()
             true
