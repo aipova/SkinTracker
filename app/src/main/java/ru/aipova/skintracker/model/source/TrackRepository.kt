@@ -81,6 +81,17 @@ class TrackRepository(private val uiRealm: Realm) {
         }, { callback.onTrackCreated() }, { callback.onError() })
     }
 
+    fun saveNote(date: Date, noteTxt: String, callback: () -> Unit) {
+        uiRealm.executeTransactionAsync({ bgRealm ->
+            val trackForDate = getOrCreateTrack(date, bgRealm)
+
+            trackForDate.apply {
+                note = noteTxt
+            }
+            bgRealm.insertOrUpdate(trackForDate)
+        }, callback)
+    }
+
     private fun getOrCreateTrack(
         trackDate: Date,
         bgRealm: Realm

@@ -25,7 +25,7 @@ class TrackPagerPresenter(
         loadPhoto()
         existingTrack?.run {
             loadNote(this)
-            loadTrackValues()
+            if (values.isNotEmpty()) loadTrackValues()
         }
     }
 
@@ -43,9 +43,6 @@ class TrackPagerPresenter(
             trackPagerView.showPhotoView()
             trackPagerView.loadPhoto(photoFile)
         }
-//        else {
-//            trackPagerView.hidePhotoView()
-//        }
     }
 
     private fun photoExists(): Boolean {

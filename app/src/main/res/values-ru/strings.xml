@@ -42,6 +42,10 @@
     <string name="add_photo">Фото</string>
     <string name="add_note">Заметка</string>
     <string name="add_parameters">Параметры</string>
+    <string name="title_new_note">New note</string>
+    <string name="title_edit_note">Edit note</string>
+    <string name="note_text">Note text</string>
+    <string name="err_note_empty">You need to enter note text</string>
     <string-array name="date_range_array">
         <item>Последняя неделя</item>
         <item>Последний месяц</item>

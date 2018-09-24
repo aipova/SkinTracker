@@ -31,6 +31,8 @@ import ru.aipova.skintracker.InjectionStub
 import ru.aipova.skintracker.R
 import ru.aipova.skintracker.ui.statistics.StatisticsActivity
 import ru.aipova.skintracker.ui.track.TrackActivity
+import ru.aipova.skintracker.ui.trackpager.dialog.NoteCreateDialog
+import ru.aipova.skintracker.ui.trackpager.dialog.NoteEditDialog
 import ru.aipova.skintracker.ui.tracktype.TrackTypeActivity
 import ru.aipova.skintracker.utils.TimeUtils
 import ru.aipova.skintracker.utils.TransitionUtils
@@ -38,8 +40,12 @@ import java.io.File
 import java.util.*
 
 
-
-class TrackPagerActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelectedListener, TrackPagerFragment.Callbacks {
+class TrackPagerActivity :
+    AppCompatActivity(),
+    NavigationView.OnNavigationItemSelectedListener,
+    TrackPagerFragment.Callbacks,
+    NoteCreateDialog.Callbacks,
+    NoteEditDialog.Callbacks {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -84,7 +90,8 @@ class TrackPagerActivity : AppCompatActivity(), NavigationView.OnNavigationItemS
     private val dateChangedListener =
         DatePickerDialog.OnDateSetListener { view, year, month, dayOfMonth ->
             val newDate = Calendar.getInstance().apply { set(year, month, dayOfMonth) }
-            trackPager.currentItem = TimeUtils.getPositionForDate(LocalDate.fromCalendarFields(newDate))
+            trackPager.currentItem =
+                    TimeUtils.getPositionForDate(LocalDate.fromCalendarFields(newDate))
         }
 
     private fun getCurrentDiaryDate() = TimeUtils.getDateForPosition(getCurrentPage())
@@ -132,14 +139,41 @@ class TrackPagerActivity : AppCompatActivity(), NavigationView.OnNavigationItemS
         fabAddNote.setImageDrawable(ContextCompat.getDrawable(this, R.drawable.ic_note))
         fabAddNote.setOnClickListener {
             menuFab.close(false)
+            val track = InjectionStub.trackRepository.getTrackByDate(getCurrentDiaryDate())
+            if (track?.note == null) {
+                NoteCreateDialog.newInstance().show(supportFragmentManager, CREATE_NOTE_DIALOG)
+            } else {
+                NoteEditDialog.newInstance(track.note!!).show(supportFragmentManager, EDIT_NOTE_DIALOG)
+            }
+
         }
         with(fabAddPhoto) {
-            setImageDrawable(ContextCompat.getDrawable(this@TrackPagerActivity, R.drawable.ic_photo))
+            setImageDrawable(
+                ContextCompat.getDrawable(
+                    this@TrackPagerActivity,
+                    R.drawable.ic_photo
+                )
+            )
             setOnClickListener {
                 menuFab.close(false)
                 makePhoto(getPhotoFile())
             }
         }
+    }
+
+    override fun onCreateNewNote(note: String) {
+        saveNote(note)
+    }
+
+    override fun onEditNote(note: String) {
+        saveNote(note)
+    }
+
+    fun saveNote(note: String) {
+        InjectionStub.trackRepository.saveNote(
+            getCurrentDiaryDate(),
+            note
+        ) { viewPagerAdapter.notifyDataSetChanged() }
     }
 
     private fun getPhotoFile(): File {
@@ -153,7 +187,6 @@ class TrackPagerActivity : AppCompatActivity(), NavigationView.OnNavigationItemS
             startActivityForResult(takePhotoIntent, PHOTO_REQUEST)
         }
     }
-
 
 
     private fun getPhotoUri(photoFile: File): Uri? {
@@ -282,6 +315,10 @@ class TrackPagerActivity : AppCompatActivity(), NavigationView.OnNavigationItemS
         return TimeUtils.getDateFormatted(position)
     }
 
+    private fun getCurrentDate(position: Int): Date {
+        return TimeUtils.getDateForPosition(trackPager.currentItem)
+    }
+
 
     private fun setCurrentTrack(currentPage: Int) {
         trackPager.currentItem = currentPage
@@ -293,5 +330,7 @@ class TrackPagerActivity : AppCompatActivity(), NavigationView.OnNavigationItemS
         private const val EDIT_REQUEST = 0
         private const val PHOTO_REQUEST = 1
         private const val CURRENT_ITEM = "ru.aipova.skintracker.trackpager.CURRENT_ITEM"
+        private const val CREATE_NOTE_DIALOG = "ru.aipova.skintracker.trackpager.CREATE_NOTE"
+        private const val EDIT_NOTE_DIALOG = "ru.aipova.skintracker.trackpager.EDIT_NOTE"
     }
 }
