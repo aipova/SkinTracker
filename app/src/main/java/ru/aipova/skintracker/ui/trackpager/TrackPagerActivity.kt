@@ -36,7 +36,6 @@ import ru.aipova.skintracker.ui.trackpager.track.TrackFragment
 import ru.aipova.skintracker.ui.tracktype.TrackTypeActivity
 import ru.aipova.skintracker.ui.trackvalues.TrackValuesActivity
 import ru.aipova.skintracker.utils.TimeUtils
-import ru.aipova.skintracker.utils.TransitionUtils
 import java.io.File
 import java.util.*
 
@@ -50,7 +49,6 @@ class TrackPagerActivity :
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        TransitionUtils.enableTransitions(window)
         setContentView(R.layout.track_pager_activity)
         setSupportActionBar(toolbar)
 
@@ -127,40 +125,53 @@ class TrackPagerActivity :
 
     private fun setupMenuFab() {
         createMenuFabAnimation()
-        fabAddParameters.setImageDrawable(ContextCompat.getDrawable(this, R.drawable.ic_params))
-        fabAddParameters.setOnClickListener {
-            menuFab.close(false)
-            startActivityForResult(
-                TrackValuesActivity.createIntent(
-                    this,
-                    getCurrentDiaryDate()
-                ), EDIT_REQUEST
-            )
-        }
-        fabAddNote.setImageDrawable(ContextCompat.getDrawable(this, R.drawable.ic_note))
-        fabAddNote.setOnClickListener {
-            menuFab.close(false)
-            val track = InjectionStub.trackRepository.getTrackByDate(getCurrentDiaryDate())
-            if (track?.note == null) {
-                NoteCreateDialog.newInstance().show(supportFragmentManager, CREATE_NOTE_DIALOG)
-            } else {
-                NoteEditDialog.newInstance(track.note!!).show(supportFragmentManager, EDIT_NOTE_DIALOG)
-            }
+        setupParametersItem()
+        setupNoteItem()
+        setupPhotoItem()
+    }
 
-        }
+    private fun setupPhotoItem() {
         with(fabAddPhoto) {
-            setImageDrawable(
-                ContextCompat.getDrawable(
-                    this@TrackPagerActivity,
-                    R.drawable.ic_photo
-                )
-            )
+            setImageDrawable(getImage(R.drawable.ic_photo))
             setOnClickListener {
                 menuFab.close(false)
                 makePhoto(getPhotoFile())
             }
         }
     }
+
+    private fun setupNoteItem() {
+        with(fabAddNote) {
+            setImageDrawable(getImage(R.drawable.ic_note))
+            setOnClickListener {
+                menuFab.close(false)
+                val track = InjectionStub.trackRepository.getTrackByDate(getCurrentDiaryDate())
+                if (track?.note == null) {
+                    NoteCreateDialog.newInstance().show(supportFragmentManager, CREATE_NOTE_DIALOG)
+                } else {
+                    NoteEditDialog.newInstance(track.note!!)
+                        .show(supportFragmentManager, EDIT_NOTE_DIALOG)
+                }
+            }
+        }
+    }
+
+    private fun setupParametersItem() {
+        with(fabAddParameters) {
+            setImageDrawable(getImage(R.drawable.ic_params))
+            setOnClickListener {
+                menuFab.close(false)
+                startActivityForResult(
+                    TrackValuesActivity.createIntent(
+                        this@TrackPagerActivity,
+                        getCurrentDiaryDate()
+                    ), EDIT_REQUEST
+                )
+            }
+        }
+    }
+
+    private fun getImage(drawable: Int) = ContextCompat.getDrawable(this, drawable)
 
     override fun onCreateNewNote(note: String) {
         saveNote(note)
@@ -189,11 +200,10 @@ class TrackPagerActivity :
         }
     }
 
-
     private fun getPhotoUri(photoFile: File): Uri? {
         return FileProvider.getUriForFile(
             this,
-            "ru.aipova.skintracker.fileprovider",
+            FILE_PROVIDER,
             photoFile
         )
     }
@@ -222,7 +232,8 @@ class TrackPagerActivity :
     }
 
     private fun <T : Activity> startActivityWithTransition(activityClass: Class<T>) {
-        startActivity(Intent(this, activityClass), TransitionUtils.makeTransition(this))
+        startActivity(Intent(this, activityClass))
+        overridePendingTransition(R.anim.slide_in, R.anim.stay)
     }
 
     private val pageChangeListener = object : ViewPager.OnPageChangeListener {
@@ -333,5 +344,6 @@ class TrackPagerActivity :
         private const val CURRENT_ITEM = "ru.aipova.skintracker.trackpager.CURRENT_ITEM"
         private const val CREATE_NOTE_DIALOG = "NoteCreateDialog"
         private const val EDIT_NOTE_DIALOG = "NoteEditDialog"
+        private const val FILE_PROVIDER = "ru.aipova.skintracker.fileprovider"
     }
 }

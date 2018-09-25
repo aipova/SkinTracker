@@ -1,9 +1,9 @@
 package ru.aipova.skintracker.ui.statistics
 
 import ru.aipova.skintracker.InjectionStub
-import ru.aipova.skintracker.ui.SingleFragmentActivity
+import ru.aipova.skintracker.ui.MenuItemActivity
 
-class StatisticsActivity : SingleFragmentActivity<StatisticsFragment>() {
+class StatisticsActivity : MenuItemActivity<StatisticsFragment>() {
 
     override fun createFragment(): StatisticsFragment {
         return StatisticsFragment.newInstance()

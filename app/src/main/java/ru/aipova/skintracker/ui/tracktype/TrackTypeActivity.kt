@@ -1,11 +1,9 @@
 package ru.aipova.skintracker.ui.tracktype
 
-import android.content.Context
-import android.content.Intent
 import ru.aipova.skintracker.InjectionStub
-import ru.aipova.skintracker.ui.SingleFragmentActivity
+import ru.aipova.skintracker.ui.MenuItemActivity
 
-class TrackTypeActivity : SingleFragmentActivity<TrackTypeFragment>() {
+class TrackTypeActivity : MenuItemActivity<TrackTypeFragment>() {
 
     override fun createFragment(): TrackTypeFragment {
         return TrackTypeFragment.newInstance()
@@ -13,11 +11,5 @@ class TrackTypeActivity : SingleFragmentActivity<TrackTypeFragment>() {
 
     override fun setupPresenter(fragment: TrackTypeFragment) {
         TrackTypePresenter(fragment, InjectionStub.trackTypeRepository)
-    }
-
-    companion object {
-        fun createIntent(context: Context): Intent {
-            return Intent(context, TrackTypeActivity::class.java)
-        }
     }
 }
