@@ -11,11 +11,12 @@ import com.squareup.picasso.Picasso
 import kotlinx.android.synthetic.main.track_fragment.*
 import ru.aipova.skintracker.InjectionStub
 import ru.aipova.skintracker.R
+import ru.aipova.skintracker.ui.data.TrackData
 import ru.aipova.skintracker.ui.data.TrackValueData
 import java.io.File
 import java.util.*
 
-class TrackFragment : Fragment(), TrackContract.View {
+class TrackFragment : Fragment(), Observer, TrackContract.View {
 
     interface Callbacks {
         fun onViewTouchDown()
@@ -81,6 +82,12 @@ class TrackFragment : Fragment(), TrackContract.View {
                 }
                 else -> false
             }
+        }
+    }
+
+    override fun update(o: Observable?, arg: Any?) {
+        if (isActive && arg is TrackData && trackExists) {
+            presenter.onUpdateNote(arg)
         }
     }
 

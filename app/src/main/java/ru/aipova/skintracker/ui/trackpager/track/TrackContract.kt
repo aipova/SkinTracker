@@ -2,6 +2,7 @@ package ru.aipova.skintracker.ui.trackpager.track
 
 import ru.aipova.skintracker.ui.BasePresenter
 import ru.aipova.skintracker.ui.BaseView
+import ru.aipova.skintracker.ui.data.TrackData
 import ru.aipova.skintracker.ui.data.TrackValueData
 import java.io.File
 
@@ -19,5 +20,6 @@ interface TrackContract {
 
     interface Presenter: BasePresenter {
         fun init()
+        fun onUpdateNote(trackData: TrackData)
     }
 }

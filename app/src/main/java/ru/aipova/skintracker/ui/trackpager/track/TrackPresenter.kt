@@ -2,6 +2,7 @@ package ru.aipova.skintracker.ui.trackpager.track
 
 import ru.aipova.skintracker.model.Track
 import ru.aipova.skintracker.model.source.TrackRepository
+import ru.aipova.skintracker.ui.data.TrackData
 import ru.aipova.skintracker.utils.PhotoFileConstructor
 import java.util.*
 
@@ -34,6 +35,13 @@ class TrackPresenter(
             trackView.showNoteView()
             trackView.setupNoteText(track.note!!)
 
+        }
+    }
+
+    override fun onUpdateNote(trackData: TrackData) {
+        if (trackData.date == currentDate) {
+            trackView.showNoteView()
+            trackView.setupNoteText(trackData.note)
         }
     }
 

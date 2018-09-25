@@ -27,6 +27,7 @@ import kotlinx.android.synthetic.main.track_pager_activity.*
 import kotlinx.android.synthetic.main.track_pager_content.*
 import ru.aipova.skintracker.InjectionStub
 import ru.aipova.skintracker.R
+import ru.aipova.skintracker.ui.data.TrackData
 import ru.aipova.skintracker.ui.statistics.StatisticsActivity
 import ru.aipova.skintracker.ui.trackpager.dialog.NoteCreateDialog
 import ru.aipova.skintracker.ui.trackpager.dialog.NoteEditDialog
@@ -91,8 +92,11 @@ class TrackPagerActivity :
     override fun getCurrentPage() = trackPager.currentItem
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-        if ((requestCode == EDIT_REQUEST || requestCode == PHOTO_REQUEST) && resultCode == Activity.RESULT_OK) {
-            viewPagerAdapter.notifyDataSetChanged()
+        if (resultCode == Activity.RESULT_OK) {
+            when (requestCode) {
+                PHOTO_REQUEST -> presenter.onPhotoCreated()
+                EDIT_REQUEST -> presenter.onParametersUpdated()
+            }
         }
     }
 
@@ -179,7 +183,7 @@ class TrackPagerActivity :
         presenter.onEditNote(note)
     }
 
-    override fun updateView() {
+    override fun updateWholeView() {
         viewPagerAdapter.notifyDataSetChanged()
     }
 
@@ -294,9 +298,16 @@ class TrackPagerActivity :
         menuFab.iconToggleAnimatorSet = set
     }
 
+    override fun updateNote(note: TrackData) {
+        viewPagerAdapter.updateNote(note)
+    }
+
     private val viewPagerAdapter = object : FragmentStatePagerAdapter(supportFragmentManager) {
+        val observers = FragmentObserver()
         override fun getItem(position: Int): Fragment {
-            return TrackFragment.getInstance(TimeUtils.getDateForPosition(position))
+            val fragment =  TrackFragment.getInstance(TimeUtils.getDateForPosition(position))
+            observers.addObserver(fragment)
+            return fragment
         }
 
         override fun getItemPosition(`object`: Any): Int {
@@ -305,6 +316,10 @@ class TrackPagerActivity :
 
         override fun getCount(): Int {
             return TimeUtils.DAYS_COUNT
+        }
+
+        fun updateNote(note: TrackData) {
+            observers.notifyObservers(note)
         }
     }
 
@@ -319,5 +334,13 @@ class TrackPagerActivity :
         private const val CREATE_NOTE_DIALOG = "NoteCreateDialog"
         private const val EDIT_NOTE_DIALOG = "NoteEditDialog"
         private const val FILE_PROVIDER = "ru.aipova.skintracker.fileprovider"
+    }
+
+    class FragmentObserver : Observable() {
+
+        override fun notifyObservers(arg: Any?) {
+            setChanged()
+            super.notifyObservers(arg)
+        }
     }
 }

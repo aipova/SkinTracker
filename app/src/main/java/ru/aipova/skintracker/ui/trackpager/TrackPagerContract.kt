@@ -2,6 +2,7 @@ package ru.aipova.skintracker.ui.trackpager
 
 import ru.aipova.skintracker.ui.BasePresenter
 import ru.aipova.skintracker.ui.BaseView
+import ru.aipova.skintracker.ui.data.TrackData
 import java.io.File
 import java.util.*
 
@@ -14,8 +15,9 @@ interface TrackPagerContract {
         fun makePhoto(photoFile: File)
         fun showNoteCreateDialog()
         fun showNoteEditDialog(trackNote: String)
-        fun updateView()
+        fun updateWholeView()
         fun openParametersScreen(date: Date)
+        fun updateNote(note: TrackData)
     }
 
     interface Presenter: BasePresenter {
@@ -28,5 +30,7 @@ interface TrackPagerContract {
         fun onCreateNewNote(note: String)
         fun onEditNote(note: String)
         fun onParametersItemSelected()
+        fun onPhotoCreated()
+        fun onParametersUpdated()
     }
 }

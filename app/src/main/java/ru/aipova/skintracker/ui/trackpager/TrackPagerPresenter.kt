@@ -2,6 +2,7 @@ package ru.aipova.skintracker.ui.trackpager
 
 import org.joda.time.LocalDate
 import ru.aipova.skintracker.model.source.TrackRepository
+import ru.aipova.skintracker.ui.data.TrackData
 import ru.aipova.skintracker.utils.PhotoFileConstructor
 import ru.aipova.skintracker.utils.TimeUtils
 import java.io.File
@@ -46,11 +47,20 @@ class TrackPagerPresenter(
         trackPagerView.makePhoto(getPhotoFile())
     }
 
+    override fun onPhotoCreated() {
+        trackRepository.createIfNotExists(getCurrentDiaryDate()) { trackPagerView.updateWholeView() }
+    }
+
+    override fun onParametersUpdated() {
+        trackPagerView.updateWholeView()
+    }
+
     private fun getPhotoFile(): File {
         return photoFileConstructor.getForDate(getCurrentDiaryDate())
     }
 
-    private fun getCurrentDiaryDate() = TimeUtils.getDateForPosition(trackPagerView.getCurrentPage())
+    private fun getCurrentDiaryDate() =
+        TimeUtils.getDateForPosition(trackPagerView.getCurrentPage())
 
     override fun onNoteItemSelected() {
         val trackNote = trackRepository.getTrackByDate(getCurrentDiaryDate())?.note
@@ -63,7 +73,6 @@ class TrackPagerPresenter(
 
     override fun onCreateNewNote(note: String) {
         saveNote(note)
-
     }
 
     override fun onEditNote(note: String) {
@@ -71,7 +80,15 @@ class TrackPagerPresenter(
     }
 
     private fun saveNote(note: String) {
-        trackRepository.saveNote(getCurrentDiaryDate(), note) { trackPagerView.updateView() }
+        val date = getCurrentDiaryDate()
+        val trackExists = trackRepository.getTrackByDate(date) != null
+        trackRepository.saveNote(getCurrentDiaryDate(), note) {
+            if (trackExists) {
+                trackPagerView.updateNote(TrackData(date, note, arrayOf()))
+            } else {
+                trackPagerView.updateWholeView()
+            }
+        }
     }
 
     override fun onParametersItemSelected() {

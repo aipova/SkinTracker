@@ -134,4 +134,14 @@ class TrackRepository(private val uiRealm: Realm) {
             this.value = value
         }
     }
+
+    fun createIfNotExists(trackDate: Date, callback: () -> Unit) {
+        uiRealm.executeTransactionAsync({ bgRealm ->
+            val trackForDate = getTrackByDate(trackDate, bgRealm)
+            if (trackForDate == null) {
+                val track = Track().apply { date = trackDate }
+                bgRealm.insert(track)
+            }
+        }, callback)
+    }
 }
