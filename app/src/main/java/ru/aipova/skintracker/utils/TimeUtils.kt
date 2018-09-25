@@ -21,7 +21,7 @@ object TimeUtils {
 
     fun getCalendarForPosition(position: Int): Calendar {
         return Calendar.getInstance().apply {
-            time = FIRST_DAY.withFieldAdded(DurationFieldType.days(), position).toDate()
+            time = getDateForPosition(position)
         }
     }
 
@@ -31,9 +31,7 @@ object TimeUtils {
 
     fun getDateFormatted(position: Int): String? {
         return DateFormat.getDateInstance(DateFormat.LONG).format(
-            getDateForPosition(
-                position
-            )
+            getDateForPosition(position)
         )
     }
 
@@ -41,11 +39,11 @@ object TimeUtils {
         return date?.let { DateFormat.getDateInstance(DateFormat.SHORT).format(date) } ?: ""
     }
 
-    fun today() = LocalDate.now()
+    fun today(): LocalDate = LocalDate.now()
 
-    fun todayDate() = LocalDate.now().toDate()
+    fun todayDate(): Date = LocalDate.now().toDate()
 
-    fun weekAgoDate() = today().minusDays(7).toDate()
+    fun weekAgoDate(): Date = today().minusDays(7).toDate()
 
-    fun monthAgoDate() = today().minusMonths(1).toDate()
+    fun monthAgoDate(): Date = today().minusMonths(1).toDate()
 }

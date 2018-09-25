@@ -9,7 +9,6 @@ import android.app.DatePickerDialog
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
-import android.os.PersistableBundle
 import android.provider.MediaStore
 import android.support.design.widget.NavigationView
 import android.support.v4.app.Fragment
@@ -26,7 +25,6 @@ import android.view.View
 import android.view.animation.OvershootInterpolator
 import kotlinx.android.synthetic.main.track_pager_activity.*
 import kotlinx.android.synthetic.main.track_pager_content.*
-import org.joda.time.LocalDate
 import ru.aipova.skintracker.InjectionStub
 import ru.aipova.skintracker.R
 import ru.aipova.skintracker.ui.statistics.StatisticsActivity
@@ -42,60 +40,55 @@ import java.util.*
 
 class TrackPagerActivity :
     AppCompatActivity(),
+    TrackPagerContract.View,
     NavigationView.OnNavigationItemSelectedListener,
     TrackFragment.Callbacks,
     NoteCreateDialog.Callbacks,
     NoteEditDialog.Callbacks {
+    override lateinit var presenter: TrackPagerContract.Presenter
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.track_pager_activity)
         setSupportActionBar(toolbar)
+        presenter = TrackPagerPresenter(this, InjectionStub.trackRepository, InjectionStub.photoFileConstructor)
 
-        setupNavigation()
-
-        val currentPage = savedInstanceState?.getInt(CURRENT_ITEM) ?: getTodaysPage()
-        setupTrackPager(currentPage)
-
+        setupNavigationDrawer()
         setupNavigationButtons()
+        setupTrackPager()
         setupMenuFab()
+
+        presenter.start()
     }
 
-
-    override fun onSaveInstanceState(outState: Bundle?, outPersistentState: PersistableBundle?) {
-        outState?.putInt(CURRENT_ITEM, getCurrentPage())
-        super.onSaveInstanceState(outState, outPersistentState)
-    }
 
     private fun setupNavigationButtons() {
-        leftBtn.setOnClickListener { trackPager.currentItem-- }
-        rightBtn.setOnClickListener { trackPager.currentItem++ }
-        calendarBtn.setOnClickListener {
-            showDatePickerDialog()
-        }
+        leftBtn.setOnClickListener { presenter.onLeftButtonClicked()}
+        rightBtn.setOnClickListener { presenter.onRightButtonClicked() }
+        calendarBtn.setOnClickListener { presenter.onCalendarButtonClicked() }
     }
 
-    private fun showDatePickerDialog() {
-        val currentDate = TimeUtils.getCalendarForPosition(getCurrentPage())
+    override fun showDatePickerDialog(calendar: Calendar) {
         DatePickerDialog(
             this,
             dateChangedListener,
-            currentDate.get(Calendar.YEAR),
-            currentDate.get(Calendar.MONTH),
-            currentDate.get(Calendar.DAY_OF_MONTH)
+            calendar.get(Calendar.YEAR),
+            calendar.get(Calendar.MONTH),
+            calendar.get(Calendar.DAY_OF_MONTH)
         ).show()
     }
 
     private val dateChangedListener =
         DatePickerDialog.OnDateSetListener { view, year, month, dayOfMonth ->
-            val newDate = Calendar.getInstance().apply { set(year, month, dayOfMonth) }
-            trackPager.currentItem =
-                    TimeUtils.getPositionForDate(LocalDate.fromCalendarFields(newDate))
+            presenter.onDateSelected(year, month, dayOfMonth)
         }
 
-    private fun getCurrentDiaryDate() = TimeUtils.getDateForPosition(getCurrentPage())
+    override fun setCurrentPage(newPage: Int) {
+        trackPager.currentItem = newPage
+    }
 
-    private fun getCurrentPage() = trackPager.currentItem
+
+    override fun getCurrentPage() = trackPager.currentItem
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         if ((requestCode == EDIT_REQUEST || requestCode == PHOTO_REQUEST) && resultCode == Activity.RESULT_OK) {
@@ -103,7 +96,7 @@ class TrackPagerActivity :
         }
     }
 
-    private fun setupNavigation() {
+    private fun setupNavigationDrawer() {
         val toggle = ActionBarDrawerToggle(
             this,
             drawer_layout,
@@ -117,10 +110,9 @@ class TrackPagerActivity :
         nav_view.setNavigationItemSelectedListener(this)
     }
 
-    private fun setupTrackPager(currentPage: Int) {
+    private fun setupTrackPager() {
         trackPager.adapter = viewPagerAdapter
         trackPager.addOnPageChangeListener(pageChangeListener)
-        setCurrentTrack(currentPage)
     }
 
     private fun setupMenuFab() {
@@ -134,8 +126,8 @@ class TrackPagerActivity :
         with(fabAddPhoto) {
             setImageDrawable(getImage(R.drawable.ic_photo))
             setOnClickListener {
-                menuFab.close(false)
-                makePhoto(getPhotoFile())
+                closeMenuFab()
+                presenter.onPhotoItemSelected()
             }
         }
     }
@@ -144,55 +136,54 @@ class TrackPagerActivity :
         with(fabAddNote) {
             setImageDrawable(getImage(R.drawable.ic_note))
             setOnClickListener {
-                menuFab.close(false)
-                val track = InjectionStub.trackRepository.getTrackByDate(getCurrentDiaryDate())
-                if (track?.note == null) {
-                    NoteCreateDialog.newInstance().show(supportFragmentManager, CREATE_NOTE_DIALOG)
-                } else {
-                    NoteEditDialog.newInstance(track.note!!)
-                        .show(supportFragmentManager, EDIT_NOTE_DIALOG)
-                }
+                closeMenuFab()
+                presenter.onNoteItemSelected()
             }
         }
+    }
+
+    override fun showNoteCreateDialog() {
+        NoteCreateDialog.newInstance().show(supportFragmentManager, CREATE_NOTE_DIALOG)
+    }
+
+    override fun showNoteEditDialog(trackNote: String) {
+        NoteEditDialog.newInstance(trackNote).show(supportFragmentManager, EDIT_NOTE_DIALOG)
     }
 
     private fun setupParametersItem() {
         with(fabAddParameters) {
             setImageDrawable(getImage(R.drawable.ic_params))
             setOnClickListener {
-                menuFab.close(false)
-                startActivityForResult(
-                    TrackValuesActivity.createIntent(
-                        this@TrackPagerActivity,
-                        getCurrentDiaryDate()
-                    ), EDIT_REQUEST
-                )
+                closeMenuFab()
+                presenter.onParametersItemSelected()
             }
         }
+    }
+
+    override fun openParametersScreen(date: Date) {
+        val intent = TrackValuesActivity.createIntent(this@TrackPagerActivity, date)
+        startActivityForResult(intent, EDIT_REQUEST)
+    }
+
+    private fun closeMenuFab() {
+        menuFab.close(false)
     }
 
     private fun getImage(drawable: Int) = ContextCompat.getDrawable(this, drawable)
 
     override fun onCreateNewNote(note: String) {
-        saveNote(note)
+        presenter.onCreateNewNote(note)
     }
 
     override fun onEditNote(note: String) {
-        saveNote(note)
+        presenter.onEditNote(note)
     }
 
-    fun saveNote(note: String) {
-        InjectionStub.trackRepository.saveNote(
-            getCurrentDiaryDate(),
-            note
-        ) { viewPagerAdapter.notifyDataSetChanged() }
+    override fun updateView() {
+        viewPagerAdapter.notifyDataSetChanged()
     }
 
-    private fun getPhotoFile(): File {
-        return InjectionStub.photoFileConstructor.getForDate(getCurrentDiaryDate())
-    }
-
-    private fun makePhoto(photoFile: File) {
+    override fun makePhoto(photoFile: File) {
         val takePhotoIntent = Intent(MediaStore.ACTION_IMAGE_CAPTURE)
         if (takePhotoIntent.resolveActivity(packageManager) != null) {
             takePhotoIntent.putExtra(MediaStore.EXTRA_OUTPUT, getPhotoUri(photoFile))
@@ -218,15 +209,9 @@ class TrackPagerActivity :
 
     override fun onNavigationItemSelected(item: MenuItem): Boolean {
         when (item.itemId) {
-            R.id.nav_statistics -> {
-                startActivityWithTransition(StatisticsActivity::class.java)
-            }
-
-            R.id.nav_track_type_settings -> {
-                startActivityWithTransition(TrackTypeActivity::class.java)
-            }
+            R.id.nav_statistics -> startActivityWithTransition(StatisticsActivity::class.java)
+            R.id.nav_track_type_settings -> startActivityWithTransition(TrackTypeActivity::class.java)
         }
-
         drawer_layout.closeDrawer(GravityCompat.START)
         return true
     }
@@ -327,21 +312,10 @@ class TrackPagerActivity :
         return TimeUtils.getDateFormatted(position)
     }
 
-    private fun getCurrentDate(position: Int): Date {
-        return TimeUtils.getDateForPosition(trackPager.currentItem)
-    }
-
-
-    private fun setCurrentTrack(currentPage: Int) {
-        trackPager.currentItem = currentPage
-    }
-
-    private fun getTodaysPage() = TimeUtils.getPositionForDate(TimeUtils.today())
 
     companion object {
         private const val EDIT_REQUEST = 0
         private const val PHOTO_REQUEST = 1
-        private const val CURRENT_ITEM = "ru.aipova.skintracker.trackpager.CURRENT_ITEM"
         private const val CREATE_NOTE_DIALOG = "NoteCreateDialog"
         private const val EDIT_NOTE_DIALOG = "NoteEditDialog"
         private const val FILE_PROVIDER = "ru.aipova.skintracker.fileprovider"
