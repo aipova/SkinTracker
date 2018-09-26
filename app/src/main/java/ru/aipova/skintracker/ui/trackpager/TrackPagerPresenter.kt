@@ -1,5 +1,6 @@
 package ru.aipova.skintracker.ui.trackpager
 
+import com.squareup.picasso.Picasso
 import org.joda.time.LocalDate
 import ru.aipova.skintracker.model.source.TrackRepository
 import ru.aipova.skintracker.ui.data.TrackData
@@ -48,7 +49,10 @@ class TrackPagerPresenter(
     }
 
     override fun onPhotoCreated() {
-        trackRepository.createIfNotExists(getCurrentDiaryDate()) { trackPagerView.updateWholeView() }
+        trackRepository.createIfNotExists(getCurrentDiaryDate()) {
+            Picasso.get().invalidate(getPhotoFile())
+            trackPagerView.updateWholeView()
+        }
     }
 
     override fun onParametersUpdated() {

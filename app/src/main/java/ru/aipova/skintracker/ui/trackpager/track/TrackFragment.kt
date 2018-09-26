@@ -101,8 +101,7 @@ class TrackFragment : Fragment(), Observer, TrackContract.View {
     }
 
     override fun loadPhoto(photoFile: File) {
-        Picasso.get().invalidate(photoFile)
-        Picasso.get().load(photoFile).into(trackPhoto)
+        Picasso.get().load(photoFile).fit().centerCrop().into(trackPhoto)
     }
 
     override fun showPhotoView() {
