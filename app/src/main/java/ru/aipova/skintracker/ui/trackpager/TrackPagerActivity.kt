@@ -19,7 +19,9 @@ import android.support.v4.view.GravityCompat
 import android.support.v4.view.PagerAdapter
 import android.support.v4.view.ViewPager
 import android.support.v7.app.ActionBarDrawerToggle
+import android.support.v7.app.AlertDialog
 import android.support.v7.app.AppCompatActivity
+import android.view.Menu
 import android.view.MenuItem
 import android.view.View
 import android.view.animation.OvershootInterpolator
@@ -48,6 +50,10 @@ class TrackPagerActivity :
     NoteEditDialog.Callbacks {
     override lateinit var presenter: TrackPagerContract.Presenter
 
+    override fun isActive(): Boolean {
+        return !isFinishing
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.track_pager_activity)
@@ -62,6 +68,30 @@ class TrackPagerActivity :
         presenter.start()
     }
 
+    override fun onCreateOptionsMenu(menu: Menu?): Boolean {
+        menuInflater.inflate(R.menu.menu_diary, menu)
+        return super.onCreateOptionsMenu(menu)
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        return when (item.itemId) {
+            R.id.action_remove_day -> {
+                showRemoveDayDialog()
+                true
+            }
+            else -> super.onOptionsItemSelected(item)
+        }
+    }
+
+    private fun showRemoveDayDialog() {
+        val dialog = AlertDialog.Builder(this)
+            .setTitle(R.string.attention)
+            .setMessage(getString(R.string.msg_remove_diary_day))
+            .setPositiveButton(android.R.string.ok) { dialog, which -> presenter.onRemoveDaySelected() }
+            .setNegativeButton(android.R.string.cancel, null)
+            .create()
+        dialog.show()
+    }
 
     private fun setupNavigationButtons() {
         leftBtn.setOnClickListener { presenter.onLeftButtonClicked()}

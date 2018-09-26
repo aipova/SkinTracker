@@ -144,4 +144,14 @@ class TrackRepository(private val uiRealm: Realm) {
             }
         }, callback)
     }
+
+    fun deleteTrackForDate(trackDate: Date, callback: () -> Unit) {
+        uiRealm.executeTransactionAsync({ bgRealm ->
+            val track = getTrackByDate(trackDate, bgRealm)
+            track?.run {
+                values.deleteAllFromRealm()
+                deleteFromRealm()
+            }
+        }, callback)
+    }
 }

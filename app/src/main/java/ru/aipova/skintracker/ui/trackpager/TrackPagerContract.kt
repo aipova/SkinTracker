@@ -18,6 +18,7 @@ interface TrackPagerContract {
         fun updateWholeView()
         fun openParametersScreen(date: Date)
         fun updateNote(note: TrackData)
+        fun isActive(): Boolean
     }
 
     interface Presenter: BasePresenter {
@@ -32,5 +33,6 @@ interface TrackPagerContract {
         fun onParametersItemSelected()
         fun onPhotoCreated()
         fun onParametersUpdated()
+        fun onRemoveDaySelected()
     }
 }

@@ -50,9 +50,28 @@ class TrackPagerPresenter(
 
     override fun onPhotoCreated() {
         trackRepository.createIfNotExists(getCurrentDiaryDate()) {
-            Picasso.get().invalidate(getPhotoFile())
-            trackPagerView.updateWholeView()
+            invalidatePhoto(getPhotoFile())
+            updateView()
         }
+    }
+
+    override fun onRemoveDaySelected() {
+        trackRepository.deleteTrackForDate(getCurrentDiaryDate()) {
+            val photo = getPhotoFile()
+            if (photo.exists()) {
+                invalidatePhoto(photo)
+                photo.delete()
+            }
+            updateView()
+        }
+    }
+
+    private fun invalidatePhoto(photo: File) {
+        Picasso.get().invalidate(photo)
+    }
+
+    private fun updateView() {
+        if (trackPagerView.isActive()) trackPagerView.updateWholeView()
     }
 
     override fun onParametersUpdated() {
