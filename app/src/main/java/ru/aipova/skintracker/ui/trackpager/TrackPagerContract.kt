@@ -4,6 +4,7 @@ import ru.aipova.skintracker.ui.BasePresenter
 import ru.aipova.skintracker.ui.BaseView
 import ru.aipova.skintracker.ui.data.TrackData
 import java.io.File
+import java.io.InputStream
 import java.util.*
 
 interface TrackPagerContract {
@@ -19,6 +20,8 @@ interface TrackPagerContract {
         fun openParametersScreen(date: Date)
         fun updateNote(note: TrackData)
         fun isActive(): Boolean
+        fun showPhotoChooserDialog()
+        fun openGallery()
     }
 
     interface Presenter: BasePresenter {
@@ -34,5 +37,8 @@ interface TrackPagerContract {
         fun onPhotoCreated()
         fun onParametersUpdated()
         fun onRemoveDaySelected()
+        fun onPhotoFromCameraSelected()
+        fun onPhotoFromGallerySelected()
+        fun onPhotoChosen(inputStream: InputStream)
     }
 }
