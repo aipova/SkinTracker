@@ -7,6 +7,7 @@ import ru.aipova.skintracker.ui.data.TrackData
 import ru.aipova.skintracker.utils.PhotoFileConstructor
 import ru.aipova.skintracker.utils.TimeUtils
 import java.io.File
+import java.io.InputStream
 import java.util.*
 
 class TrackPagerPresenter(
@@ -45,7 +46,32 @@ class TrackPagerPresenter(
     private fun getTodaysPage() = TimeUtils.getPositionForDate(TimeUtils.today())
 
     override fun onPhotoItemSelected() {
+        trackPagerView.showPhotoChooserDialog()
+    }
+
+    override fun onPhotoFromCameraSelected() {
         trackPagerView.makePhoto(getPhotoFile())
+    }
+
+    override fun onPhotoFromGallerySelected() {
+        trackPagerView.openGallery()
+    }
+
+    override fun onPhotoChosen(inputStream: InputStream) {
+        trackRepository.createIfNotExists(getCurrentDiaryDate()) {
+            val photoFile = getPhotoFile()
+            copyToFile(inputStream, photoFile)
+            invalidatePhoto(photoFile)
+            updateView()
+        }
+    }
+
+    private fun copyToFile(inputStream: InputStream, photoFile: File) {
+        inputStream.use { input ->
+            photoFile.outputStream().use { fileOut ->
+                input.copyTo(fileOut)
+            }
+        }
     }
 
     override fun onPhotoCreated() {

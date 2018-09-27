@@ -54,4 +54,8 @@
         <item>Последний месяц</item>
         <item>Свой диапазон</item>
     </string-array>
+    <string-array name="photo_choose_array">
+        <item>Камера</item>
+        <item>Галерея</item>
+    </string-array>
 </resources>

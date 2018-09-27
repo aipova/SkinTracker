@@ -53,4 +53,8 @@
         <item>Last month</item>
         <item>Custom range</item>
     </string-array>
+    <string-array name="photo_choose_array">
+        <item>Camera</item>
+        <item>Gallery</item>
+    </string-array>
 </resources>
