@@ -58,7 +58,11 @@ class TrackPagerActivity :
         super.onCreate(savedInstanceState)
         setContentView(R.layout.track_pager_activity)
         setActionBar()
-        presenter = TrackPagerPresenter(this, InjectionStub.trackRepository, InjectionStub.photoFileConstructor)
+        presenter = TrackPagerPresenter(
+            this,
+            InjectionStub.trackRepository,
+            InjectionStub.photoFileConstructor
+        )
 
         setupNavigationDrawer()
         setupNavigationButtons()
@@ -98,8 +102,20 @@ class TrackPagerActivity :
         dialog.show()
     }
 
+    override fun showPhotoChooserDialog() {
+        val dialog = AlertDialog.Builder(this)
+            .setItems(R.array.photo_choose_array) { dialog, which ->
+                when (which) {
+                    0 -> presenter.onPhotoFromCameraSelected()
+                    1 -> presenter.onPhotoFromGallerySelected()
+                }
+            }
+            .create()
+        dialog.show()
+    }
+
     private fun setupNavigationButtons() {
-        leftBtn.setOnClickListener { presenter.onLeftButtonClicked()}
+        leftBtn.setOnClickListener { presenter.onLeftButtonClicked() }
         rightBtn.setOnClickListener { presenter.onRightButtonClicked() }
         calendarBtn.setOnClickListener { presenter.onCalendarButtonClicked() }
     }
@@ -129,11 +145,15 @@ class TrackPagerActivity :
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         if (resultCode == Activity.RESULT_OK) {
             when (requestCode) {
-                PHOTO_REQUEST -> presenter.onPhotoCreated()
-                EDIT_REQUEST -> presenter.onParametersUpdated()
+                MAKE_PHOTO_REQUEST -> presenter.onPhotoCreated()
+                EDIT_PARAMETERS_REQUEST -> presenter.onParametersUpdated()
+                CHOOSE_PHOTO_REQUEST -> data?.run {
+                    presenter.onPhotoChosen(contentResolver.openInputStream(getData()))
+                }
             }
         }
     }
+
 
     private fun setupNavigationDrawer() {
         val toggle = ActionBarDrawerToggle(
@@ -201,7 +221,7 @@ class TrackPagerActivity :
 
     override fun openParametersScreen(date: Date) {
         val intent = TrackValuesActivity.createIntent(this@TrackPagerActivity, date)
-        startActivityForResult(intent, EDIT_REQUEST)
+        startActivityForResult(intent, EDIT_PARAMETERS_REQUEST)
     }
 
     private fun closeMenuFab() {
@@ -222,11 +242,17 @@ class TrackPagerActivity :
         viewPagerAdapter.notifyDataSetChanged()
     }
 
+    override fun openGallery() {
+        val imageFromGalleryIntent = Intent(Intent.ACTION_PICK,
+            MediaStore.Images.Media.INTERNAL_CONTENT_URI)
+        startActivityForResult(imageFromGalleryIntent, CHOOSE_PHOTO_REQUEST)
+    }
+
     override fun makePhoto(photoFile: File) {
         val takePhotoIntent = Intent(MediaStore.ACTION_IMAGE_CAPTURE)
         if (takePhotoIntent.resolveActivity(packageManager) != null) {
             takePhotoIntent.putExtra(MediaStore.EXTRA_OUTPUT, getPhotoUri(photoFile))
-            startActivityForResult(takePhotoIntent, PHOTO_REQUEST)
+            startActivityForResult(takePhotoIntent, MAKE_PHOTO_REQUEST)
         }
     }
 
@@ -340,7 +366,7 @@ class TrackPagerActivity :
     private val viewPagerAdapter = object : FragmentStatePagerAdapter(supportFragmentManager) {
         val observers = FragmentObserver()
         override fun getItem(position: Int): Fragment {
-            val fragment =  TrackFragment.getInstance(TimeUtils.getDateForPosition(position))
+            val fragment = TrackFragment.getInstance(TimeUtils.getDateForPosition(position))
             observers.addObserver(fragment)
             return fragment
         }
@@ -364,8 +390,9 @@ class TrackPagerActivity :
 
 
     companion object {
-        private const val EDIT_REQUEST = 0
-        private const val PHOTO_REQUEST = 1
+        private const val EDIT_PARAMETERS_REQUEST = 0
+        private const val MAKE_PHOTO_REQUEST = 1
+        private const val CHOOSE_PHOTO_REQUEST = 2
         private const val CREATE_NOTE_DIALOG = "NoteCreateDialog"
         private const val EDIT_NOTE_DIALOG = "NoteEditDialog"
         private const val FILE_PROVIDER = "ru.aipova.skintracker.fileprovider"
