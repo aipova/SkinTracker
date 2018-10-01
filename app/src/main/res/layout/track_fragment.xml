@@ -48,7 +48,6 @@
                     android:layout_marginStart="@dimen/default_margin"
                     android:layout_marginTop="@dimen/default_margin"
                     android:lineSpacingExtra="8dp"
-                    android:textAppearance="@style/TextAppearance.AppCompat.Body1"
                     android:visibility="gone"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"

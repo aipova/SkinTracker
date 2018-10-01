@@ -57,7 +57,7 @@ class TrackPagerActivity :
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.track_pager_activity)
-        setSupportActionBar(toolbar)
+        setActionBar()
         presenter = TrackPagerPresenter(this, InjectionStub.trackRepository, InjectionStub.photoFileConstructor)
 
         setupNavigationDrawer()
@@ -66,6 +66,11 @@ class TrackPagerActivity :
         setupMenuFab()
 
         presenter.start()
+    }
+
+    private fun setActionBar() {
+        toolbar.setTitle(R.string.diary)
+        setSupportActionBar(toolbar)
     }
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
