@@ -16,7 +16,7 @@
     <string name="action_diary">Дневник</string>
     <string name="navigation_drawer_open">Открыть меню</string>
     <string name="navigation_drawer_close">Закрыть меню</string>
-    <string name="menu_track_type_settings">Настройка параметров</string>
+    <string name="menu_track_type_settings">Мои параметры</string>
     <string name="menu_statistics">Статистика</string>
     <string name="note_hint">Заметка</string>
     <string name="msg_parameters_created">Параметры созданы</string>

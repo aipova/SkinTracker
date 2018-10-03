@@ -45,9 +45,6 @@ dependencies {
     implementation "io.realm:android-adapters:$realmAdaptersVersion"
     kapt "dk.ilios:realmfieldnameshelper:$realmFieldsVersion"
 
-    implementation "com.google.dagger:dagger-android:$daggerVersion"
-    kapt "com.google.dagger:dagger-android-processor:$daggerVersion"
-
     implementation "com.jakewharton:butterknife:$butterknifeVersion"
     kapt "com.jakewharton:butterknife-compiler:$butterknifeVersion"
 
