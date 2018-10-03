@@ -18,6 +18,7 @@ ext {
     butterknifeVersion = '8.8.1'
     mpAndroidChartVersion = 'v3.0.3'
     fabVersion = '1.6.4'
+    daggerVersion = '2.16'
 }
 
 buildscript {

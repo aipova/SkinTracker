@@ -4,8 +4,11 @@ import io.realm.Realm
 import io.realm.RealmResults
 import io.realm.kotlin.where
 import ru.aipova.skintracker.model.*
+import javax.inject.Inject
+import javax.inject.Singleton
 
-class TrackTypeRepository(private val uiRealm: Realm) {
+@Singleton
+class TrackTypeRepository @Inject constructor(private val uiRealm: Realm) {
 
     interface CreateTrackTypeCallback {
         fun onTrackTypeCreated()

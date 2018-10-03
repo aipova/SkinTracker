@@ -51,6 +51,13 @@ dependencies {
     implementation "com.jakewharton:butterknife:$butterknifeVersion"
     kapt "com.jakewharton:butterknife-compiler:$butterknifeVersion"
 
+    // Dagger dependencies
+    kapt "com.google.dagger:dagger-compiler:$rootProject.daggerVersion"
+    implementation "com.google.dagger:dagger:$rootProject.daggerVersion"
+    implementation "com.google.dagger:dagger-android:$rootProject.daggerVersion"
+    implementation "com.google.dagger:dagger-android-support:$rootProject.daggerVersion"
+    kapt "com.google.dagger:dagger-android-processor:$rootProject.daggerVersion"
+
     implementation "joda-time:joda-time:$jodaTimeVersion"
     implementation "com.squareup.picasso:picasso:$picassoVersion"
     implementation "io.reactivex.rxjava2:rxjava:$rxJavaVersion"

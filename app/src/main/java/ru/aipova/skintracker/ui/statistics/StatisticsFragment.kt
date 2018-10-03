@@ -2,7 +2,6 @@ package ru.aipova.skintracker.ui.statistics
 
 import android.app.DatePickerDialog
 import android.os.Bundle
-import android.support.v4.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -12,14 +11,18 @@ import android.widget.CheckBox
 import com.github.mikephil.charting.components.XAxis
 import com.github.mikephil.charting.data.LineData
 import com.github.mikephil.charting.formatter.IAxisValueFormatter
+import dagger.android.support.DaggerFragment
 import kotlinx.android.synthetic.main.statistics_fragment.*
 import ru.aipova.skintracker.R
 import ru.aipova.skintracker.utils.TimeUtils
 import java.util.*
 
-class StatisticsFragment : Fragment(), StatisticsContract.View {
+//@ActivityScoped
+class StatisticsFragment : DaggerFragment(), StatisticsContract.View {
 
+//    @Inject
     override lateinit var presenter: StatisticsContract.Presenter
+
     override var isActive: Boolean = false
         get() = isAdded
 
@@ -31,13 +34,22 @@ class StatisticsFragment : Fragment(), StatisticsContract.View {
         return inflater.inflate(R.layout.statistics_fragment, container, false)
     }
 
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        presenter.start()
+    override fun onResume() {
+        super.onResume()
+        presenter.takeView(this)
     }
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+    }
+
+    //    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+//        presenter.takeView(this)
+//    }
 
     override fun onDestroy() {
         super.onDestroy()
-        presenter.stop()
+        presenter.dropView()
     }
 
     override fun setupDateRangeSelector() {

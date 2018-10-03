@@ -36,5 +36,7 @@ interface StatisticsContract {
         fun chooseStartDate()
         fun chooseEndDate()
         fun stop()
+        fun takeView(view: View)
+        fun dropView()
     }
 }

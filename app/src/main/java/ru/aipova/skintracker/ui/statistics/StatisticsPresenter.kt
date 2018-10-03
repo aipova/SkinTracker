@@ -17,14 +17,22 @@ import ru.aipova.skintracker.model.source.TrackTypeRepository
 import ru.aipova.skintracker.ui.data.TrackData
 import ru.aipova.skintracker.utils.TimeUtils
 import java.util.*
+import javax.inject.Inject
 
-class StatisticsPresenter(
-    private var statisticsView: StatisticsContract.View,
+class StatisticsPresenter
+    @Inject constructor(
     private val trackRepository: TrackRepository,
     private val trackTypeRepository: TrackTypeRepository
 ) : StatisticsContract.Presenter {
-    init {
-        statisticsView.presenter = this
+    private var statisticsView: StatisticsContract.View? = null
+
+    override fun takeView(view: StatisticsContract.View) {
+        statisticsView = view
+        start()
+    }
+
+    override fun dropView() {
+        statisticsView = null
     }
 
     private lateinit var startDate: Date
@@ -38,8 +46,8 @@ class StatisticsPresenter(
     private var legendDisposable: Disposable? = null
 
     override fun start() {
-        statisticsView.setupChartProperties(axisValueFormatter)
-        statisticsView.setupDateRangeSelector()
+        statisticsView?.setupChartProperties(axisValueFormatter)
+        statisticsView?.setupDateRangeSelector()
         setupChart()
     }
 
@@ -54,15 +62,15 @@ class StatisticsPresenter(
     }
 
     private fun loadChartForLastWeek() {
-        if (statisticsView.isActive) statisticsView.loadChartForLastWeek()
+        if (statisticsView != null) statisticsView?.loadChartForLastWeek()
     }
 
     override fun chooseStartDate() {
-        statisticsView.showDatePickerDialog(startDate, startDateChangedListener)
+        statisticsView?.showDatePickerDialog(startDate, startDateChangedListener)
     }
 
     override fun chooseEndDate() {
-        statisticsView.showDatePickerDialog(endDate, endDateChangedListener)
+        statisticsView?.showDatePickerDialog(endDate, endDateChangedListener)
     }
 
     private val startDateChangedListener =
@@ -79,7 +87,7 @@ class StatisticsPresenter(
 
     private fun setupAndDrawLegend(trackTypes: List<String>) {
         setupLegend(trackTypes)
-        if (statisticsView.isActive) statisticsView.drawLegend(
+        if (statisticsView != null) statisticsView?.drawLegend(
             legend,
             onLegendChoose = { redrawChart() })
     }
@@ -92,38 +100,37 @@ class StatisticsPresenter(
     }
 
     override fun weekPeriodSelected() {
-        statisticsView.showDateRangeText()
+        statisticsView?.showDateRangeText()
         startDate = TimeUtils.weekAgoDate()
         endDate = TimeUtils.todayDate()
         resetChart()
     }
 
     override fun monthPeriodSelected() {
-        statisticsView.showDateRangeText()
+        statisticsView?.showDateRangeText()
         startDate = TimeUtils.monthAgoDate()
         endDate = TimeUtils.todayDate()
         resetChart()
     }
 
     override fun customPeriodSelected() {
-        statisticsView.showDateRangeButtons()
+        statisticsView?.showDateRangeButtons()
     }
 
     private fun resetChart() {
-        statisticsView.setDateRangeText(startDate, endDate)
+        statisticsView?.setDateRangeText(startDate, endDate)
         loadData(onLoadComplete = { redrawChart() })
     }
 
     private fun redrawChart() {
-        if (statisticsView.isActive) {
-            val selectedDataset = statisticsView.getSelectedLegend().mapNotNull { dataset[it] }
+        statisticsView?.let {
+            val selectedDataset = it.getSelectedLegend().mapNotNull { dataset[it] }
             if (selectedDataset.isNotEmpty()) {
-                statisticsView.showAtChart(LineData(selectedDataset))
+                it.showAtChart(LineData(selectedDataset))
             } else {
-                statisticsView.clearChart()
+                it.clearChart()
             }
         }
-
     }
 
     private fun loadData(onLoadComplete: () -> Unit) {
