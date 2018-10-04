@@ -51,6 +51,13 @@
     <string name="attention">Внимание!</string>
     <string name="track_type_name_sugar">Сладости</string>
     <string name="err_track_type_duplicate_name">Параметр с таким названием уже существует</string>
+    <string name="menu_about">О программе</string>
+    <string name="version">версия: %1$s</string>
+    <string name="about">Приложение помогает отслеживать свои привычки и состояние кожи.\n
+    &#8226; Настрой параметры, которые хочешь измерять, например: употребление сладостей и кофе, использование макияжа или количество акне;\n
+    &#8226; Ежедневно заполняй дневник, добавляй фото и заметки;\n
+    &#8226; Отслеживай статистику, находи зависимость состояния кожи от твоих привычек.\n
+    </string>
     <string-array name="date_range_array">
         <item>Последняя неделя</item>
         <item>Последний месяц</item>

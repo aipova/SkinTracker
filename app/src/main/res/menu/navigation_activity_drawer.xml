@@ -13,6 +13,11 @@
             android:id="@+id/nav_track_type_settings"
             android:icon="@drawable/ic_menu_settings"
             android:title="@string/menu_track_type_settings"/>
+
+        <item
+            android:id="@+id/nav_about"
+            android:icon="@drawable/ic_menu_about"
+            android:title="@string/menu_about"/>
     </group>
 
 </menu>

@@ -34,6 +34,7 @@ import kotlinx.android.synthetic.main.track_pager_activity.*
 import kotlinx.android.synthetic.main.track_pager_content.*
 import ru.aipova.skintracker.InjectionStub
 import ru.aipova.skintracker.R
+import ru.aipova.skintracker.ui.about.AboutActivity
 import ru.aipova.skintracker.ui.data.TrackData
 import ru.aipova.skintracker.ui.statistics.StatisticsActivity
 import ru.aipova.skintracker.ui.trackpager.dialog.NoteCreateDialog
@@ -287,6 +288,7 @@ class TrackPagerActivity :
         when (item.itemId) {
             R.id.nav_statistics -> startActivityWithTransition(StatisticsActivity::class.java)
             R.id.nav_track_type_settings -> startActivityWithTransition(TrackTypeActivity::class.java)
+            R.id.nav_about -> startActivityWithTransition(AboutActivity::class.java)
         }
         drawer_layout.closeDrawer(GravityCompat.START)
         return true
