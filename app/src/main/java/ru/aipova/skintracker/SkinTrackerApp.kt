@@ -7,6 +7,7 @@ import ru.aipova.skintracker.model.TrackType
 import ru.aipova.skintracker.model.TrackType.Companion.PIMPLES_COUNT_TRACK_TYPE_UID
 import ru.aipova.skintracker.model.TrackType.Companion.PIMPLES_PICKING_TRACK_TYPE_UID
 import ru.aipova.skintracker.model.TrackType.Companion.SKIN_QUALITY_TRACK_TYPE_UID
+import ru.aipova.skintracker.model.TrackType.Companion.SUGAR_TRACK_TYPE_UID
 import ru.aipova.skintracker.model.ValueType
 import ru.aipova.skintracker.model.source.TrackRepository
 import ru.aipova.skintracker.model.source.TrackTypeRepository
@@ -26,6 +27,16 @@ class SkinTrackerApp : Application() {
         InjectionStub.photoFileConstructor = PhotoFileConstructor(this.getExternalFilesDir(PHOTOS_DIR))
     }
 
+    private fun initialTrackTypes() =
+        listOf(skinQualityTrackType, pimplesCountTrackType, sugarTrackType, pimplesPickingTrackType)
+
+    private fun getRealmConfiguration() =
+        RealmConfiguration.Builder()
+            .initialData { realm -> realm.insertOrUpdate(initialTrackTypes()) }
+            .deleteRealmIfMigrationNeeded()
+            .build()
+
+    // TODO move out predefined examples
     private val  skinQualityTrackType: TrackType
         get() {
             return TrackType().apply {
@@ -44,6 +55,15 @@ class SkinTrackerApp : Application() {
             }
         }
 
+    private val  sugarTrackType: TrackType
+        get() {
+            return TrackType().apply {
+                uuid = SUGAR_TRACK_TYPE_UID
+                name = getString(R.string.track_type_name_sugar)
+                setValueTypeEnum(ValueType.AMOUNT)
+            }
+        }
+
     private val pimplesPickingTrackType: TrackType
         get() {
             return TrackType().apply {
@@ -53,17 +73,7 @@ class SkinTrackerApp : Application() {
             }
         }
 
-    private fun initialTrackTypes() =
-        listOf(skinQualityTrackType, pimplesCountTrackType, pimplesPickingTrackType)
-
-    private fun getRealmConfiguration() =
-        RealmConfiguration.Builder()
-            .initialData { realm -> realm.insertOrUpdate(initialTrackTypes()) }
-            .deleteRealmIfMigrationNeeded()
-            .build()
-
     companion object {
         const val PHOTOS_DIR = "photos"
-
     }
 }

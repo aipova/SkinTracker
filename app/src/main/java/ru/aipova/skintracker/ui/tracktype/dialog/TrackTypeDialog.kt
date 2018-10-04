@@ -16,8 +16,10 @@ import android.widget.Spinner
 import butterknife.BindView
 import butterknife.ButterKnife
 import com.travijuu.numberpicker.library.NumberPicker
+import ru.aipova.skintracker.InjectionStub
 import ru.aipova.skintracker.R
 import ru.aipova.skintracker.model.ValueType
+import ru.aipova.skintracker.model.source.TrackTypeRepository
 
 abstract class TrackTypeDialog : DialogFragment() {
     private lateinit var dialog: AlertDialog
@@ -43,7 +45,11 @@ abstract class TrackTypeDialog : DialogFragment() {
     lateinit var valueTypes: Map<String, ValueType>
     private var selectedValueType: ValueType = ValueType.SEEK
 
+    protected lateinit var trackTypeRepository: TrackTypeRepository
+
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
+        trackTypeRepository = InjectionStub.trackTypeRepository
+
         val view = LayoutInflater.from(context).inflate(R.layout.track_type_dialog, null)
         valueTypes = mapOf(
             getString(R.string.range) to ValueType.SEEK,
@@ -73,7 +79,8 @@ abstract class TrackTypeDialog : DialogFragment() {
         )
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
         trackTypeSpinner.adapter = adapter
-        val position = adapter.getPosition(valueTypes.entries.find { it.value == getValueType() }!!.key)
+        val position =
+            adapter.getPosition(valueTypes.entries.find { it.value == getValueType() }!!.key)
         trackTypeSpinner.setSelection(position)
         setRangeSettingsVisibility(getValueType())
         trackTypeSpinner.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
@@ -123,12 +130,21 @@ abstract class TrackTypeDialog : DialogFragment() {
             val trackTypeName = trackTypeNameEditText.text.toString()
             if (trackTypeName.isBlank()) {
                 trackTypeNameLayout.error = getString(R.string.err_track_type_empty_name)
+            } else if (nameIsDuplicate(trackTypeName)) {
+                trackTypeNameLayout.error = getString(R.string.err_track_type_duplicate_name)
             } else {
-                onOkButtonClick(trackTypeNameEditText.text.toString(), selectedValueType, fromNumber.value, toNumber.value)
+                onOkButtonClick(
+                    trackTypeNameEditText.text.toString(),
+                    selectedValueType,
+                    fromNumber.value,
+                    toNumber.value
+                )
                 dialog.dismiss()
             }
         }
     }
+
+    protected abstract fun nameIsDuplicate(trackTypeName: String): Boolean
 
     protected abstract fun onOkButtonClick(
         trackTypeName: String,

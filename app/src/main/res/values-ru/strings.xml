@@ -37,7 +37,7 @@
     <string name="msg_no_chart_data">Нет записей в дневнике за период</string>
     <string name="msg_empty_diary">Здесь будет ваше фото, заметки и параметры за день</string>
     <string name="diary">Дневник</string>
-    <string name="track_type_name_pimples_amount">Количество прыщей</string>
+    <string name="track_type_name_pimples_amount">Количество акне</string>
     <string name="track_type_name_pimples_picking">Ковыряние</string>
     <string name="add_photo">Фото</string>
     <string name="add_note">Заметка</string>
@@ -49,6 +49,8 @@
     <string name="action_remove_day">Удалить весь день</string>
     <string name="msg_remove_diary_day">Вы действительно хотите удалить все записи за день?</string>
     <string name="attention">Внимание!</string>
+    <string name="track_type_name_sugar">Сладости</string>
+    <string name="err_track_type_duplicate_name">Параметр с таким названием уже существует</string>
     <string-array name="date_range_array">
         <item>Последняя неделя</item>
         <item>Последний месяц</item>

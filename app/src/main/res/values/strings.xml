@@ -2,16 +2,16 @@
     <string name="app_name">SkinTracker</string>
     <string name="action_settings">Settings</string>
     <string name="action_save">Save</string>
-    <string name="title_track_parameters">Skin Parameters</string>
-    <string name="track_type_name_skin_quality">Skin Quality</string>
-    <string name="track_type_name">Track Type Name</string>
-    <string name="title_new_track_type">New Track Type</string>
-    <string name="title_edit_track_type">Edit Track Type</string>
+    <string name="title_track_parameters">Skin parameters</string>
+    <string name="track_type_name_skin_quality">Skin quality</string>
+    <string name="track_type_name">Track type name</string>
+    <string name="title_new_track_type">New track type</string>
+    <string name="title_edit_track_type">Edit track type</string>
     <string name="err_track_type_empty_name">You need to enter name</string>
-    <string name="msg_remove_track_type">Are you sure you want to remove Track Type \"%1$s\"?</string>
-    <string name="msg_track_type_created">Track Type \"%1$s\" was created</string>
-    <string name="err_cannot_create_track_type">Cannot create Track Type</string>
-    <string name="msg_no_track_types">You have no Track Types</string>
+    <string name="msg_remove_track_type">Are you sure you want to remove Track type \"%1$s\"?</string>
+    <string name="msg_track_type_created">Track type \"%1$s\" was created</string>
+    <string name="err_cannot_create_track_type">Cannot create Track type</string>
+    <string name="msg_no_track_types">You have no Track types</string>
     <string name="action_diary">Diary</string>
     <string name="navigation_drawer_open">Open navigation drawer</string>
     <string name="navigation_drawer_close">Close navigation drawer</string>
@@ -48,6 +48,8 @@
     <string name="action_remove_day">Remove all day</string>
     <string name="msg_remove_diary_day">Are you sure you want to remove all records for the day?</string>
     <string name="attention">Attention!</string>
+    <string name="track_type_name_sugar">Sweets</string>
+    <string name="err_track_type_duplicate_name">You already have track type with this name</string>
     <string-array name="date_range_array">
         <item>Last week</item>
         <item>Last month</item>

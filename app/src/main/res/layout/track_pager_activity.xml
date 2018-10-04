@@ -38,7 +38,6 @@
             app:menu_animationDelayPerItem="0"
             app:menu_colorNormal="@color/colorAccent"
             app:menu_colorPressed="@color/colorAccentDark"
-            app:menu_icon="@drawable/ic_edit"
             app:menu_labels_style="@style/FabLabelsStyle">
 
             <com.github.clans.fab.FloatingActionButton

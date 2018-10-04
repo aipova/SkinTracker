@@ -70,4 +70,8 @@ class TrackTypeRepository(private val uiRealm: Realm) {
                 .map { it.name }
         }
     }
+
+    fun findByName(trackTypeName: String): TrackType? {
+        return uiRealm.where<TrackType>().equalTo(TrackTypeFields.NAME, trackTypeName).findFirst()
+    }
 }

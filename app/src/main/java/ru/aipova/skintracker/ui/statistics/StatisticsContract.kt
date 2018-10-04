@@ -23,7 +23,7 @@ interface StatisticsContract {
             date: Date,
             dateChangedListener: DatePickerDialog.OnDateSetListener
         )
-        fun loadChartForLastWeek()
+        fun loadChartForSelectedRange()
         fun getSelectedLegend(): List<String>
         fun clearChart()
         fun showAtChart(lineData: LineData)
@@ -36,5 +36,8 @@ interface StatisticsContract {
         fun chooseStartDate()
         fun chooseEndDate()
         fun stop()
+        fun getStartDate(): Date
+        fun getEndDate(): Date
+        fun updateDates(start: Date, end: Date)
     }
 }
