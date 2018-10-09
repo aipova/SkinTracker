@@ -37,7 +37,7 @@
     <string name="msg_empty_diary">Here will be your photo and skin track</string>
     <string name="diary">Diary</string>
     <string name="track_type_name_pimples_amount">Pimples amount</string>
-    <string name="track_type_name_pimples_picking">Pimples picking</string>
+    <string name="track_type_name_makeup">Make up</string>
     <string name="add_photo">Photo</string>
     <string name="add_note">Note</string>
     <string name="add_parameters">Parameters</string>

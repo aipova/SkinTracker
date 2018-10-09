@@ -38,7 +38,7 @@
     <string name="msg_empty_diary">Здесь будет ваше фото, заметки и параметры за день</string>
     <string name="diary">Дневник</string>
     <string name="track_type_name_pimples_amount">Количество акне</string>
-    <string name="track_type_name_pimples_picking">Ковыряние</string>
+    <string name="track_type_name_makeup">Макияж</string>
     <string name="add_photo">Фото</string>
     <string name="add_note">Заметка</string>
     <string name="add_parameters">Параметры</string>
