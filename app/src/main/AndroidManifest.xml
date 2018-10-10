@@ -2,7 +2,16 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
           package="ru.aipova.skintracker">
 
+    <uses-feature
+        android:name="android.hardware.camera"
+        android:required="true"/>
+
+    <uses-permission
+        android:name="android.permission.READ_EXTERNAL_STORAGE"
+        android:maxSdkVersion="21"/>
+
     <application
+        android:name=".SkinTrackerApp"
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
@@ -10,14 +19,44 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
         <activity
-            android:name=".StatisticsActivity"
-            android:label="@string/app_name">
+            android:name=".ui.trackpager.TrackPagerActivity"
+            android:launchMode="singleTop"
+            android:theme="@style/AppTheme.NoActionBar">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN"/>
-
                 <category android:name="android.intent.category.LAUNCHER"/>
             </intent-filter>
         </activity>
+
+        <activity
+            android:name=".ui.statistics.StatisticsActivity"
+            android:label="@string/menu_statistics"
+            android:parentActivityName=".ui.trackpager.TrackPagerActivity"/>
+
+        <activity
+            android:name=".ui.trackvalues.TrackValuesActivity"
+            android:parentActivityName=".ui.trackpager.TrackPagerActivity"/>
+
+        <activity
+            android:name=".ui.tracktype.TrackTypeActivity"
+            android:label="@string/menu_track_type_settings"
+            android:parentActivityName=".ui.trackpager.TrackPagerActivity"/>
+
+        <activity
+            android:name=".ui.about.AboutActivity"
+            android:label="@string/menu_about"
+            android:parentActivityName=".ui.trackpager.TrackPagerActivity"/>
+
+        <provider
+            android:name="android.support.v4.content.FileProvider"
+            android:authorities="ru.aipova.skintracker.fileprovider"
+            android:exported="false"
+            android:grantUriPermissions="true">
+            <meta-data
+                android:name="android.support.FILE_PROVIDER_PATHS"
+                android:resource="@xml/file_paths"/>
+        </provider>
+
     </application>
 
 </manifest>

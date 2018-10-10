@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">SkinTracker</string>
+    <string name="action_settings">Настройки</string>
+    <string name="action_save">Сохранить</string>
+    <string name="title_track_parameters">Параметры</string>
+    <string name="track_type_name_skin_quality">Качество кожи</string>
+    <string name="track_type_name">Название</string>
+    <string name="title_new_track_type">Новый параметр</string>
+    <string name="title_edit_track_type">Редактировать параметр</string>
+    <string name="err_track_type_empty_name">Обязательное поле</string>
+    <string name="msg_remove_track_type">Вы уверены, что хотите удалить параметр %1$s?</string>
+    <string name="msg_track_type_created">Параметр %1$s создан</string>
+    <string name="err_cannot_create_track_type">Не удалось создать параметр</string>
+    <string name="msg_no_track_types">У Вас не создано параметров</string>
+    <string name="action_diary">Дневник</string>
+    <string name="navigation_drawer_open">Открыть меню</string>
+    <string name="navigation_drawer_close">Закрыть меню</string>
+    <string name="menu_track_type_settings">Мои параметры</string>
+    <string name="menu_statistics">Статистика</string>
+    <string name="note_hint">Заметка</string>
+    <string name="msg_parameters_created">Параметры созданы</string>
+    <string name="msg_parameters_updated">Параметры обновлены</string>
+    <string name="msg_cannot_save_parameters">Не удалось сохранить параметры</string>
+    <string name="msg_cannot_load_parameters">Не удалось загрузить параметры</string>
+    <string name="track_value_seek">%1$s: %2$s/%3$s</string>
+    <string name="track_value_amount">%1$s: %2$s</string>
+    <string name="track_value_boolean_true">%1$s: Да</string>
+    <string name="track_value_boolean_false">%1$s: Нет</string>
+    <string name="from">с</string>
+    <string name="to">по</string>
+    <string name="range">Интервал</string>
+    <string name="yes_no">Да/Нет</string>
+    <string name="amount">Количество</string>
+    <string name="period">Период:</string>
+    <string name="date_range">%1$s - %2$s</string>
+    <string name="msg_no_chart_data">Нет записей в дневнике за период</string>
+    <string name="msg_empty_diary">Здесь будет ваше фото, заметки и параметры за день</string>
+    <string name="diary">Дневник</string>
+    <string name="track_type_name_pimples_amount">Количество акне</string>
+    <string name="track_type_name_makeup">Макияж</string>
+    <string name="add_photo">Фото</string>
+    <string name="add_note">Заметка</string>
+    <string name="add_parameters">Параметры</string>
+    <string name="title_new_note">Новая заметка</string>
+    <string name="title_edit_note">Редактировать заметку</string>
+    <string name="note_text">Текст заметки</string>
+    <string name="err_note_empty">Обязательное поле</string>
+    <string name="action_remove_day">Удалить весь день</string>
+    <string name="msg_remove_diary_day">Вы действительно хотите удалить все записи за день?</string>
+    <string name="attention">Внимание!</string>
+    <string name="track_type_name_sugar">Сладости</string>
+    <string name="err_track_type_duplicate_name">Параметр с таким названием уже существует</string>
+    <string name="menu_about">О программе</string>
+    <string name="version">версия: %1$s</string>
+    <string name="about">Приложение помогает отслеживать свои привычки и состояние кожи.\n
+    &#8226; Настрой параметры, которые хочешь измерять, например: употребление сладостей и кофе, использование макияжа или количество акне;\n
+    &#8226; Ежедневно заполняй дневник, добавляй фото и заметки;\n
+    &#8226; Отслеживай статистику, находи зависимость состояния кожи от твоих привычек.\n
+    </string>
+    <string-array name="date_range_array">
+        <item>Последняя неделя</item>
+        <item>Последний месяц</item>
+        <item>Свой диапазон</item>
+    </string-array>
+    <string-array name="photo_choose_array">
+        <item>Камера</item>
+        <item>Галерея</item>
+    </string-array>
+</resources>

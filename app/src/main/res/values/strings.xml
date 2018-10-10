@@ -1,4 +1,69 @@
 <resources>
     <string name="app_name">SkinTracker</string>
     <string name="action_settings">Settings</string>
+    <string name="action_save">Save</string>
+    <string name="title_track_parameters">Skin parameters</string>
+    <string name="track_type_name_skin_quality">Skin quality</string>
+    <string name="track_type_name">Track type name</string>
+    <string name="title_new_track_type">New track type</string>
+    <string name="title_edit_track_type">Edit track type</string>
+    <string name="err_track_type_empty_name">You need to enter name</string>
+    <string name="msg_remove_track_type">Are you sure you want to remove Track type \"%1$s\"?</string>
+    <string name="msg_track_type_created">Track type \"%1$s\" was created</string>
+    <string name="err_cannot_create_track_type">Cannot create Track type</string>
+    <string name="msg_no_track_types">You have no Track types</string>
+    <string name="action_diary">Diary</string>
+    <string name="navigation_drawer_open">Open navigation drawer</string>
+    <string name="navigation_drawer_close">Close navigation drawer</string>
+    <string name="menu_track_type_settings">My parameters</string>
+    <string name="menu_statistics">Statistics</string>
+    <string name="note_hint">Note for this day</string>
+    <string name="msg_parameters_created">Parameters were created</string>
+    <string name="msg_parameters_updated">Parameters were updated</string>
+    <string name="msg_cannot_save_parameters">Cannot save parameters</string>
+    <string name="msg_cannot_load_parameters">Cannot load parameters</string>
+    <string name="track_value_seek">%1$s: %2$s/%3$s</string>
+    <string name="track_value_amount">%1$s: %2$s</string>
+    <string name="track_value_boolean_true">%1$s: Yes</string>
+    <string name="track_value_boolean_false">%1$s: No</string>
+    <string name="from">From</string>
+    <string name="to">to</string>
+    <string name="range">Range</string>
+    <string name="yes_no">Yes/No</string>
+    <string name="amount">Amount</string>
+    <string name="period">Period</string>
+    <string name="date_range">%1$s - %2$s</string>
+    <string name="msg_no_chart_data">You don\'t have diary records for period</string>
+    <string name="msg_empty_diary">Here will be your photo and skin track</string>
+    <string name="diary">Diary</string>
+    <string name="track_type_name_pimples_amount">Pimples amount</string>
+    <string name="track_type_name_makeup">Make up</string>
+    <string name="add_photo">Photo</string>
+    <string name="add_note">Note</string>
+    <string name="add_parameters">Parameters</string>
+    <string name="title_new_note">New note</string>
+    <string name="title_edit_note">Edit note</string>
+    <string name="note_text">Note text</string>
+    <string name="err_note_empty">You need to enter note text</string>
+    <string name="action_remove_day">Remove all day</string>
+    <string name="msg_remove_diary_day">Are you sure you want to remove all records for the day?</string>
+    <string name="attention">Attention!</string>
+    <string name="track_type_name_sugar">Sweets</string>
+    <string name="err_track_type_duplicate_name">You already have track type with this name</string>
+    <string name="menu_about">About</string>
+    <string name="version">version: %1$s</string>
+    <string name="about">This is a diary application to track your habits and observations for healthy skin.\n
+    &#8226; Configure your habits, constraints and observations (coffee, sugar consumption, make up usage, acne amount etc.);\n
+    &#8226; Fill diary with today\'s photo, parameters and note;\n
+    &#8226; Watch statistics and find correlation between your skin quality and habits.\n
+    </string>
+    <string-array name="date_range_array">
+        <item>Last week</item>
+        <item>Last month</item>
+        <item>Custom range</item>
+    </string-array>
+    <string-array name="photo_choose_array">
+        <item>Camera</item>
+        <item>Gallery</item>
+    </string-array>
 </resources>
