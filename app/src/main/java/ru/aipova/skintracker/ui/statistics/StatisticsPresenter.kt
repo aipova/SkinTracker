@@ -62,7 +62,7 @@ class StatisticsPresenter
     }
 
     private fun loadChartForLastWeek() {
-        if (statisticsView != null) statisticsView?.loadChartForLastWeek()
+        if (statisticsView != null) statisticsView?.loadChartForSelectedRange()
     }
 
     override fun chooseStartDate() {
@@ -113,8 +113,22 @@ class StatisticsPresenter
         resetChart()
     }
 
+    override fun getStartDate(): Date {
+        return startDate
+    }
+
+    override fun getEndDate(): Date {
+        return endDate
+    }
+
+    override fun updateDates(start: Date, end: Date) {
+        startDate = start
+        endDate = end
+    }
+
     override fun customPeriodSelected() {
         statisticsView?.showDateRangeButtons()
+        resetChart()
     }
 
     private fun resetChart() {

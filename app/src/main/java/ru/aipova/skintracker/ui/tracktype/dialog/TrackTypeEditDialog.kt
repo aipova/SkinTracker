@@ -30,6 +30,11 @@ class TrackTypeEditDialog : TrackTypeDialog() {
         }
     }
 
+    override fun nameIsDuplicate(trackTypeName: String): Boolean {
+        val existingTrack = trackTypeRepository.findByName(trackTypeName)
+        return existingTrack != null && existingTrack != getTrackType()
+    }
+
     private fun getTrackType() = arguments?.getSerializable(TRACK_TYPE) as TrackType
 
     override fun getTitle(): Int {

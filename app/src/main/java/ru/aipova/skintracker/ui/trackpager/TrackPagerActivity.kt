@@ -6,8 +6,12 @@ import android.animation.AnimatorSet
 import android.animation.ObjectAnimator
 import android.app.Activity
 import android.app.DatePickerDialog
+import android.content.ClipData
 import android.content.Intent
+import android.content.Intent.FLAG_GRANT_READ_URI_PERMISSION
+import android.content.Intent.FLAG_GRANT_WRITE_URI_PERMISSION
 import android.net.Uri
+import android.os.Build
 import android.os.Bundle
 import android.provider.MediaStore
 import android.support.design.widget.NavigationView
@@ -21,6 +25,7 @@ import android.support.v4.view.ViewPager
 import android.support.v7.app.ActionBarDrawerToggle
 import android.support.v7.app.AlertDialog
 import android.support.v7.app.AppCompatActivity
+import android.support.v7.app.AppCompatDelegate
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
@@ -29,6 +34,7 @@ import kotlinx.android.synthetic.main.track_pager_activity.*
 import kotlinx.android.synthetic.main.track_pager_content.*
 import ru.aipova.skintracker.InjectionStub
 import ru.aipova.skintracker.R
+import ru.aipova.skintracker.ui.about.AboutActivity
 import ru.aipova.skintracker.ui.data.TrackData
 import ru.aipova.skintracker.ui.statistics.StatisticsActivity
 import ru.aipova.skintracker.ui.trackpager.dialog.NoteCreateDialog
@@ -56,6 +62,7 @@ class TrackPagerActivity :
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        AppCompatDelegate.setCompatVectorFromResourcesEnabled(true)
         setContentView(R.layout.track_pager_activity)
         setActionBar()
         presenter = TrackPagerPresenter(
@@ -244,14 +251,19 @@ class TrackPagerActivity :
 
     override fun openGallery() {
         val imageFromGalleryIntent = Intent(Intent.ACTION_PICK,
-            MediaStore.Images.Media.INTERNAL_CONTENT_URI)
+            MediaStore.Images.Media.EXTERNAL_CONTENT_URI)
         startActivityForResult(imageFromGalleryIntent, CHOOSE_PHOTO_REQUEST)
     }
 
     override fun makePhoto(photoFile: File) {
         val takePhotoIntent = Intent(MediaStore.ACTION_IMAGE_CAPTURE)
         if (takePhotoIntent.resolveActivity(packageManager) != null) {
-            takePhotoIntent.putExtra(MediaStore.EXTRA_OUTPUT, getPhotoUri(photoFile))
+            val photoUri = getPhotoUri(photoFile)
+            takePhotoIntent.putExtra(MediaStore.EXTRA_OUTPUT, photoUri)
+            if (Build.VERSION.SDK_INT <= Build.VERSION_CODES.LOLLIPOP) {
+                takePhotoIntent.clipData = ClipData.newRawUri("", photoUri)
+                takePhotoIntent.addFlags(FLAG_GRANT_WRITE_URI_PERMISSION or FLAG_GRANT_READ_URI_PERMISSION)
+            }
             startActivityForResult(takePhotoIntent, MAKE_PHOTO_REQUEST)
         }
     }
@@ -276,6 +288,7 @@ class TrackPagerActivity :
         when (item.itemId) {
             R.id.nav_statistics -> startActivityWithTransition(StatisticsActivity::class.java)
             R.id.nav_track_type_settings -> startActivityWithTransition(TrackTypeActivity::class.java)
+            R.id.nav_about -> startActivityWithTransition(AboutActivity::class.java)
         }
         drawer_layout.closeDrawer(GravityCompat.START)
         return true

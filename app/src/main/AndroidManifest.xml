@@ -2,11 +2,13 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
           package="ru.aipova.skintracker">
 
-    <uses-feature android:name="android.hardware.camera"
-                  android:required="true" />
+    <uses-feature
+        android:name="android.hardware.camera"
+        android:required="true"/>
 
-    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"
-                     android:maxSdkVersion="18" />
+    <uses-permission
+        android:name="android.permission.READ_EXTERNAL_STORAGE"
+        android:maxSdkVersion="21"/>
 
     <application
         android:name=".SkinTrackerApp"
@@ -40,16 +42,20 @@
             android:label="@string/menu_track_type_settings"
             android:parentActivityName=".ui.trackpager.TrackPagerActivity"/>
 
-       <provider
-           android:authorities="ru.aipova.skintracker.fileprovider"
-           android:name="android.support.v4.content.FileProvider"
-           android:exported="false"
-           android:grantUriPermissions="true">
-           <meta-data
-               android:name="android.support.FILE_PROVIDER_PATHS"
-               android:resource="@xml/file_paths"/>
+        <activity
+            android:name=".ui.about.AboutActivity"
+            android:label="@string/menu_about"
+            android:parentActivityName=".ui.trackpager.TrackPagerActivity"/>
 
-       </provider>
+        <provider
+            android:name="android.support.v4.content.FileProvider"
+            android:authorities="ru.aipova.skintracker.fileprovider"
+            android:exported="false"
+            android:grantUriPermissions="true">
+            <meta-data
+                android:name="android.support.FILE_PROVIDER_PATHS"
+                android:resource="@xml/file_paths"/>
+        </provider>
 
     </application>
 

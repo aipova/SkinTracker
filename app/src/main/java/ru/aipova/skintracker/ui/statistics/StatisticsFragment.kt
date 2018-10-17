@@ -2,6 +2,7 @@ package ru.aipova.skintracker.ui.statistics
 
 import android.app.DatePickerDialog
 import android.os.Bundle
+import android.provider.ContactsContract.CommonDataKinds.Event.START_DATE
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -14,8 +15,10 @@ import com.github.mikephil.charting.formatter.IAxisValueFormatter
 import dagger.android.support.DaggerFragment
 import kotlinx.android.synthetic.main.statistics_fragment.*
 import ru.aipova.skintracker.R
+import ru.aipova.skintracker.R.id.*
 import ru.aipova.skintracker.utils.TimeUtils
 import java.util.*
+import kotlin.text.Typography.dagger
 
 //@ActivityScoped
 class StatisticsFragment : DaggerFragment(), StatisticsContract.View {
@@ -26,12 +29,26 @@ class StatisticsFragment : DaggerFragment(), StatisticsContract.View {
     override var isActive: Boolean = false
         get() = isAdded
 
+    private var legendValues: BooleanArray? = null
+
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
         return inflater.inflate(R.layout.statistics_fragment, container, false)
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        if (savedInstanceState != null) {
+            legendValues = savedInstanceState.getBooleanArray(LEGEND_VALUES)
+            val startDate = savedInstanceState.getSerializable(START_DATE) as Date
+            val endDate = savedInstanceState.getSerializable(END_DATE) as Date
+            setDateRangeText(startDate, endDate)
+            presenter.updateDates(startDate, endDate)
+        }
+        presenter.start()
+
     }
 
     override fun onResume() {
@@ -58,8 +75,21 @@ class StatisticsFragment : DaggerFragment(), StatisticsContract.View {
         dateToBtn.setOnClickListener { presenter.chooseEndDate() }
     }
 
-    override fun loadChartForLastWeek() {
-        dateRangeSpinner.setSelection(0)
+    override fun loadChartForSelectedRange() {
+        loadChartForPosition(dateRangeSpinner.selectedItemPosition)
+    }
+
+    override fun onSaveInstanceState(outState: Bundle) {
+        outState.putBooleanArray(LEGEND_VALUES, getLegendCheckBoxValues())
+        outState.putSerializable(START_DATE, presenter.getStartDate())
+        outState.putSerializable(END_DATE, presenter.getEndDate())
+        super.onSaveInstanceState(outState)
+    }
+
+    private fun getLegendCheckBoxValues(): BooleanArray {
+        return (0 until legendLayout.childCount).map { index ->
+            (legendLayout.getChildAt(index) as CheckBox).isChecked
+        }.toBooleanArray()
     }
 
     override fun drawLegend(
@@ -68,6 +98,20 @@ class StatisticsFragment : DaggerFragment(), StatisticsContract.View {
     ) {
         legendColors.forEach { (trackType, color) ->
             legendLayout.addView(createLegendCheckbox(trackType, color, onLegendChoose))
+        }
+        setCheckedLegendValues()
+    }
+
+    private fun setCheckedLegendValues() {
+        if (legendLayout.childCount > 0) {
+            val savedLegendValues = legendValues
+            if (savedLegendValues != null && savedLegendValues.size == legendLayout.childCount) {
+                savedLegendValues.forEachIndexed { index, isChecked ->
+                    (legendLayout.getChildAt(index) as CheckBox).isChecked = isChecked
+                }
+            } else {
+                (legendLayout.getChildAt(0) as CheckBox).isChecked = true
+            }
         }
     }
 
@@ -78,7 +122,6 @@ class StatisticsFragment : DaggerFragment(), StatisticsContract.View {
     ): CheckBox {
         return CheckBox(activity).apply {
             text = trackType
-            isChecked = true
             setTextColor(color)
             setOnCheckedChangeListener { bv, isChecked -> onLegendChoose() }
         }
@@ -101,16 +144,18 @@ class StatisticsFragment : DaggerFragment(), StatisticsContract.View {
                 position: Int,
                 id: Long
             ) {
-                when (position) {
-                    0 -> presenter.weekPeriodSelected()
-                    1 -> presenter.monthPeriodSelected()
-                    2 -> presenter.customPeriodSelected()
-                }
-
+                loadChartForPosition(position)
             }
         }
     }
 
+    private fun loadChartForPosition(selectedPosition: Int) {
+        when (selectedPosition) {
+            0 -> presenter.weekPeriodSelected()
+            1 -> presenter.monthPeriodSelected()
+            2 -> presenter.customPeriodSelected()
+        }
+    }
 
     override fun showDatePickerDialog(
         date: Date,
@@ -189,6 +234,9 @@ class StatisticsFragment : DaggerFragment(), StatisticsContract.View {
 
 
     companion object {
+        const val LEGEND_VALUES = "ru.aipova.skintracker.LEGEND_VALUES"
+        const val START_DATE = "ru.aipova.skintracker.START_DATE"
+        const val END_DATE = "ru.aipova.skintracker.END_DATE"
         fun newInstance(): StatisticsFragment {
             return StatisticsFragment()
         }

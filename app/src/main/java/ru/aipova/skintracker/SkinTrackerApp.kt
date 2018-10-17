@@ -13,6 +13,7 @@ import ru.aipova.skintracker.model.ValueType
 import ru.aipova.skintracker.model.source.TrackRepository
 import ru.aipova.skintracker.model.source.TrackTypeRepository
 import ru.aipova.skintracker.utils.PhotoFileConstructor
+import kotlin.text.Typography.dagger
 
 class SkinTrackerApp : DaggerApplication() {
     override fun applicationInjector(): AndroidInjector<out DaggerApplication> {
@@ -31,44 +32,13 @@ class SkinTrackerApp : DaggerApplication() {
         InjectionStub.photoFileConstructor = PhotoFileConstructor(this.getExternalFilesDir(PHOTOS_DIR))
     }
 
-    private val  skinQualityTrackType: TrackType
-        get() {
-            return TrackType().apply {
-                uuid = SKIN_QUALITY_TRACK_TYPE_UID
-                name = getString(R.string.track_type_name_skin_quality)
-                setValueTypeEnum(ValueType.SEEK)
-            }
-        }
-
-    private val  pimplesCountTrackType: TrackType
-        get() {
-            return TrackType().apply {
-                uuid = PIMPLES_COUNT_TRACK_TYPE_UID
-                name = getString(R.string.track_type_name_pimples_amount)
-                setValueTypeEnum(ValueType.AMOUNT)
-            }
-        }
-
-    private val pimplesPickingTrackType: TrackType
-        get() {
-            return TrackType().apply {
-                uuid = PIMPLES_PICKING_TRACK_TYPE_UID
-                name = getString(R.string.track_type_name_pimples_picking)
-                setValueTypeEnum(ValueType.BOOLEAN)
-            }
-        }
-
-    private fun initialTrackTypes() =
-        listOf(skinQualityTrackType, pimplesCountTrackType, pimplesPickingTrackType)
-
     private fun getRealmConfiguration() =
         RealmConfiguration.Builder()
-            .initialData { realm -> realm.insertOrUpdate(initialTrackTypes()) }
+            .initialData(InitialData(this))
             .deleteRealmIfMigrationNeeded()
             .build()
 
     companion object {
         const val PHOTOS_DIR = "photos"
-
     }
 }

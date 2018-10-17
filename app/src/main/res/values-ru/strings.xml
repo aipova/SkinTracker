@@ -16,7 +16,7 @@
     <string name="action_diary">Дневник</string>
     <string name="navigation_drawer_open">Открыть меню</string>
     <string name="navigation_drawer_close">Закрыть меню</string>
-    <string name="menu_track_type_settings">Настройка параметров</string>
+    <string name="menu_track_type_settings">Мои параметры</string>
     <string name="menu_statistics">Статистика</string>
     <string name="note_hint">Заметка</string>
     <string name="msg_parameters_created">Параметры созданы</string>
@@ -37,8 +37,8 @@
     <string name="msg_no_chart_data">Нет записей в дневнике за период</string>
     <string name="msg_empty_diary">Здесь будет ваше фото, заметки и параметры за день</string>
     <string name="diary">Дневник</string>
-    <string name="track_type_name_pimples_amount">Количество прыщей</string>
-    <string name="track_type_name_pimples_picking">Ковыряние</string>
+    <string name="track_type_name_pimples_amount">Количество акне</string>
+    <string name="track_type_name_makeup">Макияж</string>
     <string name="add_photo">Фото</string>
     <string name="add_note">Заметка</string>
     <string name="add_parameters">Параметры</string>
@@ -49,6 +49,15 @@
     <string name="action_remove_day">Удалить весь день</string>
     <string name="msg_remove_diary_day">Вы действительно хотите удалить все записи за день?</string>
     <string name="attention">Внимание!</string>
+    <string name="track_type_name_sugar">Сладости</string>
+    <string name="err_track_type_duplicate_name">Параметр с таким названием уже существует</string>
+    <string name="menu_about">О программе</string>
+    <string name="version">версия: %1$s</string>
+    <string name="about">Приложение помогает отслеживать свои привычки и состояние кожи.\n
+    &#8226; Настрой параметры, которые хочешь измерять, например: употребление сладостей и кофе, использование макияжа или количество акне;\n
+    &#8226; Ежедневно заполняй дневник, добавляй фото и заметки;\n
+    &#8226; Отслеживай статистику, находи зависимость состояния кожи от твоих привычек.\n
+    </string>
     <string-array name="date_range_array">
         <item>Последняя неделя</item>
         <item>Последний месяц</item>

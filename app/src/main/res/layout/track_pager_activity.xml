@@ -38,26 +38,25 @@
             app:menu_animationDelayPerItem="0"
             app:menu_colorNormal="@color/colorAccent"
             app:menu_colorPressed="@color/colorAccentDark"
-            app:menu_icon="@drawable/ic_edit"
-            app:menu_labels_style="@style/MenuLabelsStyle">
+            app:menu_labels_style="@style/FabLabelsStyle">
 
             <com.github.clans.fab.FloatingActionButton
                 android:id="@+id/fabAddParameters"
-                style="@style/MenuButtonsSmall"
+                style="@style/FabButtonsSmall"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 app:fab_label="@string/add_parameters"/>
 
             <com.github.clans.fab.FloatingActionButton
                 android:id="@+id/fabAddPhoto"
-                style="@style/MenuButtonsSmall"
+                style="@style/FabButtonsSmall"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 app:fab_label="@string/add_photo"/>
 
             <com.github.clans.fab.FloatingActionButton
                 android:id="@+id/fabAddNote"
-                style="@style/MenuButtonsSmall"
+                style="@style/FabButtonsSmall"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 app:fab_label="@string/add_note"/>

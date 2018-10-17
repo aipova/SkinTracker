@@ -26,6 +26,7 @@ open class TrackType : RealmObject(), Serializable {
     companion object {
         const val SKIN_QUALITY_TRACK_TYPE_UID = "skin-quality"
         const val PIMPLES_COUNT_TRACK_TYPE_UID = "pimples-amount"
-        const val PIMPLES_PICKING_TRACK_TYPE_UID = "pimples-picking"
+        const val SUGAR_TRACK_TYPE_UID = "sugar"
+        const val MAKEUP_TRACK_TYPE_UID = "pimples-picking"
     }
 }

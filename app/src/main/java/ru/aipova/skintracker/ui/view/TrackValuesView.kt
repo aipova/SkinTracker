@@ -3,6 +3,7 @@ package ru.aipova.skintracker.ui.view
 import android.content.Context
 import android.os.Build
 import android.support.annotation.RequiresApi
+import android.support.v7.widget.SwitchCompat
 import android.util.AttributeSet
 import android.view.LayoutInflater
 import android.view.View
@@ -84,8 +85,8 @@ class TrackValuesView : LinearLayout {
         index: Int,
         trackValue: TrackValueData,
         editable: Boolean
-    ): Switch {
-        return view.findViewById<Switch>(R.id.valueSwitch).apply {
+    ): SwitchCompat {
+        return view.findViewById<SwitchCompat>(R.id.valueSwitch).apply {
             id = index
             isChecked = trackValue.value != 0
             isEnabled = editable
