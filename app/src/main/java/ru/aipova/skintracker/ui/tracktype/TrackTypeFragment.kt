@@ -2,26 +2,37 @@ package ru.aipova.skintracker.ui.tracktype
 
 import android.content.Context
 import android.os.Bundle
-import android.support.v4.app.Fragment
 import android.support.v7.app.AlertDialog
 import android.support.v7.widget.LinearLayoutManager
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
+import dagger.android.support.DaggerFragment
 import io.realm.RealmResults
 import kotlinx.android.synthetic.main.track_type_fragment.*
 import ru.aipova.skintracker.R
+import ru.aipova.skintracker.di.ActivityScoped
 import ru.aipova.skintracker.model.TrackType
 import ru.aipova.skintracker.model.ValueType
 import ru.aipova.skintracker.ui.tracktype.dialog.TrackTypeCreateDialog
 import ru.aipova.skintracker.ui.tracktype.dialog.TrackTypeEditDialog
+import javax.inject.Inject
 
-class TrackTypeFragment : Fragment(), TrackTypeContract.View, TrackTypeCreateDialog.Callbacks, TrackTypeEditDialog.Callbacks {
+@ActivityScoped
+class TrackTypeFragment : DaggerFragment(), TrackTypeContract.View, TrackTypeCreateDialog.Callbacks, TrackTypeEditDialog.Callbacks {
+    @Inject
     override lateinit var presenter: TrackTypeContract.Presenter
 
-    override var isActive: Boolean = false
-        get() = isAdded
+    override fun onAttach(context: Context?) {
+        super.onAttach(context)
+        presenter.takeView(this)
+    }
+
+    override fun onDetach() {
+        super.onDetach()
+        presenter.dropView()
+    }
 
     override fun onCreateNewTrackType(
         trackTypeName: String,
@@ -51,8 +62,8 @@ class TrackTypeFragment : Fragment(), TrackTypeContract.View, TrackTypeCreateDia
         setHasOptionsMenu(true)
     }
 
-    override fun onDestroy() {
-        super.onDestroy()
+    override fun onDestroyView() {
+        super.onDestroyView()
         presenter.stop()
     }
 
