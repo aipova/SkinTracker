@@ -28,7 +28,6 @@ class StatisticsPresenter
 
     override fun takeView(view: StatisticsContract.View) {
         statisticsView = view
-        start()
     }
 
     override fun dropView() {

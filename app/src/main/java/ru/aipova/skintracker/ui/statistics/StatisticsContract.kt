@@ -9,7 +9,6 @@ import java.util.*
 
 interface StatisticsContract {
     interface View: BaseView<Presenter> {
-        val isActive: Boolean
         fun drawLegend(
             legendColors: Map<String, Int>,
             onLegendChoose: () -> Unit

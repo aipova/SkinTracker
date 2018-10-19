@@ -5,15 +5,9 @@ import dagger.android.DaggerApplication
 import io.realm.Realm
 import io.realm.RealmConfiguration
 import ru.aipova.skintracker.di.DaggerAppComponent
-import ru.aipova.skintracker.model.TrackType
-import ru.aipova.skintracker.model.TrackType.Companion.PIMPLES_COUNT_TRACK_TYPE_UID
-import ru.aipova.skintracker.model.TrackType.Companion.PIMPLES_PICKING_TRACK_TYPE_UID
-import ru.aipova.skintracker.model.TrackType.Companion.SKIN_QUALITY_TRACK_TYPE_UID
-import ru.aipova.skintracker.model.ValueType
 import ru.aipova.skintracker.model.source.TrackRepository
 import ru.aipova.skintracker.model.source.TrackTypeRepository
 import ru.aipova.skintracker.utils.PhotoFileConstructor
-import kotlin.text.Typography.dagger
 
 class SkinTrackerApp : DaggerApplication() {
     override fun applicationInjector(): AndroidInjector<out DaggerApplication> {

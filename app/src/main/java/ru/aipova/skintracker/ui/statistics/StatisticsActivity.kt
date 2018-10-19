@@ -4,12 +4,11 @@ import android.os.Bundle
 import android.view.MenuItem
 import dagger.android.support.DaggerAppCompatActivity
 import ru.aipova.skintracker.R
-import javax.inject.Inject
 
 class StatisticsActivity : DaggerAppCompatActivity() {
 
-    @Inject
-    lateinit var statisticsPresenter: StatisticsPresenter
+    //@Inject
+    //lateinit var statisticsPresenter: StatisticsPresenter
 
 //    @set:Inject
 //    var statisticsFragment: StatisticsFragment? = null
@@ -29,9 +28,9 @@ class StatisticsActivity : DaggerAppCompatActivity() {
 
         val fm = supportFragmentManager
         var fragment = fm.findFragmentById(R.id.fragmentContainer)
-        (fragment as StatisticsFragment).presenter = statisticsPresenter
+
         if (fragment == null) {
-//            fragment = statisticsFragment
+            fragment = StatisticsFragment.newInstance()
             fm.beginTransaction().replace(R.id.fragmentContainer, fragment).commit()
         }
     }
