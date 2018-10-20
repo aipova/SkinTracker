@@ -6,8 +6,6 @@ import io.realm.Realm
 import io.realm.RealmConfiguration
 import ru.aipova.skintracker.di.DaggerAppComponent
 import ru.aipova.skintracker.model.source.TrackRepository
-import ru.aipova.skintracker.model.source.TrackTypeRepository
-import ru.aipova.skintracker.utils.PhotoFileConstructor
 
 class SkinTrackerApp : DaggerApplication() {
     override fun applicationInjector(): AndroidInjector<out DaggerApplication> {
@@ -20,10 +18,8 @@ class SkinTrackerApp : DaggerApplication() {
         Realm.init(this)
         Realm.setDefaultConfiguration(getRealmConfiguration())
 
-        InjectionStub.realm = Realm.getDefaultInstance()
-        InjectionStub.trackTypeRepository = TrackTypeRepository(InjectionStub.realm)
-        InjectionStub.trackRepository = TrackRepository(InjectionStub.realm)
-        InjectionStub.photoFileConstructor = PhotoFileConstructor(this.getExternalFilesDir(PHOTOS_DIR))
+        val realm = Realm.getDefaultInstance()
+        InjectionStub.trackRepository = TrackRepository(realm)
     }
 
     private fun getRealmConfiguration() =
@@ -31,8 +27,4 @@ class SkinTrackerApp : DaggerApplication() {
             .initialData(InitialData(this))
             .deleteRealmIfMigrationNeeded()
             .build()
-
-    companion object {
-        const val PHOTOS_DIR = "photos"
-    }
 }

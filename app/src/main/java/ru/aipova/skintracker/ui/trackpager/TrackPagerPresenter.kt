@@ -9,52 +9,61 @@ import ru.aipova.skintracker.utils.TimeUtils
 import java.io.File
 import java.io.InputStream
 import java.util.*
+import javax.inject.Inject
 
-class TrackPagerPresenter(
-    private var trackPagerView: TrackPagerContract.View,
+class TrackPagerPresenter @Inject constructor(
     private val trackRepository: TrackRepository,
     private val photoFileConstructor: PhotoFileConstructor
 ) : TrackPagerContract.Presenter {
-    init {
-        trackPagerView.presenter = this
+    private var trackPagerView: TrackPagerContract.View? = null
+
+    override fun takeView(view: TrackPagerContract.View) {
+        trackPagerView = view
     }
 
+    override fun dropView() {
+        trackPagerView = null
+    }
 
     override fun start() {
-        trackPagerView.setCurrentPage(getTodaysPage())
+        trackPagerView?.setCurrentPage(getTodaysPage())
     }
 
     override fun onCalendarButtonClicked() {
-        val currentDate = TimeUtils.getCalendarForPosition(trackPagerView.getCurrentPage())
-        trackPagerView.showDatePickerDialog(currentDate)
+        val currentDate = TimeUtils.getCalendarForPosition(trackPagerView?.getCurrentPage() ?: 0)
+        trackPagerView?.showDatePickerDialog(currentDate)
     }
 
     override fun onDateSelected(year: Int, month: Int, dayOfMonth: Int) {
         val newDate = Calendar.getInstance().apply { set(year, month, dayOfMonth) }
         val newPage = TimeUtils.getPositionForDate(LocalDate.fromCalendarFields(newDate))
-        trackPagerView.setCurrentPage(newPage)
+        trackPagerView?.setCurrentPage(newPage)
     }
 
     override fun onLeftButtonClicked() {
-        trackPagerView.setCurrentPage(trackPagerView.getCurrentPage() - 1)
+        trackPagerView?.let {
+            it.setCurrentPage(it.getCurrentPage() - 1)
+        }
     }
 
     override fun onRightButtonClicked() {
-        trackPagerView.setCurrentPage(trackPagerView.getCurrentPage() + 1)
+        trackPagerView?.let {
+            it.setCurrentPage(it.getCurrentPage() + 1)
+        }
     }
 
     private fun getTodaysPage() = TimeUtils.getPositionForDate(TimeUtils.today())
 
     override fun onPhotoItemSelected() {
-        trackPagerView.showPhotoChooserDialog()
+        trackPagerView?.showPhotoChooserDialog()
     }
 
     override fun onPhotoFromCameraSelected() {
-        trackPagerView.makePhoto(getPhotoFile())
+        trackPagerView?.makePhoto(getPhotoFile())
     }
 
     override fun onPhotoFromGallerySelected() {
-        trackPagerView.openGallery()
+        trackPagerView?.openGallery()
     }
 
     override fun onPhotoChosen(inputStream: InputStream) {
@@ -97,11 +106,11 @@ class TrackPagerPresenter(
     }
 
     private fun updateView() {
-        if (trackPagerView.isActive()) trackPagerView.updateWholeView()
+        trackPagerView?.run { updateWholeView() }
     }
 
     override fun onParametersUpdated() {
-        trackPagerView.updateWholeView()
+        trackPagerView?.run { updateWholeView() }
     }
 
     private fun getPhotoFile(): File {
@@ -109,14 +118,14 @@ class TrackPagerPresenter(
     }
 
     private fun getCurrentDiaryDate() =
-        TimeUtils.getDateForPosition(trackPagerView.getCurrentPage())
+        TimeUtils.getDateForPosition(trackPagerView?.getCurrentPage() ?: 0)
 
     override fun onNoteItemSelected() {
         val trackNote = trackRepository.getTrackByDate(getCurrentDiaryDate())?.note
         if (trackNote == null) {
-            trackPagerView.showNoteCreateDialog()
+            trackPagerView?.showNoteCreateDialog()
         } else {
-            trackPagerView.showNoteEditDialog(trackNote)
+            trackPagerView?.showNoteEditDialog(trackNote)
         }
     }
 
@@ -133,14 +142,14 @@ class TrackPagerPresenter(
         val trackExists = trackRepository.getTrackByDate(date) != null
         trackRepository.saveNote(getCurrentDiaryDate(), note) {
             if (trackExists) {
-                trackPagerView.updateNote(TrackData(date, note, arrayOf()))
+                trackPagerView?.updateNote(TrackData(date, note, arrayOf()))
             } else {
-                trackPagerView.updateWholeView()
+                trackPagerView?.updateWholeView()
             }
         }
     }
 
     override fun onParametersItemSelected() {
-        trackPagerView.openParametersScreen(getCurrentDiaryDate())
+        trackPagerView?.openParametersScreen(getCurrentDiaryDate())
     }
 }

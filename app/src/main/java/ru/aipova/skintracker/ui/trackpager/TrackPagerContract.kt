@@ -40,5 +40,7 @@ interface TrackPagerContract {
         fun onPhotoFromCameraSelected()
         fun onPhotoFromGallerySelected()
         fun onPhotoChosen(inputStream: InputStream)
+        fun takeView(view: View)
+        fun dropView()
     }
 }

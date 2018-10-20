@@ -2,21 +2,23 @@ package ru.aipova.skintracker.ui.trackpager.track
 
 import android.content.Context
 import android.os.Bundle
-import android.support.v4.app.Fragment
 import android.view.LayoutInflater
 import android.view.MotionEvent
 import android.view.View
 import android.view.ViewGroup
 import com.squareup.picasso.Picasso
+import dagger.android.support.DaggerFragment
 import kotlinx.android.synthetic.main.track_fragment.*
-import ru.aipova.skintracker.InjectionStub
 import ru.aipova.skintracker.R
+import ru.aipova.skintracker.di.ActivityScoped
 import ru.aipova.skintracker.ui.data.TrackData
 import ru.aipova.skintracker.ui.data.TrackValueData
 import java.io.File
 import java.util.*
+import javax.inject.Inject
 
-class TrackFragment : Fragment(), Observer, TrackContract.View {
+@ActivityScoped
+class TrackFragment : DaggerFragment(), Observer, TrackContract.View {
 
     interface Callbacks {
         fun onViewTouchDown()
@@ -43,26 +45,25 @@ class TrackFragment : Fragment(), Observer, TrackContract.View {
         callbacks = null
     }
 
+    @Inject
     override lateinit var presenter: TrackContract.Presenter
+
     private var trackExists = false
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        presenter = TrackPresenter(
-            this,
-            getTrackDate(),
-            InjectionStub.trackRepository,
-            InjectionStub.photoFileConstructor
-        )
-        presenter.init()
-    }
 
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
+        presenter.takeView(this)
+        presenter.init(getTrackDate())
         return inflater.inflate(getLayoutId(), container, false)
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        presenter.dropView()
     }
 
     private fun getLayoutId() =
