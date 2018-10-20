@@ -5,7 +5,6 @@ import dagger.android.DaggerApplication
 import io.realm.Realm
 import io.realm.RealmConfiguration
 import ru.aipova.skintracker.di.DaggerAppComponent
-import ru.aipova.skintracker.model.source.TrackRepository
 
 class SkinTrackerApp : DaggerApplication() {
     override fun applicationInjector(): AndroidInjector<out DaggerApplication> {
@@ -14,12 +13,12 @@ class SkinTrackerApp : DaggerApplication() {
 
     override fun onCreate() {
         super.onCreate()
+        initRealm()
+    }
 
+    private fun initRealm() {
         Realm.init(this)
         Realm.setDefaultConfiguration(getRealmConfiguration())
-
-        val realm = Realm.getDefaultInstance()
-        InjectionStub.trackRepository = TrackRepository(realm)
     }
 
     private fun getRealmConfiguration() =
