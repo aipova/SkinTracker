@@ -43,6 +43,14 @@ class TrackTypeFragment : DaggerFragment(), TrackTypeContract.View, TrackTypeCre
         presenter.createNewTrackType(trackTypeName, selectedValueType, min, max)
     }
 
+    override fun checkNewTrackTypeName(trackTypeName: String): Boolean {
+        return presenter.checkNewTrackTypeName(trackTypeName)
+    }
+
+    override fun checkEditTrackTypeName(trackType: TrackType, trackTypeName: String): Boolean {
+        return presenter.checkEditTrackTypeName(trackType, trackTypeName)
+    }
+
     override fun onEditTrackType(
         trackType: TrackType,
         trackTypeName: String,

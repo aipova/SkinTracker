@@ -33,5 +33,7 @@ interface TrackTypeContract {
         fun stop()
         fun takeView(view: View)
         fun dropView()
+        fun checkNewTrackTypeName(trackTypeName: String): Boolean
+        fun checkEditTrackTypeName(trackType: TrackType, trackTypeName: String): Boolean
     }
 }

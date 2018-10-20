@@ -53,6 +53,16 @@ class TrackTypePresenter @Inject constructor(
         trackTypeRepository.editTrackType(trackTypeUid, trackTypeName, selectedValueType, min, max)
     }
 
+    override fun checkNewTrackTypeName(trackTypeName: String): Boolean {
+        val existingTrack = trackTypeRepository.findByName(trackTypeName)
+        return existingTrack != null
+    }
+
+    override fun checkEditTrackTypeName(trackType: TrackType, trackTypeName: String): Boolean {
+        val existingTrack = trackTypeRepository.findByName(trackTypeName)
+        return existingTrack != null && existingTrack != trackType
+    }
+
     override fun createNewTrackType(
         trackTypeName: String,
         selectedValueType: ValueType,
