@@ -7,8 +7,11 @@ import ru.aipova.skintracker.model.*
 import ru.aipova.skintracker.ui.data.TrackData
 import ru.aipova.skintracker.ui.data.TrackValueData
 import java.util.*
+import javax.inject.Inject
+import javax.inject.Singleton
 
-class TrackRepository(private val uiRealm: Realm) {
+@Singleton
+class TrackRepository @Inject constructor(private val uiRealm: Realm) {
 
     interface CreateTrackCallback {
         fun onTrackCreated()
