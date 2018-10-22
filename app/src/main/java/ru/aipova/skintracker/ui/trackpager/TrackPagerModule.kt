@@ -16,7 +16,7 @@ abstract class TrackPagerModule {
     @ContributesAndroidInjector
     abstract fun trackFragment(): TrackFragment
 
-    @ActivityScoped
+    @FragmentScoped
     @Binds
     abstract fun trackPresenter(presenter: TrackPresenter): TrackContract.Presenter
 

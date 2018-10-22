@@ -19,7 +19,6 @@ import ru.aipova.skintracker.ui.tracktype.dialog.TrackTypeCreateDialog
 import ru.aipova.skintracker.ui.tracktype.dialog.TrackTypeEditDialog
 import javax.inject.Inject
 
-@ActivityScoped
 class TrackTypeFragment : DaggerFragment(), TrackTypeContract.View, TrackTypeCreateDialog.Callbacks, TrackTypeEditDialog.Callbacks {
     @Inject
     override lateinit var presenter: TrackTypeContract.Presenter

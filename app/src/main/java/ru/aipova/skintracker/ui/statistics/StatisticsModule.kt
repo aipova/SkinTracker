@@ -3,7 +3,6 @@ package ru.aipova.skintracker.ui.statistics
 import dagger.Binds
 import dagger.Module
 import dagger.android.ContributesAndroidInjector
-import ru.aipova.skintracker.di.ActivityScoped
 import ru.aipova.skintracker.di.FragmentScoped
 
 /**
@@ -17,7 +16,7 @@ abstract class StatisticsModule {
     @ContributesAndroidInjector
     abstract fun statisticsFragment(): StatisticsFragment
 
-    @ActivityScoped
+    @FragmentScoped
     @Binds
     abstract fun statitsticsPresenter(presenter: StatisticsPresenter): StatisticsContract.Presenter
 }

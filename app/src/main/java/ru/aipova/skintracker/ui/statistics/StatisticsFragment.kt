@@ -15,12 +15,10 @@ import com.github.mikephil.charting.formatter.IAxisValueFormatter
 import dagger.android.support.DaggerFragment
 import kotlinx.android.synthetic.main.statistics_fragment.*
 import ru.aipova.skintracker.R
-import ru.aipova.skintracker.di.ActivityScoped
 import ru.aipova.skintracker.utils.TimeUtils
 import java.util.*
 import javax.inject.Inject
 
-@ActivityScoped
 class StatisticsFragment : DaggerFragment(), StatisticsContract.View {
 
     @Inject

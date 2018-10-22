@@ -14,7 +14,6 @@ import ru.aipova.skintracker.utils.TimeUtils
 import java.util.*
 import javax.inject.Inject
 
-@ActivityScoped
 class TrackValuesFragment : DaggerFragment(), TrackValuesContract.View {
 
     @Inject

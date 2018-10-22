@@ -10,15 +10,16 @@ import com.squareup.picasso.Picasso
 import dagger.android.support.DaggerFragment
 import kotlinx.android.synthetic.main.track_fragment.*
 import ru.aipova.skintracker.R
-import ru.aipova.skintracker.di.ActivityScoped
 import ru.aipova.skintracker.ui.data.TrackData
 import ru.aipova.skintracker.ui.data.TrackValueData
 import java.io.File
 import java.util.*
 import javax.inject.Inject
 
-@ActivityScoped
 class TrackFragment : DaggerFragment(), Observer, TrackContract.View {
+
+    @Inject
+    override lateinit var presenter: TrackContract.Presenter
 
     interface Callbacks {
         fun onViewTouchDown()
@@ -44,9 +45,6 @@ class TrackFragment : DaggerFragment(), Observer, TrackContract.View {
         super.onDetach()
         callbacks = null
     }
-
-    @Inject
-    override lateinit var presenter: TrackContract.Presenter
 
     private var trackExists = false
 
