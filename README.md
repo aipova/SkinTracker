@@ -10,6 +10,7 @@
 
 #### Used libraries
 * [Realm](https://github.com/realm/realm-java)
+* [Dagger 2](https://github.com/google/dagger)
 * [Picasso](https://github.com/square/picasso)
 * [MPAndroidChart](https://github.com/PhilJay/MPAndroidChart)
 * [Butterknife](https://github.com/JakeWharton/butterknife)
