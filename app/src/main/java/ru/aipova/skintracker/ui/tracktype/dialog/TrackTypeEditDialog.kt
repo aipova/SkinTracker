@@ -15,6 +15,8 @@ class TrackTypeEditDialog : TrackTypeDialog() {
             min: Int,
             max: Int
         )
+
+        fun checkEditTrackTypeName(trackType: TrackType, trackTypeName: String): Boolean
     }
 
     override fun onOkButtonClick(
@@ -31,8 +33,13 @@ class TrackTypeEditDialog : TrackTypeDialog() {
     }
 
     override fun nameIsDuplicate(trackTypeName: String): Boolean {
-        val existingTrack = trackTypeRepository.findByName(trackTypeName)
-        return existingTrack != null && existingTrack != getTrackType()
+        return parentFragment.let {
+            if (it is Callbacks) {
+                it.checkEditTrackTypeName(getTrackType(), trackTypeName)
+            } else {
+                return false
+            }
+        }
     }
 
     private fun getTrackType() = arguments?.getSerializable(TRACK_TYPE) as TrackType

@@ -5,6 +5,7 @@ import ru.aipova.skintracker.ui.BaseView
 import ru.aipova.skintracker.ui.data.TrackData
 import ru.aipova.skintracker.ui.data.TrackValueData
 import java.io.File
+import java.util.*
 
 interface TrackContract {
     interface View: BaseView<Presenter> {
@@ -19,7 +20,9 @@ interface TrackContract {
     }
 
     interface Presenter: BasePresenter {
-        fun init()
         fun onUpdateNote(trackData: TrackData)
+        fun init(date: Date)
+        fun takeView(view: View)
+        fun dropView()
     }
 }

@@ -4,14 +4,21 @@ import io.realm.RealmResults
 import ru.aipova.skintracker.model.TrackType
 import ru.aipova.skintracker.model.ValueType
 import ru.aipova.skintracker.model.source.TrackTypeRepository
+import javax.inject.Inject
 
-class TrackTypePresenter(
-    private val trackTypeView: TrackTypeContract.View,
+class TrackTypePresenter @Inject constructor(
     private val trackTypeRepository: TrackTypeRepository
 ) : TrackTypeContract.Presenter {
-    init {
-        trackTypeView.presenter = this
+    private var trackTypeView: TrackTypeContract.View? = null
+
+    override fun takeView(view: TrackTypeContract.View) {
+        trackTypeView = view
     }
+
+    override fun dropView() {
+        trackTypeView = null
+    }
+
     private lateinit var trackTypes: RealmResults<TrackType>
 
     override fun start() {
@@ -19,13 +26,13 @@ class TrackTypePresenter(
         trackTypes.addChangeListener { results ->
             if (results.isLoaded && results.isValid) {
                 if (results.isEmpty()) {
-                    trackTypeView.showNoTrackTypesView()
+                    trackTypeView?.showNoTrackTypesView()
                 } else {
-                    trackTypeView.showTrackTypesView()
+                    trackTypeView?.showTrackTypesView()
                 }
             }
         }
-        trackTypeView.initTrackTypesView(trackTypes)
+        trackTypeView?.initTrackTypesView(trackTypes)
     }
 
     override fun stop() {
@@ -46,6 +53,16 @@ class TrackTypePresenter(
         trackTypeRepository.editTrackType(trackTypeUid, trackTypeName, selectedValueType, min, max)
     }
 
+    override fun checkNewTrackTypeName(trackTypeName: String): Boolean {
+        val existingTrack = trackTypeRepository.findByName(trackTypeName)
+        return existingTrack != null
+    }
+
+    override fun checkEditTrackTypeName(trackType: TrackType, trackTypeName: String): Boolean {
+        val existingTrack = trackTypeRepository.findByName(trackTypeName)
+        return existingTrack != null && existingTrack != trackType
+    }
+
     override fun createNewTrackType(
         trackTypeName: String,
         selectedValueType: ValueType,
@@ -55,11 +72,11 @@ class TrackTypePresenter(
         trackTypeRepository.createNewTrackType(trackTypeName, selectedValueType, min, max,
             object : TrackTypeRepository.CreateTrackTypeCallback {
                 override fun onTrackTypeCreated() {
-                    trackTypeView.showTrackTypeCreatedMsg(trackTypeName)
+                    trackTypeView?.showTrackTypeCreatedMsg(trackTypeName)
                 }
 
                 override fun onError() {
-                    trackTypeView.showCannotCreateTrackTypeMsg()
+                    trackTypeView?.showCannotCreateTrackTypeMsg()
                 }
             })
     }

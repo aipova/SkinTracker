@@ -1,8 +1,8 @@
 package ru.aipova.skintracker.ui.statistics
 
 import android.app.DatePickerDialog
+import android.content.Context
 import android.os.Bundle
-import android.support.v4.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -12,16 +12,17 @@ import android.widget.CheckBox
 import com.github.mikephil.charting.components.XAxis
 import com.github.mikephil.charting.data.LineData
 import com.github.mikephil.charting.formatter.IAxisValueFormatter
+import dagger.android.support.DaggerFragment
 import kotlinx.android.synthetic.main.statistics_fragment.*
 import ru.aipova.skintracker.R
 import ru.aipova.skintracker.utils.TimeUtils
 import java.util.*
+import javax.inject.Inject
 
-class StatisticsFragment : Fragment(), StatisticsContract.View {
+class StatisticsFragment : DaggerFragment(), StatisticsContract.View {
 
+    @Inject
     override lateinit var presenter: StatisticsContract.Presenter
-    override var isActive: Boolean = false
-        get() = isAdded
 
     private var legendValues: BooleanArray? = null
 
@@ -44,9 +45,14 @@ class StatisticsFragment : Fragment(), StatisticsContract.View {
         presenter.start()
     }
 
-    override fun onDestroy() {
-        super.onDestroy()
-        presenter.stop()
+    override fun onAttach(context: Context?) {
+        super.onAttach(context)
+        presenter.takeView(this)
+    }
+
+    override fun onDetach() {
+        super.onDetach()
+        presenter.dropView()
     }
 
     override fun setupDateRangeSelector() {

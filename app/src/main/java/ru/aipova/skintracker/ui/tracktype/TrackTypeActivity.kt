@@ -1,15 +1,9 @@
 package ru.aipova.skintracker.ui.tracktype
 
-import ru.aipova.skintracker.InjectionStub
-import ru.aipova.skintracker.ui.MenuItemActivity
+import ru.aipova.skintracker.ui.DaggerMenuItemActivity
 
-class TrackTypeActivity : MenuItemActivity<TrackTypeFragment>() {
-
+class TrackTypeActivity : DaggerMenuItemActivity<TrackTypeFragment>() {
     override fun createFragment(): TrackTypeFragment {
         return TrackTypeFragment.newInstance()
-    }
-
-    override fun setupPresenter(fragment: TrackTypeFragment) {
-        TrackTypePresenter(fragment, InjectionStub.trackTypeRepository)
     }
 }

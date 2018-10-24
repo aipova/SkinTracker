@@ -9,7 +9,6 @@ import java.util.*
 
 interface StatisticsContract {
     interface View: BaseView<Presenter> {
-        val isActive: Boolean
         fun drawLegend(
             legendColors: Map<String, Int>,
             onLegendChoose: () -> Unit
@@ -39,5 +38,7 @@ interface StatisticsContract {
         fun getStartDate(): Date
         fun getEndDate(): Date
         fun updateDates(start: Date, end: Date)
+        fun takeView(view: View)
+        fun dropView()
     }
 }

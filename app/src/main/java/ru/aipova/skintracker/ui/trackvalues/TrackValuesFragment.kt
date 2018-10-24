@@ -2,20 +2,23 @@ package ru.aipova.skintracker.ui.trackvalues
 
 import android.app.Activity.RESULT_OK
 import android.os.Bundle
-import android.support.v4.app.Fragment
 import android.support.v7.app.AppCompatActivity
 import android.view.*
 import android.widget.Toast
+import dagger.android.support.DaggerFragment
 import kotlinx.android.synthetic.main.track_values_fragment.*
 import ru.aipova.skintracker.R
+import ru.aipova.skintracker.di.ActivityScoped
 import ru.aipova.skintracker.ui.data.TrackValueData
 import ru.aipova.skintracker.utils.TimeUtils
 import java.util.*
+import javax.inject.Inject
 
+class TrackValuesFragment : DaggerFragment(), TrackValuesContract.View {
 
-class TrackValuesFragment : Fragment(), TrackValuesContract.View {
-
+    @Inject
     override lateinit var presenter: TrackValuesContract.Presenter
+
     override var isActive: Boolean = false
         get() = isAdded
 
@@ -31,10 +34,17 @@ class TrackValuesFragment : Fragment(), TrackValuesContract.View {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
+        presenter.takeView(this)
         return inflater.inflate(R.layout.track_values_fragment, container, false)
     }
 
+    override fun onDestroyView() {
+        super.onDestroyView()
+        presenter.dropView()
+    }
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        presenter.init(getCurrentDate())
         presenter.start()
         restoreSeekBarsProgress(savedInstanceState)
     }
@@ -112,10 +122,14 @@ class TrackValuesFragment : Fragment(), TrackValuesContract.View {
         Toast.makeText(activity, R.string.msg_cannot_load_parameters, Toast.LENGTH_LONG).show()
     }
 
+    private fun getCurrentDate() = arguments?.getSerializable(DATE_PARAMETER) as? Date ?: Date()
+
     companion object {
+        private const val DATE_PARAMETER = "ru.aipova.skintracker.trackvalues.date"
         private const val SEEK_BAR_VALUES = "ru.aipova.skintracker.track.SEEK_BAR_VALUES"
-        fun newInstance(): TrackValuesFragment {
-            return TrackValuesFragment()
+        fun newInstance(dateExtra: Date): TrackValuesFragment {
+            val bundle = Bundle().apply { putSerializable(DATE_PARAMETER, dateExtra) }
+            return TrackValuesFragment().apply { arguments =  bundle }
         }
     }
 }

@@ -12,6 +12,7 @@ class TrackTypeCreateDialog : TrackTypeDialog() {
             min: Int,
             max: Int
         )
+        fun checkNewTrackTypeName(trackTypeName: String): Boolean
     }
 
     override fun onOkButtonClick(
@@ -28,8 +29,13 @@ class TrackTypeCreateDialog : TrackTypeDialog() {
     }
 
     override fun nameIsDuplicate(trackTypeName: String): Boolean {
-        val existingTrack = trackTypeRepository.findByName(trackTypeName)
-        return existingTrack != null
+        return parentFragment.let {
+            if (it is Callbacks) {
+                it.checkNewTrackTypeName(trackTypeName)
+            } else {
+                false
+            }
+        }
     }
 
     override fun getTitle(): Int {

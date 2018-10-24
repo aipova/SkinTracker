@@ -10,8 +10,8 @@ android {
         applicationId "ru.aipova.skintracker"
         minSdkVersion 19
         targetSdkVersion 27
-        versionCode 1
-        versionName "1.0"
+        versionCode 2
+        versionName "1.0.1"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
         vectorDrawables.useSupportLibrary = true
     }
@@ -47,6 +47,13 @@ dependencies {
 
     implementation "com.jakewharton:butterknife:$butterknifeVersion"
     kapt "com.jakewharton:butterknife-compiler:$butterknifeVersion"
+
+    // Dagger dependencies
+    kapt "com.google.dagger:dagger-compiler:$rootProject.daggerVersion"
+    implementation "com.google.dagger:dagger:$rootProject.daggerVersion"
+    implementation "com.google.dagger:dagger-android:$rootProject.daggerVersion"
+    implementation "com.google.dagger:dagger-android-support:$rootProject.daggerVersion"
+    kapt "com.google.dagger:dagger-android-processor:$rootProject.daggerVersion"
 
     implementation "joda-time:joda-time:$jodaTimeVersion"
     implementation "com.squareup.picasso:picasso:$picassoVersion"

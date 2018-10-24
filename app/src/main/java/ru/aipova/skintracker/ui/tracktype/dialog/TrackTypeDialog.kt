@@ -16,10 +16,8 @@ import android.widget.Spinner
 import butterknife.BindView
 import butterknife.ButterKnife
 import com.travijuu.numberpicker.library.NumberPicker
-import ru.aipova.skintracker.InjectionStub
 import ru.aipova.skintracker.R
 import ru.aipova.skintracker.model.ValueType
-import ru.aipova.skintracker.model.source.TrackTypeRepository
 
 abstract class TrackTypeDialog : DialogFragment() {
     private lateinit var dialog: AlertDialog
@@ -45,11 +43,7 @@ abstract class TrackTypeDialog : DialogFragment() {
     lateinit var valueTypes: Map<String, ValueType>
     private var selectedValueType: ValueType = ValueType.SEEK
 
-    protected lateinit var trackTypeRepository: TrackTypeRepository
-
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
-        trackTypeRepository = InjectionStub.trackTypeRepository
-
         val view = LayoutInflater.from(context).inflate(R.layout.track_type_dialog, null)
         valueTypes = mapOf(
             getString(R.string.range) to ValueType.SEEK,

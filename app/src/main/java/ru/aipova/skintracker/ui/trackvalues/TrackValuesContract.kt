@@ -20,5 +20,8 @@ interface TrackValuesContract {
 
     interface Presenter: BasePresenter {
         fun save()
+        fun takeView(view: View)
+        fun dropView()
+        fun init(date: Date)
     }
 }

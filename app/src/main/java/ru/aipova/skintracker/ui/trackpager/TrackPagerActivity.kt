@@ -24,15 +24,14 @@ import android.support.v4.view.PagerAdapter
 import android.support.v4.view.ViewPager
 import android.support.v7.app.ActionBarDrawerToggle
 import android.support.v7.app.AlertDialog
-import android.support.v7.app.AppCompatActivity
 import android.support.v7.app.AppCompatDelegate
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
 import android.view.animation.OvershootInterpolator
+import dagger.android.support.DaggerAppCompatActivity
 import kotlinx.android.synthetic.main.track_pager_activity.*
 import kotlinx.android.synthetic.main.track_pager_content.*
-import ru.aipova.skintracker.InjectionStub
 import ru.aipova.skintracker.R
 import ru.aipova.skintracker.ui.about.AboutActivity
 import ru.aipova.skintracker.ui.data.TrackData
@@ -45,15 +44,17 @@ import ru.aipova.skintracker.ui.trackvalues.TrackValuesActivity
 import ru.aipova.skintracker.utils.TimeUtils
 import java.io.File
 import java.util.*
+import javax.inject.Inject
 
 
 class TrackPagerActivity :
-    AppCompatActivity(),
+    DaggerAppCompatActivity(),
     TrackPagerContract.View,
     NavigationView.OnNavigationItemSelectedListener,
     TrackFragment.Callbacks,
     NoteCreateDialog.Callbacks,
     NoteEditDialog.Callbacks {
+    @Inject
     override lateinit var presenter: TrackPagerContract.Presenter
 
     override fun isActive(): Boolean {
@@ -65,11 +66,7 @@ class TrackPagerActivity :
         AppCompatDelegate.setCompatVectorFromResourcesEnabled(true)
         setContentView(R.layout.track_pager_activity)
         setActionBar()
-        presenter = TrackPagerPresenter(
-            this,
-            InjectionStub.trackRepository,
-            InjectionStub.photoFileConstructor
-        )
+        presenter.takeView(this)
 
         setupNavigationDrawer()
         setupNavigationButtons()
@@ -77,6 +74,11 @@ class TrackPagerActivity :
         setupMenuFab()
 
         presenter.start()
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        presenter.dropView()
     }
 
     private fun setActionBar() {

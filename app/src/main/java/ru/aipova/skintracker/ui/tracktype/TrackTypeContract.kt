@@ -3,12 +3,11 @@ package ru.aipova.skintracker.ui.tracktype
 import io.realm.RealmResults
 import ru.aipova.skintracker.model.TrackType
 import ru.aipova.skintracker.model.ValueType
-import ru.aipova.skintracker.ui.BaseView
 import ru.aipova.skintracker.ui.BasePresenter
+import ru.aipova.skintracker.ui.BaseView
 
 interface TrackTypeContract {
     interface View: BaseView<Presenter> {
-        val isActive: Boolean
         fun initTrackTypesView(trackTypes: RealmResults<TrackType>)
         fun showTrackTypeCreatedMsg(trackTypeName: String)
         fun showCannotCreateTrackTypeMsg()
@@ -32,5 +31,9 @@ interface TrackTypeContract {
         )
         fun removeTrackType(trackTypeUid: String)
         fun stop()
+        fun takeView(view: View)
+        fun dropView()
+        fun checkNewTrackTypeName(trackTypeName: String): Boolean
+        fun checkEditTrackTypeName(trackType: TrackType, trackTypeName: String): Boolean
     }
 }
