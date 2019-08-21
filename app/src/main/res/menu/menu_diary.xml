@@ -5,4 +5,14 @@
         android:id="@+id/action_remove_day"
         android:title="@string/action_remove_day"
         app:showAsAction="never"/>
+
+    <item
+        android:id="@+id/action_make_visible"
+        android:title="@string/action_make_visible"
+        app:showAsAction="never"/>
+
+    <item
+        android:id="@+id/action_share"
+        android:title="@string/action_share"
+        app:showAsAction="never"/>
 </menu>

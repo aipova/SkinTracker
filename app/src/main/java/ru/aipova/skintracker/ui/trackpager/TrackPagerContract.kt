@@ -10,7 +10,6 @@ import java.util.*
 interface TrackPagerContract {
     interface View: BaseView<Presenter> {
         fun getCurrentPage(): Int
-
         fun showDatePickerDialog(calendar: Calendar)
         fun setCurrentPage(newPage: Int)
         fun makePhoto(photoFile: File)
@@ -22,6 +21,10 @@ interface TrackPagerContract {
         fun isActive(): Boolean
         fun showPhotoChooserDialog()
         fun openGallery()
+        fun shareFile(photoFile: File)
+        fun makePhotoVisible(photoFile: File)
+        fun showPhotoMenuOptions()
+        fun hidePhotoMenuOptions()
     }
 
     interface Presenter: BasePresenter {
@@ -42,5 +45,8 @@ interface TrackPagerContract {
         fun onPhotoChosen(inputStream: InputStream)
         fun takeView(view: View)
         fun dropView()
+        fun onSharePhotoSelected()
+        fun onMakePhotoVisibleSelected()
+        fun pageChanged()
     }
 }

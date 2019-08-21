@@ -46,7 +46,7 @@
     <string name="title_edit_note">Редактировать заметку</string>
     <string name="note_text">Текст заметки</string>
     <string name="err_note_empty">Обязательное поле</string>
-    <string name="action_remove_day">Удалить весь день</string>
+    <string name="action_remove_day">Удалить записи за день</string>
     <string name="msg_remove_diary_day">Вы действительно хотите удалить все записи за день?</string>
     <string name="attention">Внимание!</string>
     <string name="track_type_name_sugar">Сладости</string>
@@ -58,6 +58,9 @@
     &#8226; Ежедневно заполняй дневник, добавляй фото и заметки;\n
     &#8226; Отслеживай статистику, находи зависимость состояния кожи от твоих привычек.\n
     </string>
+    <string name="action_make_visible">Сохранить фото в Галерею</string>
+    <string name="action_share">Поделиться фото</string>
+    <string name="send_to">Поделиться</string>
     <string-array name="date_range_array">
         <item>Последняя неделя</item>
         <item>Последний месяц</item>
