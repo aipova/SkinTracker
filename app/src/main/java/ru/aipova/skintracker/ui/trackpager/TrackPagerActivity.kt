@@ -1,5 +1,6 @@
 package ru.aipova.skintracker.ui.trackpager
 
+import android.Manifest
 import android.animation.Animator
 import android.animation.AnimatorListenerAdapter
 import android.animation.AnimatorSet
@@ -10,11 +11,14 @@ import android.content.ClipData
 import android.content.Intent
 import android.content.Intent.FLAG_GRANT_READ_URI_PERMISSION
 import android.content.Intent.FLAG_GRANT_WRITE_URI_PERMISSION
+import android.content.pm.PackageManager
 import android.net.Uri
 import android.os.Build
 import android.os.Bundle
+import android.os.Environment
 import android.provider.MediaStore
 import android.support.design.widget.NavigationView
+import android.support.v4.app.ActivityCompat
 import android.support.v4.app.Fragment
 import android.support.v4.app.FragmentStatePagerAdapter
 import android.support.v4.content.ContextCompat
@@ -54,6 +58,8 @@ class TrackPagerActivity :
     TrackFragment.Callbacks,
     NoteCreateDialog.Callbacks,
     NoteEditDialog.Callbacks {
+    private var lastPhotoFile: File? = null
+    private var isPhotoItemsShown = false
     @Inject
     override lateinit var presenter: TrackPagerContract.Presenter
 
@@ -78,6 +84,7 @@ class TrackPagerActivity :
 
     override fun onDestroy() {
         super.onDestroy()
+        lastPhotoFile = null
         presenter.dropView()
     }
 
@@ -86,8 +93,10 @@ class TrackPagerActivity :
         setSupportActionBar(toolbar)
     }
 
-    override fun onCreateOptionsMenu(menu: Menu?): Boolean {
+    override fun onCreateOptionsMenu(menu: Menu): Boolean {
         menuInflater.inflate(R.menu.menu_diary, menu)
+        menu.findItem(R.id.action_make_visible).isVisible = isPhotoItemsShown
+        menu.findItem(R.id.action_share).isVisible = isPhotoItemsShown
         return super.onCreateOptionsMenu(menu)
     }
 
@@ -97,8 +106,34 @@ class TrackPagerActivity :
                 showRemoveDayDialog()
                 true
             }
+            R.id.action_make_visible -> {
+                makePhotoVisible()
+                true
+            }
+            R.id.action_share -> {
+                sharePhoto()
+                true
+            }
             else -> super.onOptionsItemSelected(item)
         }
+    }
+
+    override fun showPhotoMenuOptions() {
+        isPhotoItemsShown = true
+        invalidateOptionsMenu()
+    }
+
+    override fun hidePhotoMenuOptions() {
+        isPhotoItemsShown = false
+        invalidateOptionsMenu()
+    }
+
+    private fun sharePhoto() {
+        presenter.onSharePhotoSelected()
+    }
+
+    private fun makePhotoVisible() {
+        presenter.onMakePhotoVisibleSelected()
     }
 
     private fun showRemoveDayDialog() {
@@ -258,14 +293,73 @@ class TrackPagerActivity :
     }
 
     override fun makePhoto(photoFile: File) {
+        val cameraPermission =  ContextCompat.checkSelfPermission(this, Manifest.permission.CAMERA)
+        if (cameraPermission == PackageManager.PERMISSION_DENIED) {
+            lastPhotoFile = photoFile
+            ActivityCompat.requestPermissions(this, arrayOf(Manifest.permission.CAMERA), CAMERA_PERMISSION)
+        } else {
+            openCamera(photoFile)
+        }
+    }
+
+    override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>, grantResults: IntArray) {
+        if (requestCode == CAMERA_PERMISSION && grantResults.first() == PackageManager.PERMISSION_GRANTED) {
+            lastPhotoFile?.let { openCamera(it) }
+        } else if (requestCode == REQUEST_EXTERNAL_STORAGE && grantResults.first() == PackageManager.PERMISSION_GRANTED) {
+            lastPhotoFile?.let { scanFile(it) }
+        } else {
+            super.onRequestPermissionsResult(requestCode, permissions, grantResults)
+        }
+        lastPhotoFile = null
+    }
+
+    override fun shareFile(photoFile: File) {
+        val shareIntent = Intent(Intent.ACTION_SEND).also { imageShareIntent ->
+            imageShareIntent.putExtra(Intent.EXTRA_STREAM, getPhotoUri(photoFile))
+            imageShareIntent.type = IMAGE_JPEG
+        }
+        shareIntent.addFlags(FLAG_GRANT_WRITE_URI_PERMISSION or FLAG_GRANT_READ_URI_PERMISSION)
+        startActivity(Intent.createChooser(shareIntent, resources.getText(R.string.send_to)))
+    }
+
+    private fun scanFile(photoFile: File) {
+        val dir = Environment.getExternalStoragePublicDirectory(PHOTOS_DIR)
+        val externalFile = File(dir.absolutePath, photoFile.name)
+        if (!externalFile.exists()) {
+            externalFile.mkdirs()
+            externalFile.createNewFile()
+        }
+        photoFile.copyTo(externalFile, true)
+        Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE).also { mediaScanIntent ->
+            mediaScanIntent.data = Uri.fromFile(externalFile)
+            mediaScanIntent.addFlags(FLAG_GRANT_READ_URI_PERMISSION)
+            sendBroadcast(mediaScanIntent)
+        }
+    }
+
+    override fun makePhotoVisible(photoFile: File) {
+        val permission = ActivityCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE)
+        if (permission != PackageManager.PERMISSION_GRANTED) {
+            lastPhotoFile = photoFile
+            ActivityCompat.requestPermissions(
+                    this,
+                    PERMISSIONS_STORAGE,
+                    REQUEST_EXTERNAL_STORAGE
+            )
+        } else {
+            scanFile(photoFile)
+        }
+    }
+
+    private fun openCamera(photoFile: File) {
         val takePhotoIntent = Intent(MediaStore.ACTION_IMAGE_CAPTURE)
         if (takePhotoIntent.resolveActivity(packageManager) != null) {
             val photoUri = getPhotoUri(photoFile)
             takePhotoIntent.putExtra(MediaStore.EXTRA_OUTPUT, photoUri)
             if (Build.VERSION.SDK_INT <= Build.VERSION_CODES.LOLLIPOP) {
                 takePhotoIntent.clipData = ClipData.newRawUri("", photoUri)
-                takePhotoIntent.addFlags(FLAG_GRANT_WRITE_URI_PERMISSION or FLAG_GRANT_READ_URI_PERMISSION)
             }
+            takePhotoIntent.addFlags(FLAG_GRANT_WRITE_URI_PERMISSION or FLAG_GRANT_READ_URI_PERMISSION)
             startActivityForResult(takePhotoIntent, MAKE_PHOTO_REQUEST)
         }
     }
@@ -319,6 +413,7 @@ class TrackPagerActivity :
 
         override fun onPageSelected(position: Int) {
             trackDateTxt.text = getFormattedDate(position)
+            presenter.pageChanged()
         }
     }
 
@@ -409,8 +504,13 @@ class TrackPagerActivity :
         private const val MAKE_PHOTO_REQUEST = 1
         private const val CHOOSE_PHOTO_REQUEST = 2
         private const val CREATE_NOTE_DIALOG = "NoteCreateDialog"
+        private const val PHOTOS_DIR = "SkinTracker"
         private const val EDIT_NOTE_DIALOG = "NoteEditDialog"
         private const val FILE_PROVIDER = "ru.aipova.skintracker.fileprovider"
+        private const val CAMERA_PERMISSION = 3
+        private const val REQUEST_EXTERNAL_STORAGE = 4
+        private const val IMAGE_JPEG = "image/jpeg"
+        private val PERMISSIONS_STORAGE = arrayOf(Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.WRITE_EXTERNAL_STORAGE)
     }
 
     class FragmentObserver : Observable() {

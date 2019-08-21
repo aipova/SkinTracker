@@ -2,6 +2,7 @@ package ru.aipova.skintracker.di
 
 import android.app.Application
 import android.content.Context
+import android.os.Environment
 import dagger.Binds
 import dagger.Module
 import dagger.Provides

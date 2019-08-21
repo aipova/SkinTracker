@@ -29,6 +29,18 @@ class TrackPagerPresenter @Inject constructor(
         trackPagerView?.setCurrentPage(getTodaysPage())
     }
 
+    override fun pageChanged() {
+        checkIfPhotoExists()
+    }
+
+    private fun checkIfPhotoExists() {
+        if (getPhotoFile().exists()) {
+            trackPagerView?.showPhotoMenuOptions()
+        } else {
+            trackPagerView?.hidePhotoMenuOptions()
+        }
+    }
+
     override fun onCalendarButtonClicked() {
         val currentDate = TimeUtils.getCalendarForPosition(trackPagerView?.getCurrentPage() ?: 0)
         trackPagerView?.showDatePickerDialog(currentDate)
@@ -101,11 +113,26 @@ class TrackPagerPresenter @Inject constructor(
         }
     }
 
+    override fun onSharePhotoSelected() {
+        val photo = getPhotoFile()
+        if (photo.exists()) {
+            trackPagerView?.shareFile(photo)
+        }
+    }
+
+    override fun onMakePhotoVisibleSelected() {
+        val photo = getPhotoFile()
+        if (photo.exists()) {
+            trackPagerView?.makePhotoVisible(photo)
+        }
+    }
+
     private fun invalidatePhoto(photo: File) {
         Picasso.get().invalidate(photo)
     }
 
     private fun updateView() {
+        checkIfPhotoExists()
         trackPagerView?.run { updateWholeView() }
     }
 

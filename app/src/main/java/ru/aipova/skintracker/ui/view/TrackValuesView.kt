@@ -7,6 +7,7 @@ import android.support.v7.widget.SwitchCompat
 import android.util.AttributeSet
 import android.view.LayoutInflater
 import android.view.View
+import android.widget.Checkable
 import android.widget.LinearLayout
 import android.widget.SeekBar
 import android.widget.Switch
@@ -164,7 +165,7 @@ class TrackValuesView : LinearLayout {
                 when(view) {
                     is SeekBar -> { view.progress = value }
                     is NumberPicker -> { view.value = value }
-                    is Switch -> { view.isChecked = value != 0 }
+                    is Checkable -> { view.isChecked = value != 0 }
                 }
             }
         }
@@ -174,7 +175,7 @@ class TrackValuesView : LinearLayout {
         when(it) {
             is SeekBar -> it.progress
             is NumberPicker -> it.value
-            is Switch -> if (it.isChecked) 1 else 0
+            is Checkable -> if (it.isChecked) 1 else 0
             else -> 0
         }
     }.toIntArray()
